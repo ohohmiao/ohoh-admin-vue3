@@ -2,9 +2,9 @@
 
 ### 介绍 
 
-基于Spring Boot + Vue3 前后端分离的开发脚手架。
+基于Spring Boot + Vue3前后端分离的开发脚手架。
 
-- 前端采用 [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin) 框架。Geeker-Admin是一款优雅的开源后台管理框架，原作者使用 Vue3.4、TypeScript、Vite5、Pinia、Element-Plus 等目前最新技术栈开发，并推出ProTable、TreeFilter等常用组件，助力二次开发。
+- 前端采用 [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin) 框架。Geeker-Admin是一款优雅的开源后台管理框架，原作者使用Vue3.4、TypeScript、Vite5、Pinia、Element-Plus等目前最新技术栈开发，并推出ProTable、TreeFilter等常用组件，助力二次开发。
 - 后端采用Spring Boot 2.7、MyBatis-Plus、Redis。
 - 权限框架依赖 [Sa-Token](https://sa-token.cc/) 实现。
 - 支持菜单和按钮级的动态权限控制。
