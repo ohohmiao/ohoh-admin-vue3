@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohohmiao.modules.system.mapper.SysPositionMapper">
+
+    <select id="pageUserByWrapper" resultType="com.ohohmiao.modules.system.model.vo.SysPositionUserVO">
+        select
+            p.POSITION_ID, p.POSITION_NAME, p.TREE_PATH as POSITION_PATH, o.ORG_ID, o.ORG_NAME, up.PROP_ID,
+            u.USER_ID, u.USER_ACCOUNT, u.USER_NAME, u.USER_STATUS
+        from SYS_POSITION p
+                 left join SYS_USERPROP up on p.POSITION_ID = up.PROP_EXTENDID
+                 left join SYS_USER u on up.USER_ID = u.USER_ID
+                 left join SYS_ORG o on up.PROP_RECORDID = o.ORG_ID
+            ${ew.customSqlSegment }
+    </select>
+
+    <select id="listUserByWrapper" resultType="com.ohohmiao.modules.system.model.vo.SysPositionUserVO">
+        select
+            p.POSITION_ID, p.POSITION_NAME, p.TREE_PATH as POSITION_PATH, o.ORG_ID, o.ORG_NAME, up.PROP_ID,
+            u.USER_ID, u.USER_ACCOUNT, u.USER_NAME, u.USER_STATUS
+        from SYS_POSITION p
+                 left join SYS_USERPROP up on p.POSITION_ID = up.PROP_EXTENDID
+                 left join SYS_USER u on up.USER_ID = u.USER_ID
+                 left join SYS_ORG o on up.PROP_RECORDID = o.ORG_ID
+            ${ew.customSqlSegment }
+    </select>
+
+</mapper>

@@ -1,0 +1,8 @@
+{
+	"code": 200,
+    "data": [
+      "addUseProTable", "batchAddUseProTable", "exportUseProTable", "batchDeleteUseProTable", "statusUseProTable",
+      "addAuthButton", "editAuthButton", "deleteAuthButton", "importAuthButton", "exportAuthButton"
+    ],
+	"msg": "成功"
+}

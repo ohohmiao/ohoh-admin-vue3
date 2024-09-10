@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.ohohmiao</groupId>
+        <artifactId>ohoh-admin-server</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>ohoh-admin-web-server</artifactId>
+    <packaging>jar</packaging>
+    <description>服务入口</description>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- mysql -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-framework-mybatis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-framework-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-framework-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-framework-log</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-system</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.name}-${activeProperty}</finalName>
+        <plugins>
+            <!-- 打包 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal> <!-- 将引入的 jar 打入其中 -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${maven-jar-plugin.verison}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

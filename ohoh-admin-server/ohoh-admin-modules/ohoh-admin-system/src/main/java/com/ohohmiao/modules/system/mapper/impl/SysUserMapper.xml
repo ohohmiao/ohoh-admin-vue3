@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohohmiao.modules.system.mapper.SysUserMapper">
+
+    <select id="pageByWrapper" resultType="com.ohohmiao.modules.system.model.vo.SysUserVO">
+        select u.*, p.PROP_SORT as USER_SORT, p.PROP_ID as ORG_PROPID, o.ORG_ID, o.ORG_NAME, o.ORG_SHORTNAME, o.ORG_CODE, p.DEFAULT_FLAG
+        from SYS_USER u
+             left join SYS_USERPROP p on u.USER_ID = p.USER_ID
+             left join SYS_ORG o on p.PROP_RECORDID = o.ORG_ID
+            ${ew.customSqlSegment }
+    </select>
+
+    <select id="listByWrapper" resultType="com.ohohmiao.modules.system.model.vo.SysUserVO">
+        select u.*, p.PROP_SORT as USER_SORT, p.PROP_ID as ORG_PROPID, o.ORG_ID, o.ORG_NAME,
+               o.ORG_SHORTNAME, o.ORG_CODE, o.TREE_PATH as ORG_PATH, p.DEFAULT_FLAG
+        from SYS_USER u
+             left join SYS_USERPROP p on u.USER_ID = p.USER_ID
+             left join SYS_ORG o on p.PROP_RECORDID = o.ORG_ID
+            ${ew.customSqlSegment }
+    </select>
+
+    <select id="getMaxSortByOrgId" resultType="Integer">
+        select MAX(p.PROP_SORT)
+        from SYS_USERPROP p
+        where p.PROP_TABLENAME = 'SYS_ORG'
+          and p.PROP_RECORDID = #{orgId}
+          and p.DELETE_FLAG = 0
+    </select>
+
+</mapper>

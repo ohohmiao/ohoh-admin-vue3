@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration scan="false" debug="false">
+
+    <property name="log.dir" value="./logs" />
+    <property name="app.name" value="ohoh-admin-server" />
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %d [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <File>${log.dir}/${app.name}.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>
+                ${log.dir}/boot/${app.name}.%d{yyyy-MM-dd}.%i.log
+            </FileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                %d [%thread] %-5level %logger{36} %line -%msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="File-Info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <File>${log.dir}/${app.name}.info.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>
+                ${log.dir}/info/${app.name}.info.%d{yyyy-MM-dd}.%i.log
+            </FileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                %d [%thread] %-5level %logger{36} %line -%msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="File-Error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <File>${log.dir}/${app.name}.error.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>
+                ${log.dir}/error/${app.name}.error.%d{yyyy-MM-dd}.%i.log
+            </FileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                %d [%thread] %-5level %logger{36} %line -%msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="File"/>
+    </root>
+
+    <springProfile name="test,dev">
+        <logger name="com.ohohmiao" level="DEBUG" additivity="false">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="File-Info"/>
+            <appender-ref ref="File-Error"/>
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="com.ohohmiao" level="INFO" additivity="false">
+            <appender-ref ref="File-Info"/>
+            <appender-ref ref="File-Error"/>
+        </logger>
+    </springProfile>
+</configuration>

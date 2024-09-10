@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: plat-server
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    locale: zh_CN
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  profiles:
+    active: '@activeProperty@'
+logging:
+  config: classpath:config/logback-spring.xml
+
+##########################   平台自定义配置   ##########################
+plat:
+  config:
+    sm-server-publickey: 0455c142b160eed7db44ae21e5d84fa92be2c59c141981bcca99103b21825a3024ee6b2bc03d28e911eb127ba3a29e4fee3973e6cdf0a172478a494ac4a07db867
+    sm-server-privatekey: f922f0046c2141fffc693846e458d5ac8889b6838ba39bdd5dd6d8e3aec9a3a8
+    sm-client-publickey: 04bd279bf67d457dc28c7054dcddcc25d3ce864bf3494fca1c3b9d0ed22e822869b615c9b2fc115c16968e090a294a717ac95b2cd8e1f811f9990ede0529051f00
+    sm-client-privatekey: 31e8e390bb8724b997547b7a8845c0e95837e62fb45fdd3b734c3a3582753813
+    sm-secretKey: bc47520a5093d70878457be86aeaefce
+    sm-iv: a07ec0cb1531a7fc2661a72276eade8c

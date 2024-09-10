@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohohmiao.modules.system.mapper.SysResMapper">
+
+    <select id="listButtonByWrapper" resultType="com.ohohmiao.modules.system.model.vo.SysButtonVO">
+        select
+            p.RES_NAME as MENU_NAME, p.RES_CODE as MENU_CODE, t.*
+        from
+            SYS_RES t left join
+            SYS_RES p on t.PARENT_ID = p.RES_ID
+        ${ew.customSqlSegment }
+    </select>
+
+</mapper>

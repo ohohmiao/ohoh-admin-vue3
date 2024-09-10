@@ -1,0 +1,100 @@
+server:
+  port: 8888
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ohohplat?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: ohohplat
+    password: ohohplat@123
+    druid:
+      stat-view-servlet:
+        enabled: true
+        login-username: admin
+        login-password: admin@123
+      initial-size: 5
+      max-active: 20
+      min-idle: 5
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query-timeout: 2000
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      filters: stat
+      break-after-acquire-failure: false
+
+  redis:
+    database: 4
+    host: 127.0.0.1
+    port: 6379
+    password: 123456
+    timeout: 5000
+    lettuce:
+      pool:
+        enabled: true
+        max-active: 200
+        max-idle: 20
+        min-idle: 0
+        max-wait: -1ms
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: DELETE_FLAG
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    jdbc-type-for-null: null
+  mapper-locations: classpath*:com/ohohmiao/**/mapper/impl/*.xml
+
+############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: x-access-token
+  # token有效期，单位s 默认30天=2592000,1天=86400 -1代表永不过期
+  timeout: 7200
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  active-timeout: 3600
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: false
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: true
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
+  # sa-token集成redis
+  alone-redis:
+    database: 5
+    host: ${spring.redis.host}
+    port: ${spring.redis.port}
+    password: ${spring.redis.password}
+    timeout: ${spring.redis.timeout}
+    lettuce:
+      pool:
+        max-active: ${spring.redis.lettuce.pool.max-active}
+        max-idle: ${spring.redis.lettuce.pool.max-idle}
+        min-idle: ${spring.redis.lettuce.pool.min-idle}
+        max-wait: ${spring.redis.lettuce.pool.max-wait}
+
+############## Swagger配置 ##############
+swagger:
+  # 是否开启swagger
+  enabled: true
+knife4j:
+  enable: true
+
+plat:
+  config:
+    encrypt-transport-switch: false

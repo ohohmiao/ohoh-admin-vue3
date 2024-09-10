@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohohmiao.modules.system.mapper.SysDicMapper">
+
+    <select id="pageByWrapper" resultType="com.ohohmiao.modules.system.model.vo.SysDicVO">
+        select d.*, p.DICTYPE_NAME
+            from SYS_DIC d
+            left join SYS_DICTYPE p on d.DICTYPE_ID = p.DICTYPE_ID
+          ${ew.customSqlSegment }
+    </select>
+
+    <select id="getMaxSortByDictypeId" resultType="Integer">
+        select MAX(T.DIC_SORT)
+            from SYS_DIC t
+        where t.DICTYPE_ID = #{dictypeId}
+          and t.DELETE_FLAG = 0
+    </select>
+
+</mapper>
