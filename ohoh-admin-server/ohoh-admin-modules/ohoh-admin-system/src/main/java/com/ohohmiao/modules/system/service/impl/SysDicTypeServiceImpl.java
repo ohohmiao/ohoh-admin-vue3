@@ -14,22 +14,23 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.common.listener.CommonDataChangeEventCenter;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
-import com.ohohmiao.framework.mybatis.service.impl.CommonTreeServiceImpl;
 import com.ohohmiao.framework.common.util.PlatRedisUtil;
+import com.ohohmiao.framework.mybatis.service.impl.CommonTreeServiceImpl;
+import com.ohohmiao.modules.system.enums.SysCacheKeyEnum;
 import com.ohohmiao.modules.system.enums.SysDataListenerEnum;
-import com.ohohmiao.modules.system.model.entity.SysDicType;
 import com.ohohmiao.modules.system.mapper.SysDicTypeMapper;
 import com.ohohmiao.modules.system.model.dto.SysDicTypeAddOrEditDTO;
+import com.ohohmiao.modules.system.model.entity.SysDicType;
 import com.ohohmiao.modules.system.model.vo.SysDicTypeVO;
 import com.ohohmiao.modules.system.service.SysDicService;
 import com.ohohmiao.modules.system.service.SysDicTypeService;
-import com.ohohmiao.modules.system.enums.SysCacheKeyEnum;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -53,11 +54,14 @@ public class SysDicTypeServiceImpl extends CommonTreeServiceImpl<SysDicTypeMappe
     @Override
     public List<SysDicTypeVO> listCachedAll(){
         //尝试从缓存获取
-        List<Map<String, Object>> cachedList = platRedisUtil.getCacheList(SysCacheKeyEnum.DICTYPE_ALL.getKey());
-        if(CollUtil.isNotEmpty(cachedList)){
-            return cachedList.stream().map(m ->
-                    BeanUtil.toBean(m, SysDicTypeVO.class)
-            ).collect(Collectors.toList());
+        Object cachedAllDicTypes = platRedisUtil.getCacheObject(SysCacheKeyEnum.DICTYPE_ALL.getKey());
+        if(ObjectUtil.isNotNull(cachedAllDicTypes)){
+            List cachedList = (List) cachedAllDicTypes;
+            if(CollUtil.isNotEmpty(cachedList)){
+                return (List<SysDicTypeVO>) cachedList.stream().map(
+                        m -> BeanUtil.toBean(m, SysDicTypeVO.class)
+                ).collect(Collectors.toList());
+            }
         }
         //从库中查找，并写入缓存
         List<SysDicType> dicTypeList = this.list(new LambdaQueryWrapper<SysDicType>()
@@ -68,8 +72,8 @@ public class SysDicTypeServiceImpl extends CommonTreeServiceImpl<SysDicTypeMappe
             return result;
         }).collect(Collectors.toList());
         if(CollUtil.isNotEmpty(resultList)) {
-            platRedisUtil.setCacheList(SysCacheKeyEnum.DICTYPE_ALL.getKey(), resultList);
-            platRedisUtil.expire(SysCacheKeyEnum.DICTYPE_ALL.getKey(), SysCacheKeyEnum.DICTYPE_ALL.getTtl());
+            platRedisUtil.setCacheObject(SysCacheKeyEnum.DICTYPE_ALL.getKey(), resultList,
+                    SysCacheKeyEnum.DICTYPE_ALL.getTtl(), TimeUnit.SECONDS);
         }
         return resultList;
     }

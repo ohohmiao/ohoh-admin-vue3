@@ -19,21 +19,21 @@ import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.common.listener.CommonDataChangeEventCenter;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
 import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
+import com.ohohmiao.framework.common.util.PlatRedisUtil;
 import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
 import com.ohohmiao.framework.mybatis.service.impl.CommonTreeServiceImpl;
-import com.ohohmiao.framework.common.util.PlatRedisUtil;
 import com.ohohmiao.modules.system.enums.SysCacheKeyEnum;
 import com.ohohmiao.modules.system.enums.SysDataListenerEnum;
+import com.ohohmiao.modules.system.enums.SysUserPropEnum;
 import com.ohohmiao.modules.system.mapper.SysPositionMapper;
 import com.ohohmiao.modules.system.model.dto.SysPositionAddOrEditDTO;
 import com.ohohmiao.modules.system.model.dto.SysPositionGrantUserDTO;
 import com.ohohmiao.modules.system.model.dto.SysPositionUserPageDTO;
 import com.ohohmiao.modules.system.model.entity.SysPosition;
+import com.ohohmiao.modules.system.model.entity.SysUserProp;
 import com.ohohmiao.modules.system.model.vo.SysPositionUserVO;
 import com.ohohmiao.modules.system.model.vo.SysPositionVO;
 import com.ohohmiao.modules.system.service.SysPositionService;
-import com.ohohmiao.modules.system.enums.SysUserPropEnum;
-import com.ohohmiao.modules.system.model.entity.SysUserProp;
 import com.ohohmiao.modules.system.service.SysUserPropService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -64,13 +65,15 @@ public class SysPositionServiceImpl extends CommonTreeServiceImpl<SysPositionMap
     @Override
     public List<SysPositionVO> listCachedAllPositions(){
         //尝试从缓存获取
-        List<Map<String, Object>> cachedList = platRedisUtil.getCacheList(SysCacheKeyEnum.POSITION_ALL.getKey());
-        if(CollUtil.isNotEmpty(cachedList)){
-            return cachedList.stream().map(m ->
-                    BeanUtil.toBean(m, SysPositionVO.class)
-            ).collect(Collectors.toList());
+        Object cachedAllPositions = platRedisUtil.getCacheObject(SysCacheKeyEnum.POSITION_ALL.getKey());
+        if(ObjectUtil.isNotNull(cachedAllPositions)){
+            List cachedList = (List) cachedAllPositions;
+            if(CollUtil.isNotEmpty(cachedList)){
+                return (List<SysPositionVO>) cachedList.stream().map(m ->
+                        BeanUtil.toBean(m, SysPositionVO.class)
+                ).collect(Collectors.toList());
+            }
         }
-
         //从库中查找，并写入缓存
         List<SysPosition> positionList = this.list(new LambdaQueryWrapper<SysPosition>()
                 .orderByAsc(CollectionUtil.newArrayList(SysPosition::getTreeLevel, SysPosition::getTreeSort)));
@@ -80,8 +83,8 @@ public class SysPositionServiceImpl extends CommonTreeServiceImpl<SysPositionMap
             return result;
         }).collect(Collectors.toList());
         if(CollUtil.isNotEmpty(resultList)) {
-            platRedisUtil.setCacheList(SysCacheKeyEnum.POSITION_ALL.getKey(), resultList);
-            platRedisUtil.expire(SysCacheKeyEnum.POSITION_ALL.getKey(), SysCacheKeyEnum.POSITION_ALL.getTtl());
+            platRedisUtil.setCacheObject(SysCacheKeyEnum.POSITION_ALL.getKey(), resultList,
+                    SysCacheKeyEnum.POSITION_ALL.getTtl(), TimeUnit.SECONDS);
         }
         return resultList;
     }

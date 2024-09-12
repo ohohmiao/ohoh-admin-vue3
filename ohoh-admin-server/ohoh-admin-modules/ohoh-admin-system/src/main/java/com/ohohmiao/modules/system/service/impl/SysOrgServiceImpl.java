@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -73,11 +74,14 @@ public class SysOrgServiceImpl extends CommonTreeServiceImpl<SysOrgMapper, SysOr
     @Override
     public List<SysOrgVO> listCachedAllOrgs(){
         // 尝试从缓存获取
-        List<Map<String, Object>> cachedList = platRedisUtil.getCacheList(SysCacheKeyEnum.ORG_ALL.getKey());
-        if(CollUtil.isNotEmpty(cachedList)){
-            return cachedList.stream().map(m ->
-                    BeanUtil.toBean(m, SysOrgVO.class)
-            ).collect(Collectors.toList());
+        Object cachedAllOrgs = platRedisUtil.getCacheObject(SysCacheKeyEnum.ORG_ALL.getKey());
+        if(ObjectUtil.isNull(cachedAllOrgs)){
+            List cachedList = (List) cachedAllOrgs;
+            if(CollectionUtil.isNotEmpty(cachedList)){
+                return (List<SysOrgVO>) cachedList.stream().map(
+                        m -> BeanUtil.toBean(m, SysOrgVO.class)
+                ).collect(Collectors.toList());
+            }
         }
         // 从库中查找，并写入缓存
         List<SysOrg> orgList = this.list(new LambdaQueryWrapper<SysOrg>()
@@ -88,8 +92,8 @@ public class SysOrgServiceImpl extends CommonTreeServiceImpl<SysOrgMapper, SysOr
             return result;
         }).collect(Collectors.toList());
         if(CollUtil.isNotEmpty(resultList)) {
-            platRedisUtil.setCacheList(SysCacheKeyEnum.ORG_ALL.getKey(), resultList);
-            platRedisUtil.expire(SysCacheKeyEnum.ORG_ALL.getKey(), SysCacheKeyEnum.ORG_ALL.getTtl());
+            platRedisUtil.setCacheObject(SysCacheKeyEnum.ORG_ALL.getKey(), resultList,
+                    SysCacheKeyEnum.ORG_ALL.getTtl(), TimeUnit.SECONDS);
         }
         return resultList;
     }

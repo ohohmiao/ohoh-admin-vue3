@@ -48,6 +48,18 @@ public class PlatRedisUtil {
     }
 
     /**
+     * 仅不存在时，设置缓存基本的对象-分布式锁场景
+     * @param key 键
+     * @param value 值
+     * @param timeout 时间
+     * @param timeUnit 时间单位
+     * @return 是否设置
+     */
+    public <T> boolean setNXCacheObject(String key, T value, long timeout, TimeUnit timeUnit){
+        return redisTemplate.opsForValue().setIfAbsent(key, value, timeout, timeUnit);
+    }
+
+    /**
      * 设置超时时间
      * @param key 键
      * @param timeoutSeconds 超时秒数

@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,11 +78,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public List<SysUserVO> listCachedAllUsers(){
         // 尝试从缓存获取
-        List<Map<String, Object>> cachedList = platRedisUtil.getCacheList(SysCacheKeyEnum.USER_ALL.getKey());
-        if(CollUtil.isNotEmpty(cachedList)) {
-            return cachedList.stream().map(m ->
-                    BeanUtil.toBean(m, SysUserVO.class)
-            ).collect(Collectors.toList());
+        Object cachedAllUsers = platRedisUtil.getCacheObject(SysCacheKeyEnum.USER_ALL.getKey());
+        if(ObjectUtil.isNotNull(cachedAllUsers)) {
+            List cachedList = (List) cachedAllUsers;
+            if(CollUtil.isNotEmpty(cachedList)){
+                return (List<SysUserVO>) cachedList.stream().map(
+                        m -> BeanUtil.toBean(m, SysUserVO.class)
+                ).collect(Collectors.toList());
+            }
         }
         // 从库中查找，并写入缓存
         QueryWrapper<SysUserVO> queryWrapper = new QueryWrapper<>();
@@ -94,8 +98,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         queryWrapper.orderByAsc(CollectionUtil.newArrayList("o.TREE_LEVEL", "o.TREE_SORT", "p.PROP_SORT"));
         List<SysUserVO> userList = sysUserMapper.listByWrapper(queryWrapper);
         if(CollUtil.isNotEmpty(userList)) {
-            platRedisUtil.setCacheList(SysCacheKeyEnum.USER_ALL.getKey(), userList);
-            platRedisUtil.expire(SysCacheKeyEnum.USER_ALL.getKey(), SysCacheKeyEnum.USER_ALL.getTtl());
+            platRedisUtil.setCacheObject(SysCacheKeyEnum.USER_ALL.getKey(), userList,
+                    SysCacheKeyEnum.USER_ALL.getTtl(), TimeUnit.SECONDS);
         }
         return userList;
     }
