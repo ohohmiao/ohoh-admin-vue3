@@ -45,17 +45,17 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
     @EventListener
     public void recordOperateLog(OperateLogEvent logEvent){
         SysLogAddOrEditDTO sysLogAddOrEditDTO = MapstructUtils.convert(logEvent, SysLogAddOrEditDTO.class);
-        insetSysLog(sysLogAddOrEditDTO);
+        insertSysLog(sysLogAddOrEditDTO);
     }
 
     @Async
     @EventListener
     public void recordAuthLog(AuthLogEvent logEvent){
         SysLogAddOrEditDTO sysLogAddOrEditDTO = MapstructUtils.convert(logEvent, SysLogAddOrEditDTO.class);
-        insetSysLog(sysLogAddOrEditDTO);
+        insertSysLog(sysLogAddOrEditDTO);
     }
 
-    private void insetSysLog(SysLogAddOrEditDTO sysLogAddOrEditDTO){
+    private void insertSysLog(SysLogAddOrEditDTO sysLogAddOrEditDTO){
         SysLog sysLog = MapstructUtils.convert(sysLogAddOrEditDTO, SysLog.class);
         sysLog.setLogId(null);
         sysLog.setOperateTime(new Date());
