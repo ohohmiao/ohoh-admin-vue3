@@ -4,10 +4,12 @@
 
 基于Spring Boot + Vue3前后端分离的开发脚手架。
 
-- 前端采用 [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin) 框架。Geeker-Admin是一款优雅的开源后台管理框架，原作者使用Vue3.4、TypeScript、Vite5、Pinia、Element-Plus等目前最新技术栈开发，并推出ProTable、TreeFilter等常用组件，助力二次开发。
-- 后端采用Spring Boot 2.7、MyBatis-Plus、Redis。
+- 后端技术栈：Spring Boot、MyBatis-Plus、Redis。
+- 前端采用 [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin) 框架：Vue3.4、TypeScript、Vite5、Pinia、Element-Plus。
 - 权限框架依赖 [Sa-Token](https://sa-token.cc/) 实现。
+- 系统功能齐全且极简的管理后端基础框架。
 - 支持菜单和按钮级的动态权限控制。
+- 支持数据权限分级授权。
 
 ### 代码仓库 
 
@@ -36,5 +38,5 @@ ohoh-admin-vue3
 
 ### Respect！！！
 
-- [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin)
+- [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin)：优雅的前端框架。
 - [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus)：是重写 [RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) ，针对分布式集群与多租户场景的全方位升级。
