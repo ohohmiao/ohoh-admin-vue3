@@ -103,6 +103,12 @@
                 <version>${revision}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.ohohmiao</groupId>
+                <artifactId>ohoh-admin-workflow</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- hutool -->
             <dependency>
                 <groupId>cn.hutool</groupId>

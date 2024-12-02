@@ -70,6 +70,11 @@
             <artifactId>ohoh-admin-system</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-workflow</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
