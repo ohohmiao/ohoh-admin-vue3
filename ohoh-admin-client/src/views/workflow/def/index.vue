@@ -32,40 +32,93 @@
 				</span>
 			</template>
 		</TreeFilter>
-		<div class="table-box"></div>
-		<!-- 字典类别表单 -->
+		<div class="table-box">
+			<ProTable
+				ref="proTable"
+				title="流程定义列表"
+				rowKey="defId"
+				:columns="columns"
+				:requestApi="getWorkflowDefPageApi"
+				:initParam="initParam"
+				:searchCol="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
+			>
+				<!-- 表格 header 按钮 -->
+				<template #tableHeader>
+					<el-button type="primary" :icon="CirclePlus" v-auth="'add'" @click="openDefForm()">新增</el-button>
+				</template>
+			</ProTable>
+		</div>
+		<!-- 流程定义类别表单 -->
 		<DefTypeForm ref="defTypeFormRef"></DefTypeForm>
+		<!-- 流程定义表单 -->
+		<DefForm ref="defFormRef" v-bind="props"></DefForm>
 	</div>
 </template>
 
 <script setup lang="ts" name="WorkflowDefManage">
-import { reactive, ref } from "vue";
-import { Operation } from "@element-plus/icons-vue";
+import { reactive, ref, shallowRef, computed, provide } from "vue";
+import { CirclePlus, Operation } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
 import {
 	WorkflowDefType,
 	getWorkflowDefTypeTreeApi,
 	addWorkflowDefTypeApi,
 	editWorkflowDefTypeApi,
-	deleteWorkflowDefTypeApi
+	deleteWorkflowDefTypeApi,
+	WorkflowDef,
+	getWorkflowDefPageApi
 } from "@/api/modules/workflow/def";
+import { ColumnProps } from "@/components/ProTable/interface";
 import DefTypeForm from "./DefTypeForm.vue";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
+import ProTable from "@/components/ProTable/index.vue";
+import DefForm from "./DefForm.vue";
+
+import { WetBpmnDesignProps } from "@/components/BpmnDesign/types";
+import { bpmnstate } from "@/components/BpmnDesign/symbol";
+import type Modeler from "bpmn-js/lib/Modeler";
+import type { BpmnProvideType, BpmnModuleDeclaration } from "@/components/BpmnDesign/types";
+import type { BpmnElement } from "@/components/BpmnDesign/types/bpmn";
+const props = defineProps(WetBpmnDesignProps);
+// const props = withDefaults(defineProps<typeof WetBpmnDesignProps>(), {
+// 	xml: "",
+// 	json: null,
+// 	processType: "flowable",
+// 	defaultPalettes: [],
+// 	elementProperties: null
+// });
+const modelerInstance = shallowRef<Modeler | null>(null);
+const modules = shallowRef<BpmnModuleDeclaration[]>([]);
+const seletedBpmnElement = shallowRef<[BpmnElement | null]>([null]);
+const addedBpmnElementsMap = ref<Record<string, any>>({});
+const processType = computed(() => props.processType);
+provide<BpmnProvideType>(bpmnstate, {
+	modules,
+	modeler: modelerInstance,
+	seletedBpmnElement,
+	processType,
+	addedBpmnElementsMap,
+	elementProperties: computed(() => props.elementProperties || {})
+});
 
 const { BUTTONS } = useAuthButtons();
 
 // 获取 ProTable、TreeFilter 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const treeFilter = ref();
-//const proTable = ref();
+const proTable = ref();
 
 // 如果表格需要初始化请求参数，直接定义传给 ProTable(之后每次请求都会自动带上该参数，此参数更改之后也会一直带上，改变此参数会自动刷新表格数据)
 const initParam = reactive({ parentId: "" });
-
 // 树形筛选切换
 const changeTreeFilter = (val: string) => {
 	initParam.parentId = val;
 };
+
+const columns: ColumnProps<WorkflowDef.Form>[] = [
+	{ type: "selection", fixed: "left", width: 80 },
+	{ prop: "deftypeName", label: "类别", align: "left" }
+];
 
 // 打开流程定义类别表单
 const defTypeFormRef = ref<InstanceType<typeof DefTypeForm> | null>(null);
@@ -83,17 +136,26 @@ const openDefTypeForm = (title: string, rowData: Partial<WorkflowDefType.TreeNod
 		api: title === "新增" ? addWorkflowDefTypeApi : title === "编辑" ? editWorkflowDefTypeApi : undefined,
 		getTableList: async () => {
 			await treeFilter.value.refreshTree(initParam.parentId);
-			//proTable.value.getTableList();
+			proTable.value.getTableList();
 		}
 	};
 	defTypeFormRef.value?.acceptParams(params);
 };
 
-// 删除字典类别
+// 删除流程定义类别
 const handleDeleteDefType = async (params: WorkflowDefType.TreeNode) => {
 	if (!params.deftypeId) return;
 	await useHandleData(deleteWorkflowDefTypeApi, { id: params.deftypeId }, `删除【${params.deftypeName}】流程定义类别`);
 	await treeFilter.value.refreshTree(initParam.parentId);
-	//proTable.value.getTableList();
+	proTable.value.getTableList();
+};
+
+// 打开流程定义表单
+const defFormRef = ref<InstanceType<typeof DefForm> | null>(null);
+const openDefForm = () => {
+	const params = {
+		getTableList: () => {}
+	};
+	defFormRef.value?.acceptParams(params);
 };
 </script>

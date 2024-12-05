@@ -29,7 +29,11 @@ export namespace WorkflowDef {
 		parentId?: string;
 		defName?: string;
 	}
-	//export interface Form {}
+	export interface Form {
+		defId: string;
+		deftypeId: string;
+		deftypeName?: string;
+	}
 }
 
 // * 获取流程定义类别树
@@ -38,7 +42,7 @@ export const getWorkflowDefTypeTreeApi = () => {
 };
 
 // * 获取流程定义分页列表
-export const getSysDicPageApi = (params: WorkflowDef.ReqParams) => {
+export const getWorkflowDefPageApi = (params: WorkflowDef.ReqParams) => {
 	return http.post("/workflowDef/page", params);
 };
 
