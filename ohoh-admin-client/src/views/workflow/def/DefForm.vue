@@ -1,7 +1,7 @@
 <template>
-	<div class="my-dialog">
+	<div class="designer-dialog">
 		<el-dialog v-model="formVisible" fullscreen :show-close="false" :close-on-click-modal="false" destroy-on-close>
-			<div class="my-container">
+			<div class="container">
 				<div class="toolbar">
 					<div class="flex"></div>
 				</div>
@@ -141,60 +141,7 @@ defineExpose({
 </script>
 <style src="@/components/BpmnDesign/styles/index.scss"></style>
 <style scoped lang="scss">
-.my-dialog :deep(.el-dialog__header) {
+.designer-dialog :deep(.el-dialog__header) {
 	display: none;
-}
-.my-container {
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-	.toolbar {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		width: 100%;
-		padding: 8px 16px;
-		box-sizing: border-box;
-		.flex {
-			flex: 1;
-			display: flex;
-			align-items: center;
-			flex-wrap: wrap;
-			:deep(.el-button-group) {
-				margin-right: 16px;
-			}
-		}
-	}
-	.designer {
-		display: flex;
-		flex: 1;
-		height: 100%;
-		overflow: hidden;
-		&-left {
-			flex: 1;
-			height: 100%;
-			overflow: hidden;
-			&.designer-with-bg {
-				background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgMTBoNDBNMTAgMHY0ME0wIDIwaDQwTTIwIDB2NDBNMCAzMGg0ME0zMCAwdjQwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMGUwZTAiIG9wYWNpdHk9Ii4yIi8+PHBhdGggZD0iTTQwIDBIMHY0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+")
-					repeat !important;
-			}
-		}
-		&-right {
-			width: 230px;
-			height: 100%;
-			:deep(.card) {
-				height: 100%;
-				margin-bottom: 0 !important;
-				.el-card__body {
-					padding: 10px !important;
-				}
-			}
-		}
-	}
 }
 </style>
