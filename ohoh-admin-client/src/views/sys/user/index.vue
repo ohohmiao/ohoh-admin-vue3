@@ -208,14 +208,14 @@ const handleResetUserPassword = async (params: SysUser.Form) => {
 
 // 授权角色
 let operateRecord: SysUser.Form | null = null;
-const roleSelectorRef = ref<InstanceType<typeof SysRoleSelector>>(null);
+const roleSelectorRef = ref<InstanceType<typeof SysRoleSelector>>();
 const handleGrantRole = async (param: SysUser.Form) => {
 	operateRecord = param;
 	const { data } = await listOwnSysRolesApi({ id: param.userId });
 	const selectedData = data.map(d => {
 		return { value: d.roleId, label: d.roleName };
 	});
-	roleSelectorRef.value.acceptParams({ selected: selectedData });
+	roleSelectorRef.value?.acceptParams({ selected: selectedData });
 };
 const handleSysRoleSelected = async (datas: { [key: string]: any }[]) => {
 	if (!operateRecord) return;
@@ -227,7 +227,7 @@ const handleSysRoleSelected = async (datas: { [key: string]: any }[]) => {
 };
 
 // 授权数据
-const grantDataScopeFormRef = ref<InstanceType<typeof TreeFilterSelector> | null>(null);
+const grantDataScopeFormRef = ref<InstanceType<typeof TreeFilterSelector>>();
 const handleGrantDataScope = async (params: Partial<SysUser.Form> = {}) => {
 	if (!params || !params.userId) return;
 	const { data: datascopeOrgIds } = await listOwnDataScopesApi({ id: params.userId });

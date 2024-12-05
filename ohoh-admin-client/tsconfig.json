@@ -18,6 +18,7 @@
 		// "alwaysStrict": true,                  /* Parse in strict mode and emit "use strict" for each source file. */
 
 		"jsx": "preserve",
+		"jsxImportSource": "vue",
 		"sourceMap": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,

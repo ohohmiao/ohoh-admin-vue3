@@ -21,6 +21,7 @@ export namespace SysUser {
 		propSort?: number;
 		propExtendid?: string;
 		defaultFlag?: number;
+		propRecordname?: string;
 	}
 	export interface Form {
 		userId: string;

@@ -19,6 +19,7 @@ export namespace SysRole {
 		roleRemark: string;
 		datascopeType: number;
 		datascopeOrgIds: string[];
+		roleSort?: number;
 	}
 	export interface grantDataScopeForm {
 		roleId: string;

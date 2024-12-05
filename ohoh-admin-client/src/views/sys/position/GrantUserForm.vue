@@ -78,7 +78,7 @@ interface FormProps {
 	[key: string]: any;
 	rowData: {
 		positionId: string;
-		positionUserList: SysPosition.PositionUserProp[];
+		positionUserList?: SysPosition.PositionUserProp[];
 	};
 	getTableList?: () => void;
 }

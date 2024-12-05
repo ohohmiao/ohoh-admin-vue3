@@ -66,7 +66,7 @@ import Node from "element-plus/es/components/tree/src/model/node";
 // 接收父组件参数并设置默认值
 interface TreeFilterSelectorProps {
 	requestApi?: (data?: any) => Promise<any>; // 请求分类数据的 api ==> 非必传
-	data?: Node[]; // 分类数据，如果有分类数据，则不会执行 api 请求 ==> 非必传
+	data?: any[]; // 分类数据，如果有分类数据，则不会执行 api 请求 ==> 非必传
 	title?: string; // treeFilter 标题 ==> 非必传
 	itemTitle?: string; // 选项标题 ==> 非必传
 	idField?: string; // 选择的id ==> 非必传，默认为 “id”
@@ -97,7 +97,8 @@ interface FormProps {
 	[key: string]: any;
 	isTreeFieldShow?: boolean;
 	rowData: {
-		selected: string[];
+		[key: string]: any;
+		selected: any[];
 	};
 	api?: (params: any, selected: string[]) => Promise<any>;
 }
