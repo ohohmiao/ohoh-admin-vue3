@@ -28,15 +28,16 @@ import { WetBpmnDesignMainPanelProps } from "@/components/BpmnDesign/types";
 import { createNewDiagram } from "@/components/BpmnDesign/utils";
 import type { BpmnModuleDeclaration } from "@/components/BpmnDesign/types";
 import type Modeler from "bpmn-js/lib/Modeler";
-import activitiSchema from "@/components/BpmnDesign/moddles/activiti/schema.json";
-import flowableSchema from "@/components/BpmnDesign/moddles/flowable/schema.json";
+import activitiSchema from "@/components/BpmnDesign/ModdleExtensions/activiti/schema.json";
+import flowableSchema from "@/components/BpmnDesign/ModdleExtensions/flowable/schema.json";
 import camundaSchema from "camunda-bpmn-moddle/resources/camunda.json";
 
-import AlignTools from "@/components/BpmnDesign/toolbars/AlignTools.vue";
-import ScaleTools from "@/components/BpmnDesign/toolbars/ScaleTools.vue";
-import CommandTools from "@/components/BpmnDesign/toolbars/CommandTools.vue";
-import ExternalTools from "@/components/BpmnDesign/toolbars/ExternalTools.vue";
-import OperationTools from "@/components/BpmnDesign/toolbars/OperationTools.vue";
+import AlignTools from "@/components/BpmnDesign/components/Toolbar/AlignTools.vue";
+import ScaleTools from "@/components/BpmnDesign/components/Toolbar/ScaleTools.vue";
+import CommandTools from "@/components/BpmnDesign/components/Toolbar/CommandTools.vue";
+import ExternalTools from "@/components/BpmnDesign/components/Toolbar/ExternalTools.vue";
+import OperationTools from "@/components/BpmnDesign/components/Toolbar/OperationTools.vue";
+import Translate from "@/components/BpmnDesign/AdditionalModules/Translate";
 
 interface FormProps {
 	[key: string]: any;
@@ -65,6 +66,7 @@ const moddleExtensions = computed(() => {
 });
 const modeler = shallowRef<Modeler | null>(null);
 const modules = shallowRef<BpmnModuleDeclaration[]>([]);
+modules.value.push(Translate);
 
 const initBpmnDesigner = async () => {
 	const res = await import("bpmn-js/lib/Modeler");
