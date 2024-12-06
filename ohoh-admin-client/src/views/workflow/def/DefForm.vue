@@ -23,11 +23,12 @@
 </template>
 
 <script setup lang="ts" name="WorkflowDefForm">
-import { ref, shallowRef, computed, inject, onMounted } from "vue";
+import { ref, shallowRef, computed, onMounted } from "vue";
 import { WetBpmnDesignMainPanelProps } from "@/components/BpmnDesign/types";
-import { bpmnstate } from "@/components/BpmnDesign/symbol";
 import { createNewDiagram } from "@/components/BpmnDesign/utils";
-import type { BpmnProvideType, BpmnElement, BpmnEventBus, BpmnEvent } from "@/components/BpmnDesign/types";
+import type { BpmnEventBus, BpmnEvent, BpmnModuleDeclaration } from "@/components/BpmnDesign/types";
+import type { BpmnElement } from "@/components/BpmnDesign/types/bpmn";
+import type Modeler from "bpmn-js/lib/Modeler";
 import activitiSchema from "@/components/BpmnDesign/moddles/activiti/schema.json";
 import flowableSchema from "@/components/BpmnDesign/moddles/flowable/schema.json";
 import camundaSchema from "camunda-bpmn-moddle/resources/camunda.json";
@@ -56,16 +57,19 @@ const ProcessTypes = {
 };
 const designerRef = shallowRef<HTMLDivElement>();
 let rootElement: BpmnElement;
-const props = defineProps(WetBpmnDesignMainPanelProps);
+const bpmnDesignProps = defineProps(WetBpmnDesignMainPanelProps);
 
 const moddleExtensions = computed(() => {
-	const processType = props.processType || "flowable";
+	const processType = bpmnDesignProps.processType || "flowable";
 	const actions: Record<string, any> = {};
 	actions[processType] = ProcessTypes[processType];
 	return actions;
 });
 
-const { modules, modeler, seletedBpmnElement, addedBpmnElementsMap } = inject(bpmnstate) as BpmnProvideType;
+const modeler = shallowRef<Modeler | null>(null);
+const modules = shallowRef<BpmnModuleDeclaration[]>([]);
+const seletedBpmnElement = shallowRef<[BpmnElement | null]>([null]);
+const addedBpmnElementsMap = ref<Record<string, any>>({});
 
 const addedBpmnElements = (element: BpmnElement) => {
 	if (!addedBpmnElementsMap.value[element.businessObject.id]) {
@@ -128,7 +132,7 @@ const init = async () => {
 		});
 	});
 	await createNewDiagram(modeler.value, {
-		xml: props.xml
+		xml: bpmnDesignProps.xml
 	});
 	const bpmnProcessElement = elementRegistry.find((item: any) => item.type === "bpmn:Process") as BpmnElement;
 	if (bpmnProcessElement) {

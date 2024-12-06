@@ -51,12 +51,12 @@
 		<!-- 流程定义类别表单 -->
 		<DefTypeForm ref="defTypeFormRef"></DefTypeForm>
 		<!-- 流程定义表单 -->
-		<DefForm ref="defFormRef" v-bind="props"></DefForm>
+		<DefForm ref="defFormRef"></DefForm>
 	</div>
 </template>
 
 <script setup lang="ts" name="WorkflowDefManage">
-import { reactive, ref, shallowRef, computed, provide } from "vue";
+import { reactive, ref } from "vue";
 import { CirclePlus, Operation } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
 import {
@@ -74,33 +74,6 @@ import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import ProTable from "@/components/ProTable/index.vue";
 import DefForm from "./DefForm.vue";
-
-import { WetBpmnDesignProps } from "@/components/BpmnDesign/types";
-import { bpmnstate } from "@/components/BpmnDesign/symbol";
-import type Modeler from "bpmn-js/lib/Modeler";
-import type { BpmnProvideType, BpmnModuleDeclaration } from "@/components/BpmnDesign/types";
-import type { BpmnElement } from "@/components/BpmnDesign/types/bpmn";
-const props = defineProps(WetBpmnDesignProps);
-// const props = withDefaults(defineProps<typeof WetBpmnDesignProps>(), {
-// 	xml: "",
-// 	json: null,
-// 	processType: "flowable",
-// 	defaultPalettes: [],
-// 	elementProperties: null
-// });
-const modelerInstance = shallowRef<Modeler | null>(null);
-const modules = shallowRef<BpmnModuleDeclaration[]>([]);
-const seletedBpmnElement = shallowRef<[BpmnElement | null]>([null]);
-const addedBpmnElementsMap = ref<Record<string, any>>({});
-const processType = computed(() => props.processType);
-provide<BpmnProvideType>(bpmnstate, {
-	modules,
-	modeler: modelerInstance,
-	seletedBpmnElement,
-	processType,
-	addedBpmnElementsMap,
-	elementProperties: computed(() => props.elementProperties || {})
-});
 
 const { BUTTONS } = useAuthButtons();
 
