@@ -212,7 +212,7 @@
 					</el-autocomplete>
 					<el-table
 						ref="selectedTableRef"
-						height="95%"
+						height="90%"
 						:data="selectedTableData"
 						:show-header="false"
 						stripe
