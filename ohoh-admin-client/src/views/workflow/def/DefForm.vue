@@ -26,8 +26,7 @@
 import { ref, shallowRef, computed, onMounted } from "vue";
 import { WetBpmnDesignMainPanelProps } from "@/components/BpmnDesign/types";
 import { createNewDiagram } from "@/components/BpmnDesign/utils";
-import type { BpmnEventBus, BpmnEvent, BpmnModuleDeclaration } from "@/components/BpmnDesign/types";
-import type { BpmnElement } from "@/components/BpmnDesign/types/bpmn";
+import type { BpmnModuleDeclaration } from "@/components/BpmnDesign/types";
 import type Modeler from "bpmn-js/lib/Modeler";
 import activitiSchema from "@/components/BpmnDesign/moddles/activiti/schema.json";
 import flowableSchema from "@/components/BpmnDesign/moddles/flowable/schema.json";
@@ -50,51 +49,24 @@ const formVisible = ref(false);
 // 	rowData: {}
 // });
 
-const ProcessTypes = {
+const ProcessModdles = {
 	activiti: activitiSchema,
 	camunda: camundaSchema,
 	flowable: flowableSchema
 };
 const designerRef = shallowRef<HTMLDivElement>();
-let rootElement: BpmnElement;
 const bpmnDesignProps = defineProps(WetBpmnDesignMainPanelProps);
 
 const moddleExtensions = computed(() => {
 	const processType = bpmnDesignProps.processType || "flowable";
 	const actions: Record<string, any> = {};
-	actions[processType] = ProcessTypes[processType];
+	actions[processType] = ProcessModdles[processType];
 	return actions;
 });
-
 const modeler = shallowRef<Modeler | null>(null);
 const modules = shallowRef<BpmnModuleDeclaration[]>([]);
-const seletedBpmnElement = shallowRef<[BpmnElement | null]>([null]);
-const addedBpmnElementsMap = ref<Record<string, any>>({});
 
-const addedBpmnElements = (element: BpmnElement) => {
-	if (!addedBpmnElementsMap.value[element.businessObject.id]) {
-		addedBpmnElementsMap.value[element.businessObject.id] = {
-			element,
-			error: []
-		};
-	} else {
-		addedBpmnElementsMap.value[element.businessObject.id].element = element;
-	}
-	seletedBpmnElement.value = [element];
-};
-
-const init = async () => {
-	const events = [
-		"shape.added",
-		"shape.move.end",
-		"shape.removed",
-		"connect.end",
-		"connect.move",
-		"connection.removed",
-		"connection.add",
-		"selection.changed",
-		"element.changed"
-	];
+const initBpmnDesigner = async () => {
 	const res = await import("bpmn-js/lib/Modeler");
 	const Modeler = res.default;
 	modeler.value = new Modeler({
@@ -103,50 +75,20 @@ const init = async () => {
 		moddleExtensions: moddleExtensions.value
 	});
 
-	const elementRegistry: any = modeler.value.get("elementRegistry");
-	// 注册modeler事件
-	events.forEach(event => {
-		modeler.value?.on(event, (e: BpmnEvent) => {
-			const element = e.element;
-			if (event === "selection.changed") {
-				const $element = e.newSelection?.[0];
-				if ($element) {
-					addedBpmnElements($element);
-				} else {
-					seletedBpmnElement.value = [rootElement];
-				}
-			} else if (event === "shape.removed" || event === "connection.removed") {
-				// console.log('connection.removed')
-				seletedBpmnElement.value = [rootElement];
-				addedBpmnElementsMap.value[element.businessObject.id] = null;
-				delete addedBpmnElementsMap.value[element.businessObject.id];
-			}
-		});
-	});
-	// 注册diagram element事件
-	const eventBus = modeler.value.get("eventBus") as BpmnEventBus<string>;
-	const elementEvents = ["element.click", "element.changed"];
-	elementEvents.forEach(event => {
-		eventBus.on(event, (e: BpmnEvent) => {
-			console.info(e);
-		});
-	});
 	await createNewDiagram(modeler.value, {
 		xml: bpmnDesignProps.xml
 	});
-	const bpmnProcessElement = elementRegistry.find((item: any) => item.type === "bpmn:Process") as BpmnElement;
-	if (bpmnProcessElement) {
-		rootElement = bpmnProcessElement;
-		seletedBpmnElement.value = [bpmnProcessElement];
-		addedBpmnElements(rootElement);
-	}
 };
-onMounted(() => {});
+onMounted(() => {
+	// document.body.addEventListener("contextmenu", function (ev) {
+	// 	ev.preventDefault();
+	// });
+});
 
 // 接收父组件传过来的参数
 const acceptParams = (params: FormProps) => {
 	console.info(params);
-	init();
+	initBpmnDesigner();
 	formVisible.value = true;
 };
 

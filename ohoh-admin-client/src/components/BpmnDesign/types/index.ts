@@ -33,7 +33,7 @@ export const WetBpmnDesignProps = {
 	},
 	processType: {
 		type: String as PropType<WetBpmnProcessType>,
-		default: "flowable"
+		default: "activiti"
 	},
 	defaultPalettes: {
 		type: Array as PropType<WetDfPaletteType[]>,
