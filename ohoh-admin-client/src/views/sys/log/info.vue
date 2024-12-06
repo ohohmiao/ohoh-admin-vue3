@@ -2,9 +2,14 @@
 	<el-drawer v-model="formVisible" destroy-on-close :size="550" title="系统日志">
 		<el-descriptions :column="1" border style="margin-bottom: 20px">
 			<el-descriptions-item label="日志类别">
-				<el-tag :type="['', 'danger', 'success', 'info'][formProps.rowData.logType - 1]">{{
-					["操作日志", "异常日志", "登录日志", "登出日志"][formProps.rowData.logType - 1]
-				}}</el-tag>
+				<el-tag
+					:type="['', 'danger', 'success', 'info'][(formProps.rowData.logType != undefined ? formProps.rowData.logType : 1) - 1]"
+					>{{
+						["操作日志", "异常日志", "登录日志", "登出日志"][
+							(formProps.rowData.logType != undefined ? formProps.rowData.logType : 1) - 1
+						]
+					}}</el-tag
+				>
 			</el-descriptions-item>
 			<el-descriptions-item label="日志名称">{{ formProps.rowData.logName }}</el-descriptions-item>
 			<el-descriptions-item label="执行详情" v-if="formProps.rowData.logDetail">{{
