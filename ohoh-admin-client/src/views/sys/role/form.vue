@@ -24,7 +24,7 @@
 					node-key="id"
 					check-strictly
 					filterable
-					@node-click="formProps.rowData.datascopeType = null"
+					@node-click="delete formProps.rowData.datascopeType"
 				>
 					<template #default="{ node, data }">
 						<el-icon v-if="data.children"><FolderOpened v-if="node.expanded" /><Folder v-else /></el-icon>

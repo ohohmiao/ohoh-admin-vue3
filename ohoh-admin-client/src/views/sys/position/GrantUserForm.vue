@@ -142,7 +142,7 @@ const handlePositionChange = async (val: string) => {
 
 // 删除岗位用户
 const handleDeletePositionUser = (index: number) => {
-	formProps.value.rowData.positionUserList.splice(index, 1);
+	formProps.value.rowData.positionUserList?.splice(index, 1);
 };
 
 // 清空岗位用户
@@ -187,7 +187,7 @@ const handleSubmit = () => {
 		try {
 			const { msg } = await grantUserSysPositionApi({
 				positionId: formProps.value.rowData.positionId,
-				propIds: formProps.value.rowData.positionUserList.map(d => d.propId)
+				propIds: formProps.value.rowData.positionUserList?.map(d => d.propId) || []
 			});
 			ElMessage.success({ message: msg });
 			formProps.value.getTableList!();
