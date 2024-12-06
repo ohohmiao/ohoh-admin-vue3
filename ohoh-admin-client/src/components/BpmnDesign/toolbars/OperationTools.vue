@@ -1,7 +1,7 @@
 <template>
 	<el-button-group>
 		<el-button type="primary" plain>打开文件<input type="file" style="display: none" /></el-button>
-		<el-popover placement="bottom" trigger="click">
+		<el-popover placement="bottom" trigger="hover">
 			<template #reference>
 				<el-button type="primary" plain>导出文件</el-button>
 			</template>

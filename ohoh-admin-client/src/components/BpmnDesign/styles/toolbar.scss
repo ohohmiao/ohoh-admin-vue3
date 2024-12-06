@@ -1,16 +1,27 @@
-/*.button-list_column {
+.toolbar {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 100%;
+	padding: 8px 16px;
+	box-sizing: border-box;
+	.flex {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		.el-button-group {
+			margin-right: 16px;
+		}
+	}
+}
+
+.button-list_column {
 	display: grid;
 	grid-template-columns: 1fr;
 	grid-row-gap: 8px;
 	padding: 8px 0;
-}*/
-.button-list_column {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 10px;
 	.el-button {
-		flex: 1;
 		margin-left: 0;
 	}
 }

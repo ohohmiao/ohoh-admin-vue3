@@ -151,7 +151,7 @@ defineExpose({
 });
 </script>
 <style src="@/components/BpmnDesign/styles/index.scss"></style>
-<style src="@/components/BpmnDesign/styles/design.scss" scoped></style>
+<style src="@/components/BpmnDesign/styles/design.scss"></style>
 <style src="@/components/BpmnDesign/styles/toolbar.scss"></style>
 <style scoped lang="scss">
 .designer-dialog :deep(.el-dialog__header) {
