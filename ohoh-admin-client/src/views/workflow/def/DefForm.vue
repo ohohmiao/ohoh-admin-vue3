@@ -3,10 +3,15 @@
 		<el-dialog v-model="formVisible" fullscreen :show-close="false" :close-on-click-modal="false" destroy-on-close>
 			<div class="container">
 				<div class="toolbar">
-					<div class="flex"></div>
+					<div class="flex">
+						<AlignTools></AlignTools>
+						<ScaleTools></ScaleTools>
+						<CommandTools></CommandTools>
+						<ExternalTools></ExternalTools>
+					</div>
+					<OperationTools></OperationTools>
 				</div>
 				<div class="designer">
-					<!--<div class="designer-left designer-with-bg" ref="designerRef"></div>-->
 					<div class="designer-left designer-with-bg" ref="designerRef"></div>
 					<div class="designer-right">
 						<el-button @click="formVisible = false">关闭</el-button>
@@ -26,6 +31,12 @@ import type { BpmnProvideType, BpmnElement, BpmnEventBus, BpmnEvent } from "@/co
 import activitiSchema from "@/components/BpmnDesign/moddles/activiti/schema.json";
 import flowableSchema from "@/components/BpmnDesign/moddles/flowable/schema.json";
 import camundaSchema from "camunda-bpmn-moddle/resources/camunda.json";
+
+import AlignTools from "@/components/BpmnDesign/toolbars/AlignTools.vue";
+import ScaleTools from "@/components/BpmnDesign/toolbars/ScaleTools.vue";
+import CommandTools from "@/components/BpmnDesign/toolbars/CommandTools.vue";
+import ExternalTools from "@/components/BpmnDesign/toolbars/ExternalTools.vue";
+import OperationTools from "@/components/BpmnDesign/toolbars/OperationTools.vue";
 
 interface FormProps {
 	[key: string]: any;
@@ -140,6 +151,8 @@ defineExpose({
 });
 </script>
 <style src="@/components/BpmnDesign/styles/index.scss"></style>
+<style src="@/components/BpmnDesign/styles/design.scss" scoped></style>
+<style src="@/components/BpmnDesign/styles/toolbar.scss"></style>
 <style scoped lang="scss">
 .designer-dialog :deep(.el-dialog__header) {
 	display: none;

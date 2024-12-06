@@ -1,0 +1,29 @@
+/*.button-list_column {
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-row-gap: 8px;
+	padding: 8px 0;
+}*/
+.button-list_column {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	.el-button {
+		flex: 1;
+		margin-left: 0;
+	}
+}
+
+.preview-model {
+	width: 64vw;
+	height: 64vh;
+	overflow-y: auto;
+	.preview-model-content {
+		word-break: break-word;
+		white-space: pre-wrap;
+	}
+	code.n-code {
+		font-size: 16px;
+	}
+}

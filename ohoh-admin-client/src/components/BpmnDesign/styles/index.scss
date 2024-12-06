@@ -1,65 +1,11 @@
 /**
  * 基础样式
  */
-@import 'bpmn-js/dist/assets/bpmn-js.css';
-@import  'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'; // 包含了与 BPMN 字体和图标相关的所有必要的样式规则
-@import  'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css'; // 这些类和规则定义了 BPMN 符号（如活动、事件、网关等）的样式
+@import "bpmn-js/dist/assets/bpmn-js.css";
+@import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css"; // 包含了与 BPMN 字体和图标相关的所有必要的样式规则
+@import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css"; // 这些类和规则定义了 BPMN 符号（如活动、事件、网关等）的样式
 /**
  * 左侧面板样式
  */
-@import 'bpmn-js/dist/assets/diagram-js.css';
-@import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-
-.container {
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
-	.toolbar {
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		width: 100%;
-		padding: 8px 16px;
-		box-sizing: border-box;
-		.flex {
-			flex: 1;
-			display: flex;
-			align-items: center;
-			flex-wrap: wrap;
-			:deep(.el-button-group) {
-				margin-right: 16px;
-			}
-		}
-	}
-	.designer {
-		display: flex;
-		flex: 1;
-		height: 100%;
-		overflow: hidden;
-		&-left {
-			flex: 1;
-			height: 100%;
-			overflow: hidden;
-			&.designer-with-bg {
-				background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTTAgMTBoNDBNMTAgMHY0ME0wIDIwaDQwTTIwIDB2NDBNMCAzMGg0ME0zMCAwdjQwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMGUwZTAiIG9wYWNpdHk9Ii4yIi8+PHBhdGggZD0iTTQwIDBIMHY0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+")
-				repeat !important;
-			}
-		}
-		&-right {
-			width: 230px;
-			height: 100%;
-			:deep(.card) {
-				height: 100%;
-				margin-bottom: 0 !important;
-				.el-card__body {
-					padding: 10px !important;
-				}
-			}
-		}
-	}
-}
+@import "bpmn-js/dist/assets/diagram-js.css";
+@import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";

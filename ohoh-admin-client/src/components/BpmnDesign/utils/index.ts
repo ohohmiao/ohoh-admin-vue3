@@ -1,1 +1,1 @@
-export * from "./create-new-diagram";
+export * from "./CreateNewDiagram";
