@@ -15,6 +15,7 @@ export default function (settings: Ref<EditorSettings>): ModulesAndModdles {
 	let moddle: { [key: string]: any } = {}; // moddle 声明文件对象
 	const options: { [key: string]: unknown } = {}; // modeler 其他配置
 
+	// 翻译
 	modules.push(translate);
 
 	// 设置对应的 moddle 解析配置文件 ( 避免上面已经配置了 camunda )
