@@ -23,21 +23,17 @@
 </template>
 
 <script setup lang="ts" name="WorkflowDefForm">
-import { ref, shallowRef, computed, onMounted } from "vue";
-import { WetBpmnDesignMainPanelProps } from "@/components/BpmnDesign/types";
-import { createNewDiagram } from "@/components/BpmnDesign/utils";
-import type { BpmnModuleDeclaration } from "@/components/BpmnDesign/types";
-import type Modeler from "bpmn-js/lib/Modeler";
-import activitiSchema from "@/components/BpmnDesign/ModdleExtensions/activiti/schema.json";
-import flowableSchema from "@/components/BpmnDesign/ModdleExtensions/flowable/schema.json";
-import camundaSchema from "camunda-bpmn-moddle/resources/camunda.json";
-
+import { ref, onMounted, nextTick, shallowRef } from "vue";
+import { storeToRefs } from "pinia";
 import AlignTools from "@/components/BpmnDesign/components/Toolbar/AlignTools.vue";
 import ScaleTools from "@/components/BpmnDesign/components/Toolbar/ScaleTools.vue";
 import CommandTools from "@/components/BpmnDesign/components/Toolbar/CommandTools.vue";
 import ExternalTools from "@/components/BpmnDesign/components/Toolbar/ExternalTools.vue";
 import OperationTools from "@/components/BpmnDesign/components/Toolbar/OperationTools.vue";
-import Translate from "@/components/BpmnDesign/AdditionalModules/Translate";
+import BpmnEditorState from "@/stores/modules/bpmn/editor";
+import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
+import initModeler from "@/components/BpmnDesign/utils/initModeler";
+import { createDiagram } from "@/components/BpmnDesign/utils/createDiagram";
 
 interface FormProps {
 	[key: string]: any;
@@ -50,37 +46,16 @@ const formVisible = ref(false);
 // 	rowData: {}
 // });
 
-const ProcessModdles = {
-	activiti: activitiSchema,
-	camunda: camundaSchema,
-	flowable: flowableSchema
-};
-const designerRef = shallowRef<HTMLDivElement>();
-const bpmnDesignProps = defineProps(WetBpmnDesignMainPanelProps);
-
-const moddleExtensions = computed(() => {
-	const processType = bpmnDesignProps.processType || "flowable";
-	const actions: Record<string, any> = {};
-	actions[processType] = ProcessModdles[processType];
-	return actions;
-});
-const modeler = shallowRef<Modeler | null>(null);
-const modules = shallowRef<BpmnModuleDeclaration[]>([]);
-modules.value.push(Translate);
-
+const editorStore = BpmnEditorState();
+const { editorSettings } = storeToRefs(editorStore);
+const designerRef = shallowRef<HTMLDivElement | null>(null);
 const initBpmnDesigner = async () => {
-	const res = await import("bpmn-js/lib/Modeler");
-	const Modeler = res.default;
-	modeler.value = new Modeler({
-		container: designerRef.value,
-		additionalModules: [...modules.value],
-		moddleExtensions: moddleExtensions.value
-	});
-
-	await createNewDiagram(modeler.value, {
-		xml: bpmnDesignProps.xml
-	});
+	const modelerModules = modulesAndModdle(editorSettings);
+	await nextTick();
+	initModeler(designerRef, modelerModules);
+	await createDiagram();
 };
+
 onMounted(() => {
 	// document.body.addEventListener("contextmenu", function (ev) {
 	// 	ev.preventDefault();
@@ -90,8 +65,8 @@ onMounted(() => {
 // 接收父组件传过来的参数
 const acceptParams = (params: FormProps) => {
 	console.info(params);
-	initBpmnDesigner();
 	formVisible.value = true;
+	initBpmnDesigner();
 };
 
 defineExpose({

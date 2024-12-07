@@ -27,7 +27,6 @@
 		"@wangeditor/editor": "^5.1.12",
 		"@wangeditor/editor-for-vue": "^5.1.12",
 		"@bpmn-io/properties-panel": "^3.19.0",
-		"@wetspace/pro-components": "^0.0.5",
 		"bpmn-js": "^17.8.1",
 		"camunda-bpmn-moddle": "^7.0.1",
 		"diagram-js": "^14.7.1",
