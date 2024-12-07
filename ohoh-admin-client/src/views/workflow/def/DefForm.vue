@@ -33,7 +33,7 @@ import OperationTools from "@/components/BpmnDesign/components/Toolbar/Operation
 import BpmnEditorState from "@/stores/modules/bpmn/editor";
 import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
 import initModeler from "@/components/BpmnDesign/utils/initModeler";
-import { createDiagram } from "@/components/BpmnDesign/utils/createDiagram";
+import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
 
 interface FormProps {
 	[key: string]: any;
@@ -53,7 +53,7 @@ const initBpmnDesigner = async () => {
 	const modelerModules = modulesAndModdle(editorSettings);
 	await nextTick();
 	initModeler(designerRef, modelerModules);
-	await createDiagram();
+	await createNewDiagram();
 };
 
 onMounted(() => {

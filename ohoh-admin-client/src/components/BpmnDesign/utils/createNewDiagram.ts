@@ -2,7 +2,7 @@ import EmptyXML from "./emptyXML";
 import { EditorSettings } from "../types/settings";
 import BpmnModelerState from "@/stores/modules/bpmn/modeler";
 
-export const createDiagram = async function (newXml?: string, settings?: EditorSettings) {
+export const createNewDiagram = async function (newXml?: string, settings?: EditorSettings) {
 	try {
 		const store = BpmnModelerState();
 		const timestamp = Date.now();
