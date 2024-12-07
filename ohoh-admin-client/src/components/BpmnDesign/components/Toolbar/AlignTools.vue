@@ -13,6 +13,7 @@ import Modeler from "bpmn-js/lib/Modeler";
 import Selection from "diagram-js/lib/features/selection/Selection";
 import Modeling from "bpmn-js/lib/features/modeling/Modeling.js";
 import EventEmitter from "@/components/BpmnDesign/utils/eventEmitter";
+import { ElMessage } from "element-plus";
 
 const buttons: ComputedRef<{ name: string; key: string; icon: string }[]> = computed(() => {
 	return [
@@ -39,7 +40,7 @@ const alignElements = (tag: string) => {
 	if (modeling && selection) {
 		const SelectedElements = selection.get();
 		if (!SelectedElements || SelectedElements.length <= 1) {
-			return window.__messageBox.warning("请按住 Shift 键选择多个元素对齐");
+			return ElMessage.warning("请按住 Shift 键选择多个元素对齐");
 		}
 		align.trigger(SelectedElements, tag);
 	}

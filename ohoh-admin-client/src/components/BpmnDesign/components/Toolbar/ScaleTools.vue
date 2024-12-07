@@ -1,7 +1,7 @@
 <template>
 	<el-button-group>
 		<el-tooltip effect="light" content="缩小视图" placement="bottom">
-			<el-button @click="zoomOut()"><LucideIcon name="ZoomOut"></LucideIcon></el-button>
+			<el-button @click="zoomOut()" :disabled="currentScale * 10 <= 0"><LucideIcon name="ZoomOut"></LucideIcon></el-button>
 		</el-tooltip>
 		<el-tooltip effect="light" content="重置缩放" placement="bottom">
 			<el-button @click="zoomReset('fit-viewport')">
@@ -9,7 +9,7 @@
 			</el-button>
 		</el-tooltip>
 		<el-tooltip effect="light" content="放大视图" placement="bottom">
-			<el-button @click="zoomIn()"><LucideIcon name="ZoomIn"></LucideIcon></el-button>
+			<el-button @click="zoomIn()" :disabled="currentScale * 10 >= 30"><LucideIcon name="ZoomIn"></LucideIcon></el-button>
 		</el-tooltip>
 	</el-button-group>
 </template>
@@ -37,6 +37,7 @@ EventEmitter.on("modeler-init", (modeler: Modeler) => {
 });
 
 const zoomOut = (newScale?: number) => {
+	if (currentScale.value * 10 == 0) return;
 	currentScale.value = newScale || Math.floor(currentScale.value * 100 - 0.1 * 100) / 100;
 	zoomReset(currentScale.value);
 };
@@ -46,6 +47,7 @@ const zoomReset = (newScale: any) => {
 };
 
 const zoomIn = (newScale?: number) => {
+	if (currentScale.value * 10 >= 30) return;
 	currentScale.value = newScale || Math.floor(currentScale.value * 100 + 0.1 * 100) / 100;
 	zoomReset(currentScale.value);
 };

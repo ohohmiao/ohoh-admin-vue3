@@ -140,3 +140,9 @@ body,
 :-webkit-any(article, aside, nav, section) h1 {
 	font-size: 2em;
 }
+
+/* highlight.js 代码块强制换行 */
+.hljs {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}

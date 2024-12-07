@@ -27,14 +27,6 @@
 }
 
 .preview-model {
-	width: 64vw;
 	height: 64vh;
 	overflow-y: auto;
-	.preview-model-content {
-		word-break: break-word;
-		white-space: pre-wrap;
-	}
-	code.n-code {
-		font-size: 16px;
-	}
 }
