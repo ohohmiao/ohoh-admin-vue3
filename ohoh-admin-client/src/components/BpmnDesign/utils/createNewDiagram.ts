@@ -1,5 +1,5 @@
 import EmptyXML from "./emptyXML";
-import { EditorSettings } from "../types/settings";
+import { EditorSettings } from "../settings";
 import BpmnModelerState from "@/stores/modules/bpmn/modeler";
 
 export const createNewDiagram = async function (newXml?: string, settings?: EditorSettings) {

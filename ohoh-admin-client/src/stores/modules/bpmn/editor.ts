@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { EditorSettings } from "@/components/BpmnDesign/types/settings";
+import { EditorSettings } from "@/components/BpmnDesign/settings";
 import { defaultSettings } from "@/components/BpmnDesign/config";
 
 const state = {

@@ -1,6 +1,6 @@
 import { type Ref } from "vue";
 import type { ModuleDeclaration } from "didi";
-import type { EditorSettings } from "@/components/BpmnDesign/types/settings";
+import type { EditorSettings } from "@/components/BpmnDesign/settings";
 // moddle 定义文件
 import activitiModdleDescriptors from "@/components/BpmnDesign/extends/ModdleExtensions/activiti.json";
 import flowableModdleDescriptors from "@/components/BpmnDesign/extends/ModdleExtensions/flowable.json";

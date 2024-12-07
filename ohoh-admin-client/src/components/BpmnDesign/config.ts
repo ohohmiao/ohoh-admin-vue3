@@ -1,4 +1,4 @@
-import { EditorSettings } from "@/components/BpmnDesign/types/settings";
+import { EditorSettings } from "@/components/BpmnDesign/settings";
 import { defaultLang } from "@/components/BpmnDesign/extends/AdditionalModules/Translate";
 
 export const defaultSettings: EditorSettings = {
