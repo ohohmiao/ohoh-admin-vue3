@@ -4,6 +4,7 @@ import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -248,6 +249,16 @@ public class PlatRedisUtil {
      */
     public Collection<String> keys(String pattern){
         return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 执行脚本
+     * @param script
+     * @param keys
+     * @param args
+     */
+    public <T> void execute(RedisScript<T> script, List keys, Object... args){
+        redisTemplate.execute(script, keys, args);
     }
 
 }
