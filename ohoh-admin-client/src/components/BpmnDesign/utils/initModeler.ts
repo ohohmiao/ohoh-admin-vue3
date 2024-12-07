@@ -28,14 +28,14 @@ export default function (designer: ShallowRef<HTMLElement | null>, modelerModule
 
 	EventEmitter.emit("modeler-init", modeler);
 
-	/*modeler.on("commandStack.changed", async event => {
-		try {
-			const { xml } = await modeler.saveXML({ format: true });
-
-			//emit("update:xml", xml);
-			//emit("command-stack-changed", event);
-		} catch (error) {
-			console.error(error);
-		}
-	});*/
+	// modeler.on("commandStack.changed", async event => {
+	// 	try {
+	// 		const { xml } = await modeler.saveXML({ format: true });
+	//
+	// 		emit("update:xml", xml);
+	// 		emit("command-stack-changed", event);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// });
 }

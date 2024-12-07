@@ -6,7 +6,9 @@ import activitiModdleDescriptors from "@/components/BpmnDesign/extends/ModdleExt
 import flowableModdleDescriptors from "@/components/BpmnDesign/extends/ModdleExtensions/flowable.json";
 import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda.json";
 // 自定义 modules 扩展模块
-import translate from "@/components/BpmnDesign/extends/AdditionalModules/Translate";
+import Translate from "@/components/BpmnDesign/extends/AdditionalModules/Translate";
+import TokenSimulationModule from "bpmn-js-token-simulation";
+import minimapModule from "diagram-js-minimap";
 
 export type ModulesAndModdles = [ModuleDeclaration[], { [key: string]: any }, { [key: string]: unknown }];
 
@@ -15,8 +17,21 @@ export default function (settings: Ref<EditorSettings>): ModulesAndModdles {
 	let moddle: { [key: string]: any } = {}; // moddle 声明文件对象
 	const options: { [key: string]: unknown } = {}; // modeler 其他配置
 
+	// 小地图
+	if (settings.value.miniMap) {
+		modules.push(minimapModule);
+		options["minimap"] = {
+			open: true
+		};
+	}
+
+	// 设置其他模块的启用
+	if (settings.value.otherModule) {
+		modules.push(TokenSimulationModule);
+	}
+
 	// 翻译
-	modules.push(translate);
+	modules.push(Translate);
 
 	// 设置对应的 moddle 解析配置文件 ( 避免上面已经配置了 camunda )
 	if (!Object.keys(moddle).length) {
