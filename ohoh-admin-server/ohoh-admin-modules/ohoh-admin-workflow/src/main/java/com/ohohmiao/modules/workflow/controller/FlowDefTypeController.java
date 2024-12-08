@@ -9,8 +9,8 @@ import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
 import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
-import com.ohohmiao.modules.workflow.model.dto.WorkflowDefTypeAddOrEditDTO;
-import com.ohohmiao.modules.workflow.service.WorkflowDefTypeService;
+import com.ohohmiao.modules.workflow.model.dto.FlowDefTypeAddOrEditDTO;
+import com.ohohmiao.modules.workflow.service.FlowDefTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
@@ -30,10 +30,10 @@ import java.util.List;
 @Api(tags = "流程定义类别")
 @ApiSupport(order = 1)
 @RestController
-public class WorkflowDefTypeController {
+public class FlowDefTypeController {
 
     @Resource
-    private WorkflowDefTypeService workflowDefTypeService;
+    private FlowDefTypeService flowDefTypeService;
 
     /**
      * 获取流程定义类别树
@@ -44,12 +44,12 @@ public class WorkflowDefTypeController {
     @SaPcCheckPermission("/workflowDefType/tree")
     @PostMapping("/workflowDefType/tree")
     public CommonResp<List<Tree<String>>> tree(){
-        return CommonResp.data(workflowDefTypeService.getTreeData());
+        return CommonResp.data(flowDefTypeService.getTreeData());
     }
 
     /**
      * 新增流程定义类别
-     * @param workflowDefTypeAddOrEditDTO 新增流程定义类别dto
+     * @param flowDefTypeAddOrEditDTO 新增流程定义类别dto
      * @return
      */
     @ApiOperation(value = "新增流程定义类别")
@@ -58,14 +58,14 @@ public class WorkflowDefTypeController {
     @SaPcCheckPermission("/workflowDefType/add")
     @PostMapping("/workflowDefType/add")
     public CommonResp<String> add(
-            @RequestBody @Validated(CommonAddGroup.class) WorkflowDefTypeAddOrEditDTO workflowDefTypeAddOrEditDTO){
-        workflowDefTypeService.add(workflowDefTypeAddOrEditDTO);
+            @RequestBody @Validated(CommonAddGroup.class) FlowDefTypeAddOrEditDTO flowDefTypeAddOrEditDTO){
+        flowDefTypeService.add(flowDefTypeAddOrEditDTO);
         return CommonResp.success("保存成功");
     }
 
     /**
      * 修改流程定义类别
-     * @param workflowDefTypeAddOrEditDTO 修改流程定义类别dto
+     * @param flowDefTypeAddOrEditDTO 修改流程定义类别dto
      * @return
      */
     @ApiOperation(value = "修改流程定义类别")
@@ -74,8 +74,8 @@ public class WorkflowDefTypeController {
     @SaPcCheckPermission("/workflowDefType/edit")
     @PostMapping("/workflowDefType/edit")
     public CommonResp<String> edit(
-            @RequestBody @Validated(CommonEditGroup.class) WorkflowDefTypeAddOrEditDTO workflowDefTypeAddOrEditDTO){
-        workflowDefTypeService.edit(workflowDefTypeAddOrEditDTO);
+            @RequestBody @Validated(CommonEditGroup.class) FlowDefTypeAddOrEditDTO flowDefTypeAddOrEditDTO){
+        flowDefTypeService.edit(flowDefTypeAddOrEditDTO);
         return CommonResp.success("修改成功");
     }
 
@@ -90,7 +90,7 @@ public class WorkflowDefTypeController {
     @SaPcCheckPermission("/workflowDefType/delete")
     @PostMapping("/workflowDefType/delete")
     public CommonResp<String> delete(@RequestBody @Validated CommonIdDTO idDTO){
-        workflowDefTypeService.delete(idDTO);
+        flowDefTypeService.delete(idDTO);
         return CommonResp.success("删除成功");
     }
 

@@ -12,7 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class WorkflowDefTypeVO extends CommonTreeVO {
+public class FlowDefTypeVO extends CommonTreeVO {
 
     private String deftypeId;
 

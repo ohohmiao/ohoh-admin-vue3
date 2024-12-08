@@ -12,5 +12,5 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class WorkflowDefVO extends CommonVO {
+public class FlowDefVO extends CommonVO {
 }

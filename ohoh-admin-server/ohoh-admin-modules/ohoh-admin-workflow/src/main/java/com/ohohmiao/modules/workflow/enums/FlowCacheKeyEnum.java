@@ -10,7 +10,7 @@ import lombok.Getter;
  * @date 2024-12-02 09:27
  */
 @Getter
-public enum WorkflowCacheKeyEnum {
+public enum FlowCacheKeyEnum {
 
     /**
      * 流程定义类别
@@ -27,7 +27,7 @@ public enum WorkflowCacheKeyEnum {
      */
     long ttl;
 
-    WorkflowCacheKeyEnum(String key, long ttl) {
+    FlowCacheKeyEnum(String key, long ttl) {
         this.key = key;
         this.ttl = ttl;
     }

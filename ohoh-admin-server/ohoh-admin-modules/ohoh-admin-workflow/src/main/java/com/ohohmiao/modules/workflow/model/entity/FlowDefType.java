@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName(value = "workflow_deftype")
-public class WorkflowDefType extends CommonTreeEntity {
+public class FlowDefType extends CommonTreeEntity {
 
     @TableId
     private String deftypeId;

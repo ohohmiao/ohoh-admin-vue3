@@ -18,7 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
  */
 @Configuration
 @EnableSwagger2WebMvc
-public class WorkflowConfigurer {
+public class FlowConfigurer {
 
     /** 是否开启swagger */
     @Value("${swagger.enabled}")

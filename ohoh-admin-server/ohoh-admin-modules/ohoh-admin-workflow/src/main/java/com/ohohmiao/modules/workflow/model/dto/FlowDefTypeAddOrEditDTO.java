@@ -20,7 +20,7 @@ import javax.validation.constraints.Null;
 @ApiModel("流程定义类别新增或编辑")
 @Getter
 @Setter
-public class WorkflowDefTypeAddOrEditDTO {
+public class FlowDefTypeAddOrEditDTO {
 
     @ApiModelProperty(value = "id，编辑时必传")
     @Null(message = "id必须为空", groups = {CommonAddGroup.class})

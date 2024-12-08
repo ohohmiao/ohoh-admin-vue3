@@ -9,16 +9,16 @@ import lombok.Getter;
  * @date 2024-12-02 10:34
  */
 @Getter
-public enum WorkflowDataListenerEnum {
+public enum FlowDataListenerEnum {
 
-    DEFTYPE("WorkflowDefTypeChangeListener");
+    DEFTYPE("FlowDefTypeChangeListener");
 
     /**
      * 类名称
      */
     String name;
 
-    WorkflowDataListenerEnum(String name){
+    FlowDataListenerEnum(String name){
         this.name = name;
     }
 

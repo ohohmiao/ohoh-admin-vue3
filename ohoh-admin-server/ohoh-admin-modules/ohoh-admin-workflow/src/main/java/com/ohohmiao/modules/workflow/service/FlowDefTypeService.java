@@ -3,9 +3,9 @@ package com.ohohmiao.modules.workflow.service;
 import cn.hutool.core.lang.tree.Tree;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
 import com.ohohmiao.framework.mybatis.service.CommonTreeService;
-import com.ohohmiao.modules.workflow.model.dto.WorkflowDefTypeAddOrEditDTO;
-import com.ohohmiao.modules.workflow.model.entity.WorkflowDefType;
-import com.ohohmiao.modules.workflow.model.vo.WorkflowDefTypeVO;
+import com.ohohmiao.modules.workflow.model.dto.FlowDefTypeAddOrEditDTO;
+import com.ohohmiao.modules.workflow.model.entity.FlowDefType;
+import com.ohohmiao.modules.workflow.model.vo.FlowDefTypeVO;
 
 import java.util.List;
 
@@ -15,13 +15,13 @@ import java.util.List;
  * @author ohohmiao
  * @date 2024-12-01 21:49
  */
-public interface WorkflowDefTypeService extends CommonTreeService<WorkflowDefType> {
+public interface FlowDefTypeService extends CommonTreeService<FlowDefType> {
 
     /**
      * 从缓存获取全量系统字典类别数据
      * @return
      */
-    List<WorkflowDefTypeVO> listCachedAll();
+    List<FlowDefTypeVO> listCachedAll();
 
     /**
      * 获取流程定义类别树
@@ -31,22 +31,22 @@ public interface WorkflowDefTypeService extends CommonTreeService<WorkflowDefTyp
 
     /**
      * 判断流程定义编码是否重复
-     * @param workflowDefTypeAddOrEditDTO
+     * @param flowDefTypeAddOrEditDTO
      * @return
      */
-    boolean isExistDefTypeCode(WorkflowDefTypeAddOrEditDTO workflowDefTypeAddOrEditDTO);
+    boolean isExistDefTypeCode(FlowDefTypeAddOrEditDTO flowDefTypeAddOrEditDTO);
 
     /**
      * 新增流程定义类别
-     * @param workflowDefTypeAddOrEditDTO
+     * @param flowDefTypeAddOrEditDTO
      */
-    void add(WorkflowDefTypeAddOrEditDTO workflowDefTypeAddOrEditDTO);
+    void add(FlowDefTypeAddOrEditDTO flowDefTypeAddOrEditDTO);
 
     /**
      * 编辑流程定义类别
-     * @param workflowDefTypeAddOrEditDTO
+     * @param flowDefTypeAddOrEditDTO
      */
-    void edit(WorkflowDefTypeAddOrEditDTO workflowDefTypeAddOrEditDTO);
+    void edit(FlowDefTypeAddOrEditDTO flowDefTypeAddOrEditDTO);
 
     /**
      * 删除流程定义类别

@@ -14,5 +14,5 @@ import lombok.Setter;
 @ApiModel("流程定义查询条件")
 @Getter
 @Setter
-public class WorkflowDefPageDTO extends CommonPageDTO {
+public class FlowDefPageDTO extends CommonPageDTO {
 }

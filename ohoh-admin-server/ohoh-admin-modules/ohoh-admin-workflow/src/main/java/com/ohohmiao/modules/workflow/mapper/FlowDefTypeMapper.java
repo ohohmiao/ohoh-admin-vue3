@@ -1,7 +1,7 @@
 package com.ohohmiao.modules.workflow.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ohohmiao.modules.workflow.model.entity.WorkflowDefType;
+import com.ohohmiao.modules.workflow.model.entity.FlowDefType;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,6 +11,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2024-12-01 21:43
  */
 @Mapper
-public interface WorkflowDefTypeMapper extends BaseMapper<WorkflowDefType> {
+public interface FlowDefTypeMapper extends BaseMapper<FlowDefType> {
 
 }
