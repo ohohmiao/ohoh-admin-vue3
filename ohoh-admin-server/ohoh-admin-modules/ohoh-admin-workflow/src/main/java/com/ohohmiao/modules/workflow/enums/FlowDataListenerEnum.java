@@ -11,7 +11,9 @@ import lombok.Getter;
 @Getter
 public enum FlowDataListenerEnum {
 
-    DEFTYPE("FlowDefTypeChangeListener");
+    DEFTYPE("FlowDefTypeChangeListener"),
+
+    DEF("FlowDefChangeListener");
 
     /**
      * 类名称

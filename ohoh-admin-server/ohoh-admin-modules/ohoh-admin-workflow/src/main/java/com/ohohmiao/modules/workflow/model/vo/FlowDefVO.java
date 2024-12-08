@@ -13,4 +13,23 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FlowDefVO extends CommonVO {
+
+    private String defId;
+
+    private String deftypeId;
+
+    private String defName;
+
+    private String defCode;
+
+    private Integer defVersion;
+
+    private Integer defSort;
+
+    private String defXml;
+
+    private String defJson;
+
+    private String defSvg;
+
 }

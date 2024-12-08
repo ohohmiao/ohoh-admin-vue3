@@ -7,11 +7,14 @@ import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowDefPageDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
+import com.ohohmiao.modules.workflow.service.FlowDefService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 流程定义controller
@@ -24,6 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FlowDefController {
 
+    @Resource
+    private FlowDefService flowDefService;
+
     /**
      * 获取流程定义分页列表
      * @param flowDefPageDTO 流程定义分页dto
@@ -34,7 +40,7 @@ public class FlowDefController {
     @SaPcCheckPermission("/workflowDef/page")
     @PostMapping("/workflowDef/page")
     public CommonResp<Page<FlowDefVO>> page(@RequestBody FlowDefPageDTO flowDefPageDTO){
-        return CommonResp.data(new Page());
+        return CommonResp.data(flowDefService.listByPage(flowDefPageDTO));
     }
 
 }

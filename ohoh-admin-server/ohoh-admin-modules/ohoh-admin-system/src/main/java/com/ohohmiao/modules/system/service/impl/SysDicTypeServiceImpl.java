@@ -43,9 +43,6 @@ import java.util.stream.Collectors;
 public class SysDicTypeServiceImpl extends CommonTreeServiceImpl<SysDicTypeMapper, SysDicType> implements SysDicTypeService {
 
     @Resource
-    private SysDicTypeMapper sysDicTypeMapper;
-
-    @Resource
     private SysDicService sysDicService;
 
     @Resource

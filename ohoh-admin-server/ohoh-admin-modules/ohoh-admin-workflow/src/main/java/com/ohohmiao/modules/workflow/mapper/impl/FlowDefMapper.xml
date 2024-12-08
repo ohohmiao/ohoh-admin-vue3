@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohohmiao.modules.workflow.mapper.FlowDefMapper">
+
+    <select id="pageByWrapper" resultType="com.ohohmiao.modules.workflow.model.vo.FlowDefVO">
+        select d.*, p.DEFTYPE_NAME
+            from WORKFLOW_DEF d
+            left join WORKFLOW_DEFTYPE p on d.DEFTYPE_ID = p.DEFTYPE_ID
+            ${ew.customSqlSegment }
+    </select>
+
+    <select id="getMaxSortByDeftypeId" resultType="Integer">
+        select MAX(T.DEF_SORT)
+        from WORKFLOW_DEF t
+        where t.DEFTYPE_ID = #{deftypeId}
+          and t.DELETE_FLAG = 0
+    </select>
+
+</mapper>

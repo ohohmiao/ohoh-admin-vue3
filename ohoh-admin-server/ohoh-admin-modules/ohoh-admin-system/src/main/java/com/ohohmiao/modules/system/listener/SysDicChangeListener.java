@@ -2,10 +2,8 @@ package com.ohohmiao.modules.system.listener;
 
 import com.ohohmiao.framework.common.listener.CommonDataChangeListener;
 import com.ohohmiao.modules.system.model.entity.SysDic;
-import com.ohohmiao.modules.system.service.SysDicService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -16,9 +14,6 @@ import java.util.List;
  */
 @Component
 public class SysDicChangeListener implements CommonDataChangeListener<SysDic> {
-
-    @Resource
-    private SysDicService sysDicService;
 
     @Override
     public void doAddWithDataList(List<SysDic> dataList) {
