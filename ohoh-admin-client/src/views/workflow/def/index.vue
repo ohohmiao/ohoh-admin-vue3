@@ -59,6 +59,7 @@
 import { reactive, ref } from "vue";
 import { CirclePlus, Operation } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
+import ProTable from "@/components/ProTable/index.vue";
 import {
 	WorkflowDefType,
 	getWorkflowDefTypeTreeApi,
@@ -72,7 +73,6 @@ import { ColumnProps } from "@/components/ProTable/interface";
 import DefTypeForm from "./DefTypeForm.vue";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
-import ProTable from "@/components/ProTable/index.vue";
 import DefForm from "./DefForm.vue";
 
 const { BUTTONS } = useAuthButtons();
@@ -127,7 +127,7 @@ const handleDeleteDefType = async (params: WorkflowDefType.TreeNode) => {
 const defFormRef = ref<InstanceType<typeof DefForm> | null>(null);
 const openDefForm = () => {
 	const params = {
-		getTableList: () => {}
+		getTableList: proTable.value.getTableList
 	};
 	defFormRef.value?.acceptParams(params);
 };

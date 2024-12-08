@@ -34,7 +34,7 @@ public class WorkflowDefController {
     @SaPcCheckPermission("/workflowDef/page")
     @PostMapping("/workflowDef/page")
     public CommonResp<Page<WorkflowDefVO>> page(@RequestBody WorkflowDefPageDTO workflowDefPageDTO){
-        return CommonResp.data(null);
+        return CommonResp.data(new Page());
     }
 
 }
