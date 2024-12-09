@@ -35,4 +35,11 @@ public interface FlowDefService extends CommonService<FlowDef> {
      */
     void add(FlowDefAddOrEditDTO flowDefAddOrEditDTO);
 
+    /**
+     * 获取单个流程定义
+     * @param defId
+     * @return
+     */
+    FlowDefVO get(String defId);
+
 }

@@ -26,6 +26,8 @@ public class FlowDefVO extends CommonVO {
 
     private Integer defSort;
 
+    private String defRemark;
+
     private String defXml;
 
     private String defJson;

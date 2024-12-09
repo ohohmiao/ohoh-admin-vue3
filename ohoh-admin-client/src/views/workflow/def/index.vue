@@ -44,7 +44,7 @@
 			>
 				<!-- 表格 header 按钮 -->
 				<template #tableHeader>
-					<el-button type="primary" :icon="CirclePlus" v-auth="'add'" @click="openDefForm()">新增</el-button>
+					<el-button type="primary" :icon="CirclePlus" v-auth="'add'" @click="openDefForm('新增')">新增</el-button>
 				</template>
 			</ProTable>
 		</div>
@@ -67,7 +67,10 @@ import {
 	editWorkflowDefTypeApi,
 	deleteWorkflowDefTypeApi,
 	WorkflowDef,
-	getWorkflowDefPageApi
+	getWorkflowDefPageApi,
+	addWorkflowDefApi,
+	editWorkflowDefApi,
+	getWorkflowDefApi
 } from "@/api/modules/workflow/def";
 import { ColumnProps } from "@/components/ProTable/interface";
 import DefTypeForm from "./DefTypeForm.vue";
@@ -125,8 +128,16 @@ const handleDeleteDefType = async (params: WorkflowDefType.TreeNode) => {
 
 // 打开流程定义表单
 const defFormRef = ref<InstanceType<typeof DefForm> | null>(null);
-const openDefForm = () => {
+const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {}) => {
+	if (title == "新增") {
+		rowData.deftypeId = initParam.parentId;
+	} else {
+		const { data } = (await getWorkflowDefApi({ id: rowData.defId! })).data;
+		rowData = data;
+	}
 	const params = {
+		rowData: { ...rowData },
+		api: title === "新增" ? addWorkflowDefApi : title === "编辑" ? editWorkflowDefApi : undefined,
 		getTableList: proTable.value.getTableList
 	};
 	defFormRef.value?.acceptParams(params);

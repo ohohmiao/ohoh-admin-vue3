@@ -1,6 +1,8 @@
 package com.ohohmiao.modules.workflow.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -62,6 +64,18 @@ public class FlowDefServiceImpl extends CommonServiceImpl<FlowDefMapper, FlowDef
     @Transactional(rollbackFor = Exception.class)
     public void add(FlowDefAddOrEditDTO flowDefAddOrEditDTO){
 
+    }
+
+    @Override
+    public FlowDefVO get(String defId){
+        FlowDef flowDef = flowDefMapper.selectById(defId);
+        if(ObjectUtil.isNotNull(flowDef)){
+            FlowDefVO flowDefVO = new FlowDefVO();
+            BeanUtil.copyProperties(flowDef, flowDefVO);
+            return flowDefVO;
+        }else{
+            return null;
+        }
     }
 
 }
