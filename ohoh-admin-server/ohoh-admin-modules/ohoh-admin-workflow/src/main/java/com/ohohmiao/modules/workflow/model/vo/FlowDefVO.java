@@ -18,6 +18,8 @@ public class FlowDefVO extends CommonVO {
 
     private String deftypeId;
 
+    private String deftypeName;
+
     private String defName;
 
     private String defCode;

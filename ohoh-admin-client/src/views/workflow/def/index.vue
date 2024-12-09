@@ -46,6 +46,11 @@
 				<template #tableHeader>
 					<el-button type="primary" :icon="CirclePlus" v-auth="'add'" @click="openDefForm('新增')">新增</el-button>
 				</template>
+				<!-- 表格操作 -->
+				<template #operation="scope">
+					<el-button type="primary" link :icon="EditPen" @click="openDefForm('编辑', scope.row)" v-auth="'edit'">编辑</el-button>
+					<el-button type="primary" link :icon="Delete" @click="handleDeleteDef(scope.row)" v-auth="'delete'">删除</el-button>
+				</template>
 			</ProTable>
 		</div>
 		<!-- 流程定义类别表单 -->
@@ -57,7 +62,7 @@
 
 <script setup lang="ts" name="WorkflowDefManage">
 import { reactive, ref } from "vue";
-import { CirclePlus, Operation } from "@element-plus/icons-vue";
+import { CirclePlus, EditPen, Operation, Delete } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
 import ProTable from "@/components/ProTable/index.vue";
 import {
@@ -70,7 +75,8 @@ import {
 	getWorkflowDefPageApi,
 	addWorkflowDefApi,
 	editWorkflowDefApi,
-	getWorkflowDefApi
+	getWorkflowDefApi,
+	deleteWorkflowDefApi
 } from "@/api/modules/workflow/def";
 import { ColumnProps } from "@/components/ProTable/interface";
 import DefTypeForm from "./DefTypeForm.vue";
@@ -94,10 +100,10 @@ const changeTreeFilter = (val: string) => {
 const columns: ColumnProps<WorkflowDef.Form>[] = [
 	{ type: "selection", fixed: "left", width: 80 },
 	{ prop: "deftypeName", label: "类别", align: "left" },
-	{ prop: "defName", label: "流程名称", width: 150, search: { el: "input" } },
+	{ prop: "defName", label: "流程名称", width: 200, search: { el: "input" } },
 	{ prop: "defCode", label: "流程编码", width: 150, search: { el: "input" } },
-	{ prop: "defVersion", label: "版本号", width: 80 },
-	{ prop: "defSort", label: "排序", width: 80 }
+	{ prop: "defVersion", label: "版本号", width: 70 },
+	{ prop: "defSort", label: "排序", width: 70 }
 ];
 if (authButtons.includes("edit") || authButtons.includes("delete")) {
 	columns.push({ prop: "operation", label: "操作", width: 270, fixed: "right" });
@@ -136,8 +142,8 @@ const handleDeleteDefType = async (params: WorkflowDefType.TreeNode) => {
 // 打开流程定义表单
 const defFormRef = ref<InstanceType<typeof DefForm> | null>(null);
 const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {}) => {
-	if (title != "新增") {
-		const { data } = (await getWorkflowDefApi({ id: rowData.defId! })).data;
+	if (title === "编辑") {
+		const { data } = await getWorkflowDefApi({ id: rowData.defId! });
 		rowData = data;
 	}
 	const params = {
@@ -146,5 +152,10 @@ const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {
 		getTableList: proTable.value.getTableList
 	};
 	defFormRef.value?.acceptParams(params);
+};
+
+const handleDeleteDef = async (params: WorkflowDef.Form) => {
+	await useHandleData(deleteWorkflowDefApi, { id: params.defId }, `删除【${params.defName}】流程定义`);
+	proTable.value.getTableList();
 };
 </script>

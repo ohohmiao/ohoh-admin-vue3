@@ -1,5 +1,5 @@
 import http from "@/api";
-import { ReqPage, ResultData } from "@/api/interface";
+import { ReqPage } from "@/api/interface";
 
 /**
  * @name 流程定义模块
@@ -72,7 +72,7 @@ export const getWorkflowDefPageApi = (params: WorkflowDef.ReqParams) => {
 
 // * 获取单个流程定义
 export const getWorkflowDefApi = (params: { id: string }) => {
-	return http.post<ResultData<WorkflowDef.Form>>("/workflowDef/get", params);
+	return http.post<WorkflowDef.Form>("/workflowDef/get", params);
 };
 
 // * 保存流程定义
@@ -83,4 +83,9 @@ export const addWorkflowDefApi = (params: WorkflowDef.Form) => {
 // * 修改流程定义
 export const editWorkflowDefApi = (params: WorkflowDef.Form) => {
 	return http.post("/workflowDef/edit", params);
+};
+
+// * 删除流程定义
+export const deleteWorkflowDefApi = (params: { id: string }) => {
+	return http.post("/workflowDef/delete", params);
 };

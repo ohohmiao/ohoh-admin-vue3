@@ -6,6 +6,7 @@ import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
+import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowDefAddOrEditDTO;
@@ -74,6 +75,36 @@ public class FlowDefController {
     public CommonResp<String> add(@RequestBody @Validated(CommonAddGroup.class) FlowDefAddOrEditDTO flowDefAddOrEditDTO){
         flowDefService.add(flowDefAddOrEditDTO);
         return CommonResp.success("保存成功");
+    }
+
+    /**
+     * 修改流程定义
+     * @param flowDefAddOrEditDTO
+     * @return
+     */
+    @ApiOperation(value = "修改流程定义")
+    @ApiOperationSupport(order = 4)
+    @CommonLog("修改流程定义")
+    @SaPcCheckPermission("/workflowDef/edit")
+    @PostMapping("/workflowDef/edit")
+    public CommonResp<String> edit(@RequestBody @Validated(CommonEditGroup.class) FlowDefAddOrEditDTO flowDefAddOrEditDTO){
+        flowDefService.edit(flowDefAddOrEditDTO);
+        return CommonResp.success("修改成功");
+    }
+
+    /**
+     * 删除流程定义
+     * @param idDTO
+     * @return
+     */
+    @ApiOperation(value = "删除流程定义")
+    @ApiOperationSupport(order = 5)
+    @CommonLog("删除流程定义")
+    @SaPcCheckPermission("/workflowDef/delete")
+    @PostMapping("/workflowDef/delete")
+    public CommonResp<String> delete(@RequestBody @Validated CommonIdDTO idDTO){
+        flowDefService.delete(idDTO);
+        return CommonResp.success("删除成功");
     }
 
 }

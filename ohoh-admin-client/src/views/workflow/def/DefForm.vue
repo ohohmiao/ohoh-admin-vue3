@@ -41,9 +41,15 @@
 									</el-tooltip>
 									流程编码：
 								</template>
-								<el-input v-model="formProps.rowData.defCode" placeholder="请输入流程编码" maxlength="30" clearable></el-input>
+								<el-input
+									v-model="formProps.rowData.defCode"
+									placeholder="请输入流程编码"
+									maxlength="30"
+									clearable
+									:disabled="computedEditMode"
+								></el-input>
 							</el-form-item>
-							<el-form-item label="排序" prop="defSort" v-if="formProps.rowData.defId">
+							<el-form-item label="排序" prop="defSort" v-if="computedEditMode">
 								<el-input-number
 									v-model="formProps.rowData.defSort"
 									:min="1"
@@ -78,7 +84,7 @@
 </template>
 
 <script setup lang="ts" name="WorkflowDefForm">
-import { ref, onMounted, nextTick, shallowRef, reactive } from "vue";
+import { ref, onMounted, nextTick, shallowRef, reactive, computed } from "vue";
 import { storeToRefs } from "pinia";
 import AlignTools from "@/components/BpmnDesign/components/Toolbar/AlignTools.vue";
 import ScaleTools from "@/components/BpmnDesign/components/Toolbar/ScaleTools.vue";
@@ -107,6 +113,7 @@ const formProps = ref<FormProps>({
 	rowData: {}
 });
 const defTypeTreeSelectDatas = ref<WorkflowDefType.TreeNode[]>([]);
+const computedEditMode = computed(() => !!formProps.value.rowData.defId);
 
 const rules = reactive({
 	deftypeId: [{ required: true, message: "请选择类别" }],
@@ -121,11 +128,11 @@ const rules = reactive({
 const editorStore = BpmnEditorState();
 const { editorSettings } = storeToRefs(editorStore);
 const designerRef = shallowRef<HTMLDivElement | null>(null);
-const initBpmnDesigner = async () => {
+const initBpmnDesigner = async (defXml?: string) => {
 	const modelerModules = modulesAndModdle(editorSettings);
 	await nextTick();
 	initModeler(designerRef, modelerModules);
-	await createNewDiagram();
+	await createNewDiagram(defXml);
 };
 
 onMounted(() => {
@@ -156,7 +163,7 @@ const acceptParams = async (params: FormProps) => {
 	defTypeTreeSelectDatas.value = data;
 
 	formVisible.value = true;
-	initBpmnDesigner();
+	initBpmnDesigner(formProps.value.rowData.defXml);
 };
 
 // 禁用一级树节点

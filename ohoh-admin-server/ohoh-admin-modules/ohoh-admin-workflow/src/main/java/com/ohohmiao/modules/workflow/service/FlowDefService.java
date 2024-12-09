@@ -1,6 +1,7 @@
 package com.ohohmiao.modules.workflow.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
 import com.ohohmiao.framework.mybatis.service.CommonService;
 import com.ohohmiao.modules.workflow.model.dto.FlowDefAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowDefPageDTO;
@@ -41,5 +42,17 @@ public interface FlowDefService extends CommonService<FlowDef> {
      * @return
      */
     FlowDefVO get(String defId);
+
+    /**
+     * 修改流程定义
+     * @param flowDefAddOrEditDTO
+     */
+    void edit(FlowDefAddOrEditDTO flowDefAddOrEditDTO);
+
+    /**
+     * 删除流程定义
+     * @param idDTO
+     */
+    void delete(CommonIdDTO idDTO);
 
 }
