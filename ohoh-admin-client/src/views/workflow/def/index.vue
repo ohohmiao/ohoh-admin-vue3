@@ -78,7 +78,7 @@ import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import DefForm from "./DefForm.vue";
 
-const { BUTTONS } = useAuthButtons();
+const { BUTTONS, authButtons } = useAuthButtons();
 
 // 获取 ProTable、TreeFilter 元素，调用其获取刷新数据方法（还能获取到当前查询参数，方便导出携带参数）
 const treeFilter = ref();
@@ -93,8 +93,15 @@ const changeTreeFilter = (val: string) => {
 
 const columns: ColumnProps<WorkflowDef.Form>[] = [
 	{ type: "selection", fixed: "left", width: 80 },
-	{ prop: "deftypeName", label: "类别", align: "left" }
+	{ prop: "deftypeName", label: "类别", align: "left" },
+	{ prop: "defName", label: "流程名称", width: 150, search: { el: "input" } },
+	{ prop: "defCode", label: "流程编码", width: 150, search: { el: "input" } },
+	{ prop: "defVersion", label: "版本号", width: 80 },
+	{ prop: "defSort", label: "排序", width: 80 }
 ];
+if (authButtons.includes("edit") || authButtons.includes("delete")) {
+	columns.push({ prop: "operation", label: "操作", width: 270, fixed: "right" });
+}
 
 // 打开流程定义类别表单
 const defTypeFormRef = ref<InstanceType<typeof DefTypeForm> | null>(null);
@@ -129,9 +136,7 @@ const handleDeleteDefType = async (params: WorkflowDefType.TreeNode) => {
 // 打开流程定义表单
 const defFormRef = ref<InstanceType<typeof DefForm> | null>(null);
 const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {}) => {
-	if (title == "新增") {
-		rowData.deftypeId = initParam.parentId;
-	} else {
+	if (title != "新增") {
 		const { data } = (await getWorkflowDefApi({ id: rowData.defId! })).data;
 		rowData = data;
 	}
