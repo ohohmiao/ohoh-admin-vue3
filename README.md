@@ -42,11 +42,11 @@ ohoh-admin-vue3
 ### 效果图
 - 登录页
 
-<img src="images/登录页.png" width="550" />
+<img src="images/登录页.png" width="666" />
 
 - 首页
 
-<img src="images/首页.png" width="550" />
+<img src="images/首页.png" width="666" />
 
 - 全局公共角色
 
