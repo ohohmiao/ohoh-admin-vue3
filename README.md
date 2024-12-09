@@ -16,6 +16,9 @@
 - GitHub：https://github.com/ohohmiao/ohoh-admin-vue3
 
 ### 项目功能 
+> 版本2
+> - 流程定义管理：bpmn.js流程设计器。
+> 开发ing...
 > 版本1.0.0
 > - 系统资源管理：配置系统菜单及按钮。
 > - 系统字典管理：维护系统字典数据。
@@ -46,23 +49,27 @@ ohoh-admin-vue3
 
 - 全局公共角色
 
-<img src="images/全局公共角色.gif" width="550" />
+<img src="images/全局公共角色.gif" width="666" />
 
 - 给角色授权资源
 
-<img src="images/给角色授权资源.gif" width="550" />
+<img src="images/给角色授权资源.gif" width="666" />
 
 - 给角色授权用户
 
-<img src="images/给角色授权用户.gif" width="550" />
+<img src="images/给角色授权用户.gif" width="666" />
 
 - 给角色授权数据
 
-<img src="images/给角色授权数据.gif" width="550" />
+<img src="images/给角色授权数据.gif" width="666" />
 
 - 给用户授权角色
 
-<img src="images/给用户授权角色.gif" width="550" />
+<img src="images/给用户授权角色.gif" width="666" />
+
+- bpmn.js流程设计器
+
+<img src="images/bpmnjs流程设计器.gif" width="666"/>
 
 ### Respect！！！
 
