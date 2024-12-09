@@ -136,6 +136,7 @@ const initBpmnDesigner = async (defXml?: string) => {
 };
 
 onMounted(() => {
+	// TODO 屏蔽浏览器右键
 	// document.body.addEventListener("contextmenu", function (ev) {
 	// 	ev.preventDefault();
 	// });
