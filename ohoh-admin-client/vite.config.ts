@@ -34,6 +34,12 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
 				}
 			}
 		},
+		define: {
+			// Enable/disable detailed warnings for hydration mismatches in production builds.
+			// This will result in more code included in the bundle,
+			// so it is recommended to only enable this for debugging purposes.
+			__VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
+		},
 		server: {
 			// 服务器主机名，如果允许外部访问，可设置为 "0.0.0.0"
 			host: "0.0.0.0",

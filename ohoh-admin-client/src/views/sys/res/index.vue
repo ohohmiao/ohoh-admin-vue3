@@ -60,7 +60,7 @@ const columns: ColumnProps<SysRes.Form>[] = [
 		search: { el: "select" },
 		enum: [
 			{ label: "菜单", value: 0, tagType: "success" },
-			{ label: "按钮", value: 1, tagType: "" }
+			{ label: "按钮", value: 1, tagType: "primary" }
 		]
 	},
 	/*{

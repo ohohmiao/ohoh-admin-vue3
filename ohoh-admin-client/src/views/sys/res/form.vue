@@ -34,8 +34,8 @@
 						<el-col :span="12">
 							<el-form-item label="资源类别" prop="resType">
 								<el-radio-group v-model="formProps.rowData.resType">
-									<el-radio-button :label="0">菜单</el-radio-button>
-									<el-radio-button :label="1">按钮</el-radio-button>
+									<el-radio-button :value="0">菜单</el-radio-button>
+									<el-radio-button :value="1">按钮</el-radio-button>
 								</el-radio-group>
 							</el-form-item>
 						</el-col>
@@ -63,9 +63,9 @@
 						<el-col :span="12" v-if="formProps.rowData.resType === 0">
 							<el-form-item label="菜单类别" prop="menuType">
 								<el-radio-group v-model="formProps.rowData.menuType">
-									<el-radio-button :label="0">目录</el-radio-button>
-									<el-radio-button :label="1">组件</el-radio-button>
-									<el-radio-button :label="2">外链</el-radio-button>
+									<el-radio-button :value="0">目录</el-radio-button>
+									<el-radio-button :value="1">组件</el-radio-button>
+									<el-radio-button :value="2">外链</el-radio-button>
 								</el-radio-group>
 							</el-form-item>
 						</el-col>
@@ -75,21 +75,21 @@
 						>
 							<el-form-item label="是否隐藏" prop="hideFlag">
 								<el-radio-group v-model="formProps.rowData.hideFlag">
-									<el-radio-button :label="0">否</el-radio-button>
-									<el-radio-button :label="1">是</el-radio-button>
+									<el-radio-button :value="0">否</el-radio-button>
+									<el-radio-button :value="1">是</el-radio-button>
 								</el-radio-group>
 							</el-form-item>
 						</el-col>
 						<el-col :span="12" v-if="formProps.rowData.resType === 0 && formProps.rowData.menuType === 1">
 							<el-form-item label="是否全屏显示" prop="fullscreenFlag">
 								<el-radio-group v-model="formProps.rowData.fullscreenFlag">
-									<el-radio-button :label="0">否</el-radio-button>
-									<el-radio-button :label="1">是</el-radio-button>
+									<el-radio-button :value="0">否</el-radio-button>
+									<el-radio-button :value="1">是</el-radio-button>
 								</el-radio-group>
 							</el-form-item>
 						</el-col>
 						<el-col :span="12" v-if="formProps.rowData.resType === 0 && formProps.rowData.menuType === 1">
-							<el-form-item label="组件路径" prop="resPath" required="true">
+							<el-form-item label="组件路径" prop="resPath" required>
 								<template #label>
 									<el-tooltip content="注：前面必须有反斜杠！" placement="top">
 										<el-icon><QuestionFilled /></el-icon>
@@ -103,7 +103,7 @@
 							</el-form-item>
 						</el-col>
 						<el-col :span="12" v-if="formProps.rowData.resType === 0 && formProps.rowData.menuType === 2">
-							<el-form-item label="外链url" prop="resPath" required="true">
+							<el-form-item label="外链url" prop="resPath" required>
 								<template #label>
 									<el-tooltip content="注：http(s)://开头！" placement="top">
 										<el-icon><QuestionFilled /></el-icon>
