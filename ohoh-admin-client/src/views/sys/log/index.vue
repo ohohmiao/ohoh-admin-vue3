@@ -37,7 +37,7 @@ const columns: ColumnProps<SysLog.Form>[] = [
 		enum: [
 			{ label: "登录日志", value: 3, tagType: "success" },
 			{ label: "登出日志", value: 4, tagType: "info" },
-			{ label: "操作日志", value: 1 },
+			{ label: "操作日志", value: 1, tagType: "primary" },
 			{ label: "异常日志", value: 2, tagType: "danger" }
 		],
 		search: { el: "select" }

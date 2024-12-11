@@ -45,8 +45,8 @@
 					是否公共角色：
 				</template>
 				<el-radio-group v-model="formProps.rowData.publicroleFlag">
-					<el-radio-button :label="0">否</el-radio-button>
-					<el-radio-button :label="1">是</el-radio-button>
+					<el-radio-button :value="0">否</el-radio-button>
+					<el-radio-button :value="1">是</el-radio-button>
 				</el-radio-group>
 			</el-form-item>
 			<el-form-item label="排序" prop="roleSort" v-if="formProps.rowData.roleId">
