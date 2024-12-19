@@ -11,6 +11,7 @@ import com.ohohmiao.modules.system.model.vo.FullCalendarEventVO;
 import com.ohohmiao.modules.system.service.SysRestDayService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class SysRestDayServiceImpl extends ServiceImpl<SysRestDayMapper, SysRest
     }
 
     @Override
-    public void add(String date){
+    public void add(Date date){
         LambdaQueryWrapper<SysRestDay> getOneWrapper = new LambdaQueryWrapper<>();
         getOneWrapper.eq(SysRestDay::getRestdayDate, date);
         SysRestDay sysRestDay = getOne(getOneWrapper);
@@ -46,7 +47,7 @@ public class SysRestDayServiceImpl extends ServiceImpl<SysRestDayMapper, SysRest
     }
 
     @Override
-    public void delete(String date){
+    public void delete(Date date){
         LambdaUpdateWrapper<SysRestDay> deleteWrapper = new LambdaUpdateWrapper<>();
         deleteWrapper.eq(SysRestDay::getRestdayDate, date);
         this.remove(deleteWrapper);

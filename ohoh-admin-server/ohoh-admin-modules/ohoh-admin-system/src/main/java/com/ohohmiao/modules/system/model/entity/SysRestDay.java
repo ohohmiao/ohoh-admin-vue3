@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * 节假日实体
  *
@@ -21,6 +23,6 @@ public class SysRestDay {
     private String restdayId;
 
     @TableField
-    private String restdayDate;
+    private Date restdayDate;
 
 }

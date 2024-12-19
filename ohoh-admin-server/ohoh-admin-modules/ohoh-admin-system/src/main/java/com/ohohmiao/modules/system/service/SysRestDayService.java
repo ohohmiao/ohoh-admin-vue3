@@ -5,6 +5,7 @@ import com.ohohmiao.modules.system.model.dto.SysRestDayListDTO;
 import com.ohohmiao.modules.system.model.entity.SysRestDay;
 import com.ohohmiao.modules.system.model.vo.FullCalendarEventVO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,12 +27,12 @@ public interface SysRestDayService extends IService<SysRestDay> {
      * 新增节假日
      * @param date
      */
-    void add(String date);
+    void add(Date date);
 
     /**
      * 删除节假日
      * @param date
      */
-    void delete(String date);
+    void delete(Date date);
 
 }
