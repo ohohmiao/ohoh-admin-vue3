@@ -12,7 +12,7 @@ import lombok.Setter;
  * @author ohohmiao
  * @date 2023/4/12 22:17
  */
-@ApiModel("组织机构查询条件")
+@ApiModel("组织机构分页查询条件")
 @Getter
 @Setter
 public class SysOrgPageDTO extends CommonPageDTO {

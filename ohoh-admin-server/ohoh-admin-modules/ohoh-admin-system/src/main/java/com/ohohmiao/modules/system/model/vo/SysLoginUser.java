@@ -2,6 +2,7 @@ package com.ohohmiao.modules.system.model.vo;
 
 import com.ohohmiao.framework.security.enums.AuthConstEnum;
 import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,7 @@ import lombok.Setter;
  * @author ohohmiao
  * @date 2023/4/5 17:04
  */
+@ApiModel("登录用户对象")
 @Getter
 @Setter
 public class SysLoginUser extends StpLoginUser {

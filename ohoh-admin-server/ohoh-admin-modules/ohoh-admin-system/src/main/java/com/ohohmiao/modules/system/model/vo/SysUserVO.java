@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 系统用户
+ *
  * @author ohohmiao
  * @date 2023/4/16 14:47
  */

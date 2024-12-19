@@ -40,6 +40,11 @@
             <artifactId>sa-token-alone-redis</artifactId>
         </dependency>
 
+        <!--<dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-aop</artifactId>
+        </dependency>-->
+
     </dependencies>
 
 </project>

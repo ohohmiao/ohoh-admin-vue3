@@ -12,7 +12,7 @@ import lombok.Setter;
  * @author ohohmiao
  * @date 2023-08-07 16:18
  */
-@ApiModel("系统日志查询条件")
+@ApiModel("系统日志分页查询条件")
 @Getter
 @Setter
 public class SysLogPageDTO extends CommonPageDTO {
