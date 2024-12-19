@@ -7,17 +7,19 @@ import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpLogic;
+import cn.dev33.satoken.strategy.SaAnnotationStrategy;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.ohohmiao.framework.web.util.PlatExceptionUtil;
 import com.ohohmiao.framework.security.enums.AuthConstEnum;
 import com.ohohmiao.framework.security.enums.AuthDeviceEnum;
 import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
 import com.ohohmiao.framework.security.util.StpPCUtil;
+import com.ohohmiao.framework.web.util.PlatExceptionUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
@@ -34,6 +36,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -142,11 +145,11 @@ public class PlatConfigurer implements WebMvcConfigurer {
     /**
      * 重写Sa-Token默认的注解处理器
      */
-//    @Autowired
-//    public void rewriteSaStrategy() {
-//        // 增加注解合并功能
-//        SaStrategy.me.getAnnotation = AnnotatedElementUtils::getMergedAnnotation;
-//    }
+    @PostConstruct
+    public void rewriteSaStrategy() {
+        // 增加注解合并功能
+        SaAnnotationStrategy.instance.getAnnotation = AnnotatedElementUtils::getMergedAnnotation;
+    }
 
     /**
      * 自定义权限验证接口扩展
