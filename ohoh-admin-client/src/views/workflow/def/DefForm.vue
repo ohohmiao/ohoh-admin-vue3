@@ -164,7 +164,7 @@ const acceptParams = async (params: FormProps) => {
 	defTypeTreeSelectDatas.value = data;
 
 	formVisible.value = true;
-	initBpmnDesigner(formProps.value.rowData.defXml);
+	await initBpmnDesigner(formProps.value.rowData.defXml);
 };
 
 // 禁用一级树节点

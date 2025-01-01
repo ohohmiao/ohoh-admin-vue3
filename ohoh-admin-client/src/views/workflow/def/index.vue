@@ -49,6 +49,14 @@
 				<!-- 表格操作 -->
 				<template #operation="scope">
 					<el-button type="primary" link :icon="EditPen" @click="openDefForm('编辑', scope.row)" v-auth="'edit'">编辑</el-button>
+					<el-button
+						type="primary"
+						link
+						:icon="Setting"
+						@click="openDefConfigTabs(scope.row.defCode, scope.row.defVersion)"
+						v-auth="'config'"
+						>配置</el-button
+					>
 					<el-button type="primary" link :icon="Delete" @click="handleDeleteDef(scope.row)" v-auth="'delete'">删除</el-button>
 				</template>
 			</ProTable>
@@ -57,12 +65,14 @@
 		<DefTypeForm ref="defTypeFormRef"></DefTypeForm>
 		<!-- 流程定义表单 -->
 		<DefForm ref="defFormRef"></DefForm>
+		<!-- 流程配置对话框 -->
+		<DefConfigTabs ref="defConfigTabsRef"></DefConfigTabs>
 	</div>
 </template>
 
 <script setup lang="ts" name="WorkflowDefManage">
 import { reactive, ref } from "vue";
-import { CirclePlus, EditPen, Operation, Delete } from "@element-plus/icons-vue";
+import { CirclePlus, EditPen, Operation, Delete, Setting } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
 import ProTable from "@/components/ProTable/index.vue";
 import {
@@ -83,6 +93,7 @@ import DefTypeForm from "./DefTypeForm.vue";
 import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import DefForm from "./DefForm.vue";
+import DefConfigTabs from "./DefConfigTabs.vue";
 
 const { BUTTONS, authButtons } = useAuthButtons();
 
@@ -152,6 +163,16 @@ const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {
 		getTableList: proTable.value.getTableList
 	};
 	defFormRef.value?.acceptParams(params);
+};
+
+// 打开流程配置对话框
+const defConfigTabsRef = ref<InstanceType<typeof DefConfigTabs> | null>(null);
+const openDefConfigTabs = (defCode: string, defVersion: number) => {
+	const params = {
+		defCode: defCode,
+		defVersion: defVersion
+	};
+	defConfigTabsRef.value?.acceptParams(params);
 };
 
 const handleDeleteDef = async (params: WorkflowDef.Form) => {
