@@ -1,5 +1,8 @@
 <template>
 	<el-card>
+		<template #header>
+			<el-button type="primary" plain @click="handleSubmit">保存</el-button>
+		</template>
 		<el-form label-width="120" label-suffix=" :" :rules="rules" :model="formProps.rowData">
 			<el-row :gutter="16">
 				<el-col :span="12">
@@ -69,7 +72,6 @@
 				</el-col>
 			</el-row>
 		</el-form>
-		<template #footer>页脚信息</template>
 	</el-card>
 </template>
 
@@ -117,6 +119,8 @@ onMounted(async () => {
 
 	formProps.value.rowData = props.rowData;
 });
+
+const handleSubmit = () => {};
 </script>
 
 <style scoped lang="scss"></style>

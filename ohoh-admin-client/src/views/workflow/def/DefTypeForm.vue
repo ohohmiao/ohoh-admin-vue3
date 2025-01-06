@@ -29,7 +29,7 @@
 			<el-form-item label="类别名称" prop="deftypeName">
 				<el-input v-model="formProps.rowData.deftypeName" placeholder="请输入类别名称" maxlength="30" clearable></el-input>
 			</el-form-item>
-			<el-form-item label="类别编码" prop="deftypeCode">
+			<el-form-item prop="deftypeCode">
 				<template #label>
 					<el-tooltip content="注：仅限输入字母、数字和下划线！" placement="top">
 						<el-icon><QuestionFilled /></el-icon>

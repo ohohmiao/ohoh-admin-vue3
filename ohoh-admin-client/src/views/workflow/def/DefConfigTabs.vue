@@ -9,13 +9,15 @@
 			@closed="handleDialogClose"
 		>
 			<el-tabs v-model="activeName" tab-position="left">
-				<el-tab-pane label="基本信息" name="basicTab">
-					<DefConfigBaseForm :row-data="formProps!.rowData"></DefConfigBaseForm>
+				<el-tab-pane label="基本信息" name="baseTab">
+					<DefConfigBaseTab :row-data="formProps.rowData"></DefConfigBaseTab>
 				</el-tab-pane>
 				<el-tab-pane label="表单绑定" name="formTab">表单绑定内容</el-tab-pane>
 				<el-tab-pane label="事件绑定" name="eventTab">事件绑定内容</el-tab-pane>
 				<el-tab-pane label="按钮绑定" name="buttonTab"></el-tab-pane>
-				<el-tab-pane label="环节配置" name="nodeTab"></el-tab-pane>
+				<el-tab-pane label="环节配置" name="nodeTab">
+					<DefConfigNodeTab :def-xml="formProps.rowData.defXml"></DefConfigNodeTab>
+				</el-tab-pane>
 			</el-tabs>
 		</el-dialog>
 	</div>
@@ -23,8 +25,9 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DefConfigBaseForm from "./config/BaseForm.vue";
 import { getWorkflowHisDeployApi, WorkflowDef } from "@/api/modules/workflow/def";
+import DefConfigBaseTab from "./config/BaseTab.vue";
+import DefConfigNodeTab from "./config/NodeTab.vue";
 
 interface FormProps {
 	rowData: Partial<WorkflowDef.Form>;
@@ -41,7 +44,7 @@ const formProps = ref<FormProps>({
 // 接收父组件传过来的参数
 const acceptParams = async (params: FormProps) => {
 	formProps.value.getTableList = params.getTableList;
-	activeName.value = "basicTab";
+	activeName.value = "baseTab";
 
 	const { data } = await getWorkflowHisDeployApi({
 		defCode: params.rowData.defCode || "",
@@ -69,6 +72,9 @@ defineExpose({
 	}
 	.el-tabs--left :deep(.el-tabs__content) {
 		height: 100%;
+		.el-tab-pane {
+			height: 100vh;
+		}
 	}
 }
 </style>
