@@ -38,9 +38,6 @@ public class FlowDefVO extends CommonVO {
     @ApiModelProperty(value = "排序")
     private Integer defSort;
 
-    @ApiModelProperty(value = "备注")
-    private String defRemark;
-
     @ApiModelProperty(value = "定义XML")
     private String defXml;
 

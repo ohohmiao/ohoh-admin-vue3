@@ -2,6 +2,7 @@ package com.ohohmiao.modules.workflow.service;
 
 import com.ohohmiao.framework.mybatis.service.CommonService;
 import com.ohohmiao.modules.workflow.model.entity.FlowHisDeploy;
+import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 
 /**
  * 流程历史部署Service
@@ -10,4 +11,13 @@ import com.ohohmiao.modules.workflow.model.entity.FlowHisDeploy;
  * @date 2024-12-08 19:55
  */
 public interface FlowHisDeployService extends CommonService<FlowHisDeploy> {
+
+    /**
+     * 根据流程编码和版本号获取流程定义
+     * @param defCode
+     * @param defVersion
+     * @return
+     */
+    FlowDefVO get(String defCode, Integer defVersion);
+
 }

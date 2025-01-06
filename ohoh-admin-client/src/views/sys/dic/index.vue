@@ -66,7 +66,7 @@
 	</div>
 </template>
 
-<script setup lang="ts" name="SysDicManage">
+<script setup lang="tsx" name="SysDicManage">
 import { reactive, ref } from "vue";
 import { Operation, CirclePlus, EditPen, Delete } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
@@ -101,8 +101,15 @@ const changeTreeFilter = (val: string) => {
 
 const columns: ColumnProps<SysDic.Form>[] = [
 	{ type: "selection", fixed: "left", width: 80 },
-	{ prop: "dictypeName", label: "字典类别", align: "left" },
-	{ prop: "dicName", label: "字典名称", width: 200, search: { el: "input" } },
+	{
+		prop: "dictypeName",
+		label: "字典类别",
+		width: 120,
+		render: scope => {
+			return <el-tag>{scope.row.dictypeName}</el-tag>;
+		}
+	},
+	{ prop: "dicName", label: "字典名称", search: { el: "input" } },
 	{ prop: "dicCode", label: "字典值", width: 200 },
 	{ prop: "dicSort", label: "排序", width: 80 }
 ];

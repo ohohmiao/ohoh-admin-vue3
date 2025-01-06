@@ -1,86 +1,78 @@
 <template>
-	<div class="designer-dialog">
-		<el-dialog v-model="formVisible" fullscreen :show-close="false" :close-on-click-modal="false" destroy-on-close>
-			<div class="container">
-				<div class="toolbar">
-					<div class="flex">
-						<AlignTools></AlignTools>
-						<ScaleTools></ScaleTools>
-						<CommandTools></CommandTools>
-						<ExternalTools></ExternalTools>
-					</div>
-					<OperationTools></OperationTools>
+	<el-dialog
+		v-model="formVisible"
+		class="designer-dialog"
+		fullscreen
+		:show-close="false"
+		:close-on-click-modal="false"
+		destroy-on-close
+	>
+		<div class="container">
+			<div class="toolbar">
+				<div class="flex">
+					<AlignTools></AlignTools>
+					<ScaleTools></ScaleTools>
+					<CommandTools></CommandTools>
+					<ExternalTools></ExternalTools>
 				</div>
-				<div class="designer">
-					<div class="designer-left designer-with-bg" ref="designerRef"></div>
-					<div class="designer-right">
-						<el-form ref="formRef" label-position="top" label-suffix=" :" :rules="rules" :model="formProps.rowData">
-							<el-form-item label="类别" prop="deftypeId">
-								<el-tree-select
-									v-model="formProps.rowData.deftypeId"
-									:data="defTypeTreeSelectDatas"
-									:props="{ label: 'name' }"
-									node-key="id"
-									check-strictly
-									filterable
-								>
-									<template #default="{ node, data }">
-										<el-icon v-if="data.children"><FolderOpened v-if="node.expanded" /><Folder v-else /></el-icon>
-										<el-icon v-else><Document /></el-icon>
-										<span>{{ node.label }}</span>
-									</template>
-								</el-tree-select>
-							</el-form-item>
-							<el-form-item label="流程名称" prop="defName">
-								<el-input v-model="formProps.rowData.defName" placeholder="请输入流程名称" maxlength="30" clearable></el-input>
-							</el-form-item>
-							<el-form-item label="类别编码" prop="defCode">
-								<template #label>
-									<el-tooltip content="注：仅限输入字母、数字和下划线！" placement="top">
-										<el-icon><QuestionFilled /></el-icon>
-									</el-tooltip>
-									流程编码：
+				<OperationTools></OperationTools>
+			</div>
+			<div class="designer">
+				<div class="designer-left designer-with-bg" ref="designerRef"></div>
+				<div class="designer-right">
+					<el-form ref="formRef" label-position="top" label-suffix=" :" :rules="rules" :model="formProps.rowData">
+						<el-form-item label="类别" prop="deftypeId">
+							<el-tree-select
+								v-model="formProps.rowData.deftypeId"
+								:data="defTypeTreeSelectDatas"
+								:props="{ label: 'name' }"
+								node-key="id"
+								check-strictly
+								filterable
+								:disabled="computedEditMode"
+							>
+								<template #default="{ node, data }">
+									<el-icon v-if="data.children"><FolderOpened v-if="node.expanded" /><Folder v-else /></el-icon>
+									<el-icon v-else><Document /></el-icon>
+									<span>{{ node.label }}</span>
 								</template>
-								<el-input
-									v-model="formProps.rowData.defCode"
-									placeholder="请输入流程编码"
-									maxlength="30"
-									clearable
-									:disabled="computedEditMode"
-								></el-input>
-							</el-form-item>
-							<el-form-item label="排序" prop="defSort" v-if="computedEditMode">
-								<el-input-number
-									v-model="formProps.rowData.defSort"
-									:min="1"
-									:max="9999"
-									placeholder="请输入排序"
-									controls-position="right"
-									style="width: 100%"
-								></el-input-number>
-							</el-form-item>
-							<el-form-item label="备注" prop="defRemark">
-								<el-input
-									v-model="formProps.rowData.defRemark"
-									placeholder="请输入备注"
-									type="textarea"
-									:autosize="{ minRows: 5, maxRows: 8 }"
-									maxlength="100"
-									clearable
-								></el-input>
-							</el-form-item>
-							<el-form-item>
-								<div style="margin: 0 auto">
-									<el-button type="primary" @click="handleSubmit()">部署流程</el-button>
-									<el-button @click="formVisible = false">关闭</el-button>
-								</div>
-							</el-form-item>
-						</el-form>
-					</div>
+							</el-tree-select>
+						</el-form-item>
+						<el-form-item label="流程名称" prop="defName">
+							<el-input
+								v-model="formProps.rowData.defName"
+								placeholder="请输入流程名称"
+								maxlength="30"
+								clearable
+								:disabled="computedEditMode"
+							></el-input>
+						</el-form-item>
+						<el-form-item prop="defCode">
+							<template #label>
+								<el-tooltip content="注：仅限输入字母、数字和下划线！" placement="top">
+									<el-icon><QuestionFilled /></el-icon>
+								</el-tooltip>
+								流程编码：
+							</template>
+							<el-input
+								v-model="formProps.rowData.defCode"
+								placeholder="请输入流程编码"
+								maxlength="30"
+								clearable
+								:disabled="computedEditMode"
+							></el-input>
+						</el-form-item>
+						<el-form-item>
+							<div style="margin: 0 auto">
+								<el-button type="primary" @click="handleSubmit()">部署流程</el-button>
+								<el-button @click="formVisible = false">关闭</el-button>
+							</div>
+						</el-form-item>
+					</el-form>
 				</div>
 			</div>
-		</el-dialog>
-	</div>
+		</div>
+	</el-dialog>
 </template>
 
 <script setup lang="ts" name="WorkflowDefForm">
@@ -160,14 +152,14 @@ const acceptParams = async (params: FormProps) => {
 	});
 
 	const { data } = await getWorkflowDefTypeTreeApi();
-	handleDefTypeTreeCheckDisable(data);
+	!computedEditMode.value && handleDefTypeTreeCheckDisable(data);
 	defTypeTreeSelectDatas.value = data;
 
 	formVisible.value = true;
 	await initBpmnDesigner(formProps.value.rowData.defXml);
 };
 
-// 禁用一级树节点
+// 禁用流程类别树中的一级树节点
 const handleDefTypeTreeCheckDisable = (params: WorkflowDefType.TreeNode[]) => {
 	if (!params) return;
 	params.forEach((param: WorkflowDefType.TreeNode) => {

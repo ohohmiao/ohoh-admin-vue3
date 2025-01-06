@@ -37,9 +37,6 @@ public class FlowDef extends CommonEntity {
     private Integer defSort;
 
     @TableField
-    private String defRemark;
-
-    @TableField
     private String defXml;
 
     @TableField

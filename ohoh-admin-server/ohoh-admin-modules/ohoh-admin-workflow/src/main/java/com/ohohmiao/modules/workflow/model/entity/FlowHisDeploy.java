@@ -22,10 +22,19 @@ public class FlowHisDeploy extends CommonEntity {
     private String hisdeployId;
 
     @TableField
+    private String deftypeId;
+
+    @TableField
+    private String defName;
+
+    @TableField
     private String defCode;
 
     @TableField
     private Integer defVersion;
+
+    @TableField
+    private Integer defSort;
 
     @TableField
     private String defXml;

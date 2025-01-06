@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 /**
@@ -38,10 +37,6 @@ public class FlowDefAddOrEditDTO {
     @ApiModelProperty(value = "流程编码", required = true)
     @NotBlank(message = "流程编码不能为空")
     private String defCode;
-
-    @ApiModelProperty(value = "排序，编辑时必传")
-    @NotNull(message = "排序不能为空", groups = {CommonEditGroup.class})
-    private Integer defSort;
 
     @ApiModelProperty(value = "流程定义xml", required = true)
     @NotBlank(message = "流程定义xml不能为空")

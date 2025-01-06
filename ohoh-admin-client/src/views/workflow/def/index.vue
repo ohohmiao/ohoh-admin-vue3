@@ -70,7 +70,7 @@
 	</div>
 </template>
 
-<script setup lang="ts" name="WorkflowDefManage">
+<script setup lang="tsx" name="WorkflowDefManage">
 import { reactive, ref } from "vue";
 import { CirclePlus, EditPen, Operation, Delete, Setting } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
@@ -110,8 +110,15 @@ const changeTreeFilter = (val: string) => {
 
 const columns: ColumnProps<WorkflowDef.Form>[] = [
 	{ type: "selection", fixed: "left", width: 80 },
-	{ prop: "deftypeName", label: "类别", align: "left" },
-	{ prop: "defName", label: "流程名称", width: 200, search: { el: "input" } },
+	{
+		prop: "deftypeName",
+		label: "类别",
+		width: 120,
+		render: scope => {
+			return <el-tag>{scope.row.deftypeName}</el-tag>;
+		}
+	},
+	{ prop: "defName", label: "流程名称", search: { el: "input" } },
 	{ prop: "defCode", label: "流程编码", width: 150, search: { el: "input" } },
 	{ prop: "defVersion", label: "版本号", width: 70 },
 	{ prop: "defSort", label: "排序", width: 70 }
@@ -169,8 +176,11 @@ const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {
 const defConfigTabsRef = ref<InstanceType<typeof DefConfigTabs> | null>(null);
 const openDefConfigTabs = (defCode: string, defVersion: number) => {
 	const params = {
-		defCode: defCode,
-		defVersion: defVersion
+		rowData: {
+			defCode: defCode,
+			defVersion: defVersion
+		},
+		getTableList: proTable.value.getTableList
 	};
 	defConfigTabsRef.value?.acceptParams(params);
 };

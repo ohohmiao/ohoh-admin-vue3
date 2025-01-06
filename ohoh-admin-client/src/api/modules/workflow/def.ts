@@ -37,8 +37,7 @@ export namespace WorkflowDef {
 		defName: string;
 		defCode: string;
 		defVersion: number;
-		defSort: number;
-		defRemark: string;
+		defSort?: number;
 		defXml: string;
 		defJson: string;
 		defSvg: string;
@@ -88,4 +87,9 @@ export const editWorkflowDefApi = (params: WorkflowDef.Form) => {
 // * 删除流程定义
 export const deleteWorkflowDefApi = (params: { id: string }) => {
 	return http.post("/workflowDef/delete", params);
+};
+
+// * 获取历史流程定义
+export const getWorkflowHisDeployApi = (params: { defCode: string; defVersion: number }) => {
+	return http.post<WorkflowDef.Form>("/worflowHisDeploy/get", params);
 };
