@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref } from "vue";
+import { defineProps, shallowRef } from "vue";
 import BpmnViewer from "@/components/BpmnDesign/BpmnViewer.vue";
 import { Element } from "bpmn-js/lib/model/Types";
 import Modeler from "bpmn-js/lib/Modeler";
@@ -18,7 +18,7 @@ const props = defineProps({
 	defVersion: Number
 });
 
-const defConfigNodeTabs = ref<InstanceType<typeof DefConfigNodeTabs>>();
+const defConfigNodeTabs = shallowRef<InstanceType<typeof DefConfigNodeTabs>>();
 
 const handleElementClick = (element: Element) => {
 	if (element.type === "bpmn:Task") {
