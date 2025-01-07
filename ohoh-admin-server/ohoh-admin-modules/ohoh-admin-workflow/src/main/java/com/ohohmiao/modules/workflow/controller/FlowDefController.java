@@ -1,5 +1,6 @@
 package com.ohohmiao.modules.workflow.controller;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
@@ -59,7 +60,12 @@ public class FlowDefController {
     @SaPcCheckPermission("/workflowDef/get")
     @PostMapping("/workflowDef/get")
     public CommonResp<FlowDefVO> get(@RequestBody @Validated CommonIdDTO idDTO){
-        return CommonResp.data(flowDefService.get(idDTO.getId()));
+        FlowDefVO flowDefVO = flowDefService.get(idDTO.getId());
+        if(ObjectUtil.isNotNull(flowDefVO)){
+            return CommonResp.data(flowDefService.get(idDTO.getId()));
+        }else{
+            return CommonResp.error("不存在的记录");
+        }
     }
 
     /**

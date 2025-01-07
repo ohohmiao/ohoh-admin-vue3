@@ -4,7 +4,7 @@ import { defaultLang } from "@/components/BpmnDesign/extends/AdditionalModules/T
 export const defaultSettings: EditorSettings = {
 	language: defaultLang,
 	processId: `Process_${new Date().getTime()}`,
-	processName: `业务流程`,
+	processName: `工作流`,
 	processEngine: "activiti",
 	paletteMode: "default",
 	rendererMode: "default",

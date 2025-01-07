@@ -42,10 +42,6 @@ public class FlowDefAddOrEditDTO {
     @NotBlank(message = "流程定义xml不能为空")
     private String defXml;
 
-    @ApiModelProperty(value = "流程定义json", required = true)
-    @NotBlank(message = "流程定义json不能为空")
-    private String defJson;
-
     @ApiModelProperty(value = "流程定义svg", required = true)
     @NotBlank(message = "流程定义svg不能为空")
     private String defSvg;

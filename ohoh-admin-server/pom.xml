@@ -35,11 +35,11 @@
         <sa-token.version>1.39.0</sa-token.version>
         <!-- 工具类 -->
         <lombok.version>1.18.28</lombok.version>
-        <hutool.version>5.8.16</hutool.version>
+        <hutool.version>5.8.35</hutool.version>
         <bcprov.jdk15on.version>1.70</bcprov.jdk15on.version>
         <commons.pool2.version>2.11.1</commons.pool2.version>
         <jsoup.version>1.16.1</jsoup.version>
-        <fastjson2.version>2.0.43</fastjson2.version>
+        <fastjson2.version>2.0.53</fastjson2.version>
         <!-- 验证码 -->
         <kaptcha.version>2.3.3</kaptcha.version>
         <!-- mapstruct -->
@@ -131,6 +131,12 @@
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-extra</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-json</artifactId>
                 <version>${hutool.version}</version>
             </dependency>
 

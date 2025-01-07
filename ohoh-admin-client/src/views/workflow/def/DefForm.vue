@@ -160,7 +160,6 @@ const handleSubmit = () => {
 			const modelerData = await bpmnEditorRef.value?.getModelerData();
 			formProps.value.rowData.defXml = modelerData!.xml;
 			formProps.value.rowData.defSvg = modelerData!.svg;
-			formProps.value.rowData.defJson = modelerData!.json;
 
 			const { msg } = await formProps.value.api!(formProps.value.rowData);
 			ElMessage.success({ message: msg });
