@@ -1,6 +1,3 @@
-import { ViewerOptions } from "diagram-js/lib/model/Types";
-import { ModuleDeclaration } from "didi";
-
 export interface EditorSettings {
 	language?: string;
 	processName?: string;
@@ -13,17 +10,5 @@ export interface EditorSettings {
 	miniMap: boolean; //小地图
 	otherModule?: boolean;
 	useLint?: boolean;
-	draggable: boolean;
+	draggable: boolean; //图形及线条是否可拖动
 }
-
-export type ModelerOptions<E extends Element> = ViewerOptions<E> & {
-	additionalModules: ModuleDeclaration[];
-	moddleExtensions: Object;
-};
-
-// bpmn.js 事件参数
-// 1. canvas 事件
-type CanvasEventParams = {
-	svg: SVGElement;
-	viewport: SVGElement;
-};

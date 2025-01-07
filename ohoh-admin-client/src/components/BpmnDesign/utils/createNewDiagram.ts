@@ -2,7 +2,7 @@ import EmptyXML from "./emptyXML";
 import { EditorSettings } from "../settings";
 import BpmnModelerState from "@/stores/modules/bpmn/modeler";
 
-export const createNewDiagram = async function (newXml?: string, settings?: EditorSettings) {
+export const createNewDiagram = async function (newXml?: string, settings?: EditorSettings, emit?: any) {
 	try {
 		const store = BpmnModelerState();
 		const timestamp = Date.now();
@@ -15,6 +15,17 @@ export const createNewDiagram = async function (newXml?: string, settings?: Edit
 		if (warnings && warnings.length) {
 			warnings.forEach(warn => console.warn(warn));
 		}
+		// 触发事件
+		emit && emit("modeler-init", modeler);
+		modeler?.on("element.click", event => {
+			const { element } = event;
+			if (!event || !element.parent || element.type === "bpmn:Process") {
+				return false;
+			} else {
+				element.name = element.di.bpmnElement.name;
+				emit && emit("element-click", element);
+			}
+		});
 	} catch (e) {
 		console.error(`[Process Designer Warn]: ${typeof e === "string" ? e : (e as Error)?.message}`);
 	}

@@ -16,7 +16,11 @@
 				<el-tab-pane label="事件绑定" name="eventTab">事件绑定内容</el-tab-pane>
 				<el-tab-pane label="按钮绑定" name="buttonTab"></el-tab-pane>
 				<el-tab-pane label="环节配置" name="nodeTab">
-					<DefConfigNodeTab :def-xml="formProps.rowData.defXml" @element-click="handleElementClick"></DefConfigNodeTab>
+					<DefConfigNodeTab
+						:def-xml="formProps.rowData.defXml"
+						@element-click="handleElementClick"
+						@modeler-init="handleModelerInit"
+					></DefConfigNodeTab>
 				</el-tab-pane>
 			</el-tabs>
 		</el-dialog>
@@ -29,6 +33,9 @@ import { getWorkflowHisDeployApi, WorkflowDef } from "@/api/modules/workflow/def
 import DefConfigBaseTab from "./config/BaseTab.vue";
 import DefConfigNodeTab from "./config/NodeTab.vue";
 import { Element } from "bpmn-js/lib/model/Types";
+import Modeler from "bpmn-js/lib/Modeler";
+import type ElementRegistry from "diagram-js/lib/core/ElementRegistry";
+import type Modeling from "bpmn-js/lib/features/modeling/Modeling";
 
 interface FormProps {
 	rowData: Partial<WorkflowDef.Form>;
@@ -60,6 +67,19 @@ const acceptParams = async (params: FormProps) => {
 const handleElementClick = (element: Element) => {
 	console.info("外部点击捕获到了");
 	console.info(element);
+};
+
+const handleModelerInit = (modeler: Modeler) => {
+	console.info("初始化完成。。。");
+	const elementRegistry = modeler.get<ElementRegistry>("elementRegistry");
+	const nodeList = elementRegistry.getAll().filter(node => node.type === "bpmn:Task");
+	console.info(nodeList);
+	const modeling = modeler.get<Modeling>("modeling");
+	nodeList.forEach(node => {
+		if (node.id == "Activity_02szuig" || node.id == "Activity_1drhdip") {
+			modeling.setColor(node, { fill: "#fff", stroke: "#ff0000" });
+		}
+	});
 };
 
 // 对话框关闭动画结束时的回调
