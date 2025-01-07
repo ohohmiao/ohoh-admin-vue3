@@ -18,7 +18,7 @@
 				<OperationTools></OperationTools>
 			</div>
 			<div class="designer">
-				<div class="designer-left designer-with-bg" ref="designerRef"></div>
+				<BpmnEditor ref="bpmnEditorRef"></BpmnEditor>
 				<div class="designer-right">
 					<el-form ref="formRef" label-position="top" label-suffix=" :" :rules="rules" :model="formProps.rowData">
 						<el-form-item label="类别" prop="deftypeId">
@@ -76,22 +76,16 @@
 </template>
 
 <script setup lang="ts" name="WorkflowDefForm">
-import { ref, onMounted, nextTick, shallowRef, reactive, computed } from "vue";
-import { storeToRefs } from "pinia";
+import { ref, reactive, computed, shallowRef, nextTick } from "vue";
 import AlignTools from "@/components/BpmnDesign/components/Toolbar/AlignTools.vue";
 import ScaleTools from "@/components/BpmnDesign/components/Toolbar/ScaleTools.vue";
 import CommandTools from "@/components/BpmnDesign/components/Toolbar/CommandTools.vue";
 import ExternalTools from "@/components/BpmnDesign/components/Toolbar/ExternalTools.vue";
 import OperationTools from "@/components/BpmnDesign/components/Toolbar/OperationTools.vue";
-import BpmnEditorState from "@/stores/modules/bpmn/editor";
-import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
-import initModeler from "@/components/BpmnDesign/utils/initModeler";
-import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
+import BpmnEditor from "@/components/BpmnDesign/BpmnEditor.vue";
 import { getWorkflowDefTypeTreeApi, WorkflowDef, WorkflowDefType } from "@/api/modules/workflow/def";
 import * as eleValidate from "@/utils/eleValidate";
 import { FormInstance, ElMessage } from "element-plus";
-import BpmnModelerState from "@/stores/modules/bpmn/modeler";
-import BpmnModdle from "bpmn-moddle";
 
 interface FormProps {
 	[key: string]: any;
@@ -117,22 +111,7 @@ const rules = reactive({
 	defSort: [{ required: true, message: "请输入排序" }]
 });
 
-const editorStore = BpmnEditorState();
-const { editorSettings } = storeToRefs(editorStore);
-const designerRef = shallowRef<HTMLDivElement | null>(null);
-const initBpmnDesigner = async (defXml?: string) => {
-	const modelerModules = modulesAndModdle(editorSettings);
-	await nextTick();
-	initModeler(designerRef, modelerModules);
-	await createNewDiagram(defXml);
-};
-
-onMounted(() => {
-	// TODO 屏蔽浏览器右键
-	// document.body.addEventListener("contextmenu", function (ev) {
-	// 	ev.preventDefault();
-	// });
-});
+const bpmnEditorRef = shallowRef<InstanceType<typeof BpmnEditor>>();
 
 // 接收父组件传过来的参数
 const acceptParams = async (params: FormProps) => {
@@ -156,7 +135,9 @@ const acceptParams = async (params: FormProps) => {
 	defTypeTreeSelectDatas.value = data;
 
 	formVisible.value = true;
-	await initBpmnDesigner(formProps.value.rowData.defXml);
+
+	await nextTick();
+	await bpmnEditorRef.value?.initBpmnDesigner(formProps.value.rowData.defXml);
 };
 
 // 禁用流程类别树中的一级树节点
@@ -172,20 +153,14 @@ const handleDefTypeTreeCheckDisable = (params: WorkflowDefType.TreeNode[]) => {
 
 // 提交数据（新增/编辑）
 const formRef = ref<FormInstance>();
-const modelerStore = BpmnModelerState();
-const moddle = new BpmnModdle();
 const handleSubmit = () => {
 	formRef.value!.validate(async valid => {
 		if (!valid) return;
 		try {
-			// 获取bpmnjs设计器数据
-			const modeler = modelerStore.getModeler!;
-			const { xml } = await modeler.saveXML({ format: true, preamble: true });
-			const { svg } = await modeler.saveSVG();
-			const jsonStr = await moddle.fromXML(xml!);
-			formProps.value.rowData.defXml = xml;
-			formProps.value.rowData.defSvg = svg;
-			formProps.value.rowData.defJson = JSON.stringify(jsonStr);
+			const modelerData = await bpmnEditorRef.value?.getModelerData();
+			formProps.value.rowData.defXml = modelerData!.xml;
+			formProps.value.rowData.defSvg = modelerData!.svg;
+			formProps.value.rowData.defJson = modelerData!.json;
 
 			const { msg } = await formProps.value.api!(formProps.value.rowData);
 			ElMessage.success({ message: msg });
@@ -201,9 +176,6 @@ defineExpose({
 	acceptParams
 });
 </script>
-<style src="@/components/BpmnDesign/styles/index.scss"></style>
-<style src="@/components/BpmnDesign/styles/design.scss"></style>
-<style src="@/components/BpmnDesign/styles/toolbar.scss"></style>
 <style scoped lang="scss">
 .designer-dialog :deep(.el-dialog__header) {
 	display: none;

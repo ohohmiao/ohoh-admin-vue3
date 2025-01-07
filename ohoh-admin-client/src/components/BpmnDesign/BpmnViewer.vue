@@ -45,10 +45,6 @@ onMounted(() => {
 		initBpmnDesigner(props.bpmnXml);
 	}
 });
-
-defineExpose({
-	initBpmnDesigner
-});
 </script>
 
 <style src="@/components/BpmnDesign/styles/index.scss"></style>
