@@ -16,7 +16,7 @@
 				<el-tab-pane label="事件绑定" name="eventTab">事件绑定内容</el-tab-pane>
 				<el-tab-pane label="按钮绑定" name="buttonTab"></el-tab-pane>
 				<el-tab-pane label="环节配置" name="nodeTab">
-					<DefConfigNodeTab :def-xml="formProps.rowData.defXml"></DefConfigNodeTab>
+					<DefConfigNodeTab :def-xml="formProps.rowData.defXml" @element-click="handleElementClick"></DefConfigNodeTab>
 				</el-tab-pane>
 			</el-tabs>
 		</el-dialog>
@@ -28,6 +28,7 @@ import { ref } from "vue";
 import { getWorkflowHisDeployApi, WorkflowDef } from "@/api/modules/workflow/def";
 import DefConfigBaseTab from "./config/BaseTab.vue";
 import DefConfigNodeTab from "./config/NodeTab.vue";
+import { Element } from "bpmn-js/lib/model/Types";
 
 interface FormProps {
 	rowData: Partial<WorkflowDef.Form>;
@@ -54,6 +55,11 @@ const acceptParams = async (params: FormProps) => {
 	formProps.value.rowData = data;
 
 	formVisible.value = true;
+};
+
+const handleElementClick = (element: Element) => {
+	console.info("外部点击捕获到了");
+	console.info(element);
 };
 
 // 对话框关闭动画结束时的回调

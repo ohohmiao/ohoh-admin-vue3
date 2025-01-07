@@ -1,23 +1,22 @@
 <template>
 	<div class="container">
-		<div class="designer-left" ref="designerRef" @modeler-init="handleModelerInit"></div>
+		<div class="designer-left" ref="designerRef"></div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { nextTick, shallowRef, onMounted, ref } from "vue";
+import { EditorSettings } from "@/components/BpmnDesign/settings";
 import initModeler from "@/components/BpmnDesign/utils/initModeler";
 import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
 import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
-import Modeler from "bpmn-js/lib/Modeler";
-
-import { EditorSettings } from "@/components/BpmnDesign/settings";
+import { Element } from "bpmn-js/lib/model/Types";
 
 const props = defineProps({
 	defXml: String
 });
 
-const defaultSettings: EditorSettings = {
+const editorSettings: EditorSettings = {
 	processEngine: "activiti",
 	rendererMode: "default",
 	miniMap: true,
@@ -26,11 +25,17 @@ const defaultSettings: EditorSettings = {
 
 const designerRef = shallowRef<HTMLDivElement | null>(null);
 
+// 定义图形点击事件
+type EmitProps = {
+	(e: "element-click", element: Element): void;
+};
+const emit = defineEmits<EmitProps>();
+
 const initBpmnDesigner = async (defXml: string) => {
-	const modelerModules = modulesAndModdle(ref(defaultSettings));
+	const modelerModules = modulesAndModdle(ref(editorSettings));
 	await nextTick();
-	initModeler(designerRef, modelerModules);
-	await createNewDiagram(defXml, defaultSettings);
+	initModeler(designerRef, modelerModules, emit);
+	await createNewDiagram(defXml, editorSettings);
 };
 
 onMounted(() => {
@@ -38,11 +43,6 @@ onMounted(() => {
 		initBpmnDesigner(props.defXml);
 	}
 });
-
-const handleModelerInit = (modeler: Modeler) => {
-	console.info("初始化成功");
-	console.info(modeler);
-};
 
 defineExpose({
 	initBpmnDesigner

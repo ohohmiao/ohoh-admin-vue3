@@ -6,7 +6,7 @@ import BpmnModelerState from "@/stores/modules/bpmn/modeler";
 import type { BaseViewerOptions } from "bpmn-js/lib/BaseViewer";
 import type { ModulesAndModdles } from "@/components/BpmnDesign/utils/modulesAndModdle";
 
-export default function (designer: ShallowRef<HTMLElement | null>, modelerModules: ModulesAndModdles | []) {
+export default function (designer: ShallowRef<HTMLElement | null>, modelerModules: ModulesAndModdles | [], emit?: any) {
 	const store = BpmnModelerState();
 
 	const options: BaseViewerOptions = {
@@ -28,14 +28,13 @@ export default function (designer: ShallowRef<HTMLElement | null>, modelerModule
 
 	EventEmitter.emit("modeler-init", modeler);
 
-	// modeler.on("commandStack.changed", async event => {
-	// 	try {
-	// 		const { xml } = await modeler.saveXML({ format: true });
-	//
-	// 		emit("update:xml", xml);
-	// 		emit("command-stack-changed", event);
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 	}
-	// });
+	modeler.on("element.click", event => {
+		const { element } = event;
+		if (!event || !element.parent || element.type === "bpmn:Process") {
+			return false;
+		} else {
+			element.name = element.di.bpmnElement.name;
+			emit && emit("element-click", element);
+		}
+	});
 }
