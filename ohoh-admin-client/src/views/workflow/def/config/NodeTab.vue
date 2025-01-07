@@ -1,56 +1,35 @@
 <template>
-	<div class="container">
-		<div class="designer-left" ref="designerRef"></div>
-	</div>
+	<BpmnViewer :def-xml="props.defXml" @element-click="handleElementClick" @modeler-init="handleModelerInit"></BpmnViewer>
 </template>
 
 <script setup lang="ts">
-import { nextTick, shallowRef, onMounted, ref } from "vue";
-import { EditorSettings } from "@/components/BpmnDesign/settings";
-import initModeler from "@/components/BpmnDesign/utils/initModeler";
-import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
-import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
+import { defineProps } from "vue";
+import BpmnViewer from "@/components/BpmnDesign/BpmnViewer.vue";
 import { Element } from "bpmn-js/lib/model/Types";
 import Modeler from "bpmn-js/lib/Modeler";
+import type ElementRegistry from "diagram-js/lib/core/ElementRegistry";
+import type Modeling from "bpmn-js/lib/features/modeling/Modeling";
 
 const props = defineProps({
 	defXml: String
 });
 
-const editorSettings: EditorSettings = {
-	processEngine: "activiti",
-	rendererMode: "default",
-	miniMap: true,
-	draggable: false
+const handleElementClick = (element: Element) => {
+	console.info("外部点击捕获到了");
+	console.info(element);
 };
 
-const designerRef = shallowRef<HTMLDivElement | null>(null);
-
-// 定义图形点击事件
-type EmitProps = {
-	(e: "element-click", element: Element): void;
-	(e: "modeler-init", modeler: Modeler): void;
+const handleModelerInit = (modeler: Modeler) => {
+	const elementRegistry = modeler.get<ElementRegistry>("elementRegistry");
+	// 获取任务节点集合
+	const nodeList = elementRegistry.getAll().filter(node => node.type === "bpmn:Task");
+	const modeling = modeler.get<Modeling>("modeling");
+	nodeList.forEach(node => {
+		if (node.id == "Activity_02szuig" || node.id == "Activity_1drhdip") {
+			modeling.setColor(node, { fill: "#fff", stroke: "#ff0000" });
+		}
+	});
 };
-const emit = defineEmits<EmitProps>();
-
-const initBpmnDesigner = async (defXml: string) => {
-	const modelerModules = modulesAndModdle(ref(editorSettings));
-	await nextTick();
-	initModeler(designerRef, modelerModules);
-	await createNewDiagram(defXml, editorSettings, emit);
-};
-
-onMounted(() => {
-	if (props.defXml) {
-		initBpmnDesigner(props.defXml);
-	}
-});
-
-defineExpose({
-	initBpmnDesigner
-});
 </script>
 
-<style src="@/components/BpmnDesign/styles/index.scss"></style>
-<style src="@/components/BpmnDesign/styles/design.scss"></style>
 <style scoped lang="scss"></style>
