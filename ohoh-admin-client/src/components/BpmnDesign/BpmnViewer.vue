@@ -14,7 +14,7 @@ import { Element } from "bpmn-js/lib/model/Types";
 import Modeler from "bpmn-js/lib/Modeler";
 
 const props = defineProps({
-	defXml: String
+	bpmnXml: String
 });
 
 const editorSettings: EditorSettings = {
@@ -41,8 +41,8 @@ const initBpmnDesigner = async (defXml: string) => {
 };
 
 onMounted(() => {
-	if (props.defXml) {
-		initBpmnDesigner(props.defXml);
+	if (props.bpmnXml) {
+		initBpmnDesigner(props.bpmnXml);
 	}
 });
 

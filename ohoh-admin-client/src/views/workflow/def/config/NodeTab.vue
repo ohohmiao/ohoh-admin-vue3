@@ -1,5 +1,5 @@
 <template>
-	<BpmnViewer :def-xml="props.defXml" @element-click="handleElementClick" @modeler-init="handleModelerInit"></BpmnViewer>
+	<BpmnViewer :bpmn-xml="props.defXml" @element-click="handleElementClick" @modeler-init="handleModelerInit"></BpmnViewer>
 </template>
 
 <script setup lang="ts">
