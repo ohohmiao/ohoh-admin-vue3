@@ -15,19 +15,14 @@ export default defineStore("BpmnEditorState", {
 		}),
 		getProcessEngine: (state): EditorSettings["processEngine"] => state.editorSettings.processEngine,
 		getEditorConfig: (state): Omit<EditorSettings, "language" | "processName" | "processId" | "processEngine"> => ({
-			bg: state.editorSettings.bg,
 			paletteMode: state.editorSettings.paletteMode,
-			penalMode: state.editorSettings.penalMode,
 			contextPadMode: state.editorSettings.contextPadMode,
 			rendererMode: state.editorSettings.rendererMode,
-			toolbar: state.editorSettings.toolbar,
+			customTheme: state.editorSettings.customTheme,
 			miniMap: state.editorSettings.miniMap,
-			contextmenu: state.editorSettings.contextmenu,
-			customContextmenu: state.editorSettings.customContextmenu,
 			otherModule: state.editorSettings.otherModule,
-			templateChooser: state.editorSettings.templateChooser,
 			useLint: state.editorSettings.useLint,
-			customTheme: state.editorSettings.customTheme
+			draggable: state.editorSettings.draggable
 		})
 	},
 	actions: {

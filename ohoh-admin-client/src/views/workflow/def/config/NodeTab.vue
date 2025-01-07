@@ -1,31 +1,36 @@
 <template>
 	<div class="container">
-		<div class="designer-left designer-with-bg" ref="designerRef"></div>
+		<div class="designer-left" ref="designerRef" @modeler-init="handleModelerInit"></div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { nextTick, shallowRef, onMounted } from "vue";
-import { storeToRefs } from "pinia";
-import BpmnEditorState from "@/stores/modules/bpmn/editor";
+import { nextTick, shallowRef, onMounted, ref } from "vue";
 import initModeler from "@/components/BpmnDesign/utils/initModeler";
 import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
 import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
+import Modeler from "bpmn-js/lib/Modeler";
+
+import { EditorSettings } from "@/components/BpmnDesign/settings";
 
 const props = defineProps({
 	defXml: String
 });
 
+const defaultSettings: EditorSettings = {
+	processEngine: "activiti",
+	rendererMode: "default",
+	miniMap: true,
+	draggable: false
+};
+
 const designerRef = shallowRef<HTMLDivElement | null>(null);
-const editorStore = BpmnEditorState();
-const { editorSettings } = storeToRefs(editorStore);
 
 const initBpmnDesigner = async (defXml: string) => {
-	//console.info(`触发了：${defXml}`);
-	const modelerModules = modulesAndModdle(editorSettings);
+	const modelerModules = modulesAndModdle(ref(defaultSettings));
 	await nextTick();
 	initModeler(designerRef, modelerModules);
-	await createNewDiagram(defXml);
+	await createNewDiagram(defXml, defaultSettings);
 };
 
 onMounted(() => {
@@ -33,6 +38,11 @@ onMounted(() => {
 		initBpmnDesigner(props.defXml);
 	}
 });
+
+const handleModelerInit = (modeler: Modeler) => {
+	console.info("初始化成功");
+	console.info(modeler);
+};
 
 defineExpose({
 	initBpmnDesigner

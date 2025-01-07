@@ -11,7 +11,6 @@ export default {
 	customContextmenu: "自定义右键菜单",
 	processEngine: "流程引擎",
 	background: "背景设置",
-	penalMode: "Penal模式",
 	paletteMode: "Palette模式",
 	contextPadMode: "ContextPad模式",
 	rendererMode: "Renderer模式",

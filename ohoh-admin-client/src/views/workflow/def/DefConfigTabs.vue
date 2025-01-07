@@ -46,6 +46,7 @@ const acceptParams = async (params: FormProps) => {
 	formProps.value.getTableList = params.getTableList;
 	activeName.value = "baseTab";
 
+	// 根据流程编码和版本号，获取流程定义
 	const { data } = await getWorkflowHisDeployApi({
 		defCode: params.rowData.defCode || "",
 		defVersion: params.rowData.defVersion || 1
@@ -73,7 +74,7 @@ defineExpose({
 	.el-tabs--left :deep(.el-tabs__content) {
 		height: 100%;
 		.el-tab-pane {
-			height: 100vh;
+			height: calc(100vh - 86px);
 		}
 	}
 }

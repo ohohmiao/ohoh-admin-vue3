@@ -17,6 +17,38 @@ export default function (settings: Ref<EditorSettings>): ModulesAndModdles {
 	let moddle: { [key: string]: any } = {}; // moddle 声明文件对象
 	const options: { [key: string]: unknown } = {}; // modeler 其他配置
 
+	// 左侧工具栏
+	if (settings.value.paletteMode == "default") {
+		// 默认
+	} else if (settings.value.paletteMode == "rewrite") {
+		// 重写
+	} else {
+		modules.push({ paletteProvider: ["type", function () {}] });
+	}
+
+	// 画布上的图形
+	if (settings.value.paletteMode == "rewrite") {
+		//重写
+	} else {
+		//默认
+	}
+
+	// 节点的菜单弹窗
+	if (settings.value.contextPadMode == "default") {
+		// 默认
+	} else if (settings.value.contextPadMode == "rewrite") {
+		// 重写
+	} else {
+		modules.push({ contextPadProvider: ["type", function () {}] });
+	}
+
+	if (!settings.value.draggable) {
+		// 禁止线条拖动
+		modules.push({ bendpoints: ["type", function () {}] });
+		// 禁止单个图形拖动
+		modules.push({ move: ["type", function () {}] });
+	}
+
 	// 小地图
 	if (settings.value.miniMap) {
 		modules.push(minimapModule);

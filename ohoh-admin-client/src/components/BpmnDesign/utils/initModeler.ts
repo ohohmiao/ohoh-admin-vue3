@@ -6,7 +6,7 @@ import BpmnModelerState from "@/stores/modules/bpmn/modeler";
 import type { BaseViewerOptions } from "bpmn-js/lib/BaseViewer";
 import type { ModulesAndModdles } from "@/components/BpmnDesign/utils/modulesAndModdle";
 
-export default function (designer: ShallowRef<HTMLElement | null>, modelerModules: ModulesAndModdles) {
+export default function (designer: ShallowRef<HTMLElement | null>, modelerModules: ModulesAndModdles | []) {
 	const store = BpmnModelerState();
 
 	const options: BaseViewerOptions = {
