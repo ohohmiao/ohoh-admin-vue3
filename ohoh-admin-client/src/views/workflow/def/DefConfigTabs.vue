@@ -16,7 +16,11 @@
 				<el-tab-pane label="事件绑定" name="eventTab">事件绑定内容</el-tab-pane>
 				<el-tab-pane label="按钮绑定" name="buttonTab"></el-tab-pane>
 				<el-tab-pane label="环节配置" name="nodeTab">
-					<DefConfigNodeTab :def-xml="formProps.rowData.defXml"></DefConfigNodeTab>
+					<DefConfigNodeTab
+						:def-xml="formProps.rowData.defXml"
+						:def-code="formProps.rowData.defCode"
+						:def-version="formProps.rowData.defVersion"
+					></DefConfigNodeTab>
 				</el-tab-pane>
 			</el-tabs>
 		</el-dialog>
