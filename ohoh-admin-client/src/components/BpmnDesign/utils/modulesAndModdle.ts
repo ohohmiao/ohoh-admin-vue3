@@ -43,6 +43,8 @@ export default function (settings: Ref<EditorSettings>): ModulesAndModdles {
 	}
 
 	if (!settings.value.draggable) {
+		// 禁止节点编辑
+		modules.push({ labelEditingProvider: ["type", function () {}] });
 		// 禁止线条拖动
 		modules.push({ bendpoints: ["type", function () {}] });
 		// 禁止单个图形拖动
