@@ -5,6 +5,7 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
+import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployGetDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 import com.ohohmiao.modules.workflow.service.FlowHisDeployService;
@@ -48,6 +49,20 @@ public class FlowHisDeployController {
         }else{
             return CommonResp.error("不存在的记录");
         }
+    }
+
+    /**
+     * 修改流程历史定义
+     * @param flowHisDeployDTO
+     * @return
+     */
+    @ApiOperation(value = "修改流程历史定义")
+    @ApiOperationSupport(order = 2)
+    @SaPcCheckPermission("/worflowHisDeploy/edit")
+    @PostMapping("/worflowHisDeploy/edit")
+    public CommonResp<String> edit(@RequestBody @Validated FlowHisDeployDTO flowHisDeployDTO){
+        flowHisDeployService.edit(flowHisDeployDTO);
+        return CommonResp.success("保存成功");
     }
 
 }

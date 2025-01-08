@@ -11,10 +11,17 @@ import com.alibaba.fastjson2.JSONReader;
  */
 public class WorkflowUtil {
 
+    /** 流程定义节点path **/
     private static JSONPath BPMN_PROCESS_JSON_PATH = JSONPath.of("$.definitions.process");
 
+    /** 开始节点path **/
     private static JSONPath START_EVENT_JSON_PATH = JSONPath.of("$.startEvent[?(@.nodetype=='start')]");
 
+    /**
+     * 获取流程定义节点
+     * @param json
+     * @return
+     */
     public static Object getBpmnProcessNode(String json){
         JSONReader parser = JSONReader.of(json);
         return BPMN_PROCESS_JSON_PATH.extract(parser);

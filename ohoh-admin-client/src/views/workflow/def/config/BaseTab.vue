@@ -3,7 +3,7 @@
 		<template #header>
 			<el-button type="primary" plain @click="handleSubmit">保存</el-button>
 		</template>
-		<el-form label-width="120" label-suffix=" :" :rules="rules" :model="formProps.rowData">
+		<el-form ref="formRef" label-width="120" label-suffix=" :" :rules="rules" :model="formProps.rowData">
 			<el-row :gutter="16">
 				<el-col :span="12">
 					<el-form-item label="类别" prop="deftypeId">
@@ -11,6 +11,7 @@
 							v-model="formProps.rowData.deftypeId"
 							:data="defTypeTreeSelectDatas"
 							:props="{ label: 'name' }"
+							:default-expanded-keys="defTypeTreeSelectDefaultExpandKeys"
 							node-key="id"
 							check-strictly
 							filterable
@@ -77,8 +78,9 @@
 
 <script setup lang="ts">
 import { ref, defineProps, onMounted, reactive } from "vue";
-import { WorkflowDefType, WorkflowDef, getWorkflowDefTypeTreeApi } from "@/api/modules/workflow/def";
+import { WorkflowDefType, WorkflowDef, getWorkflowDefTypeTreeApi, editWorkflowHisDeployApi } from "@/api/modules/workflow/def";
 import * as eleValidate from "@/utils/eleValidate";
+import { FormInstance, ElMessage } from "element-plus";
 
 const props = defineProps<{ rowData: Partial<WorkflowDef.Form> }>();
 
@@ -88,7 +90,10 @@ interface FormProps {
 const formProps = ref<FormProps>({
 	rowData: {}
 });
+// 类别树数据
 const defTypeTreeSelectDatas = ref<WorkflowDefType.TreeNode[]>([]);
+// 类别树默认展开节点
+const defTypeTreeSelectDefaultExpandKeys = ref<string[]>([]);
 
 const rules = reactive({
 	deftypeId: [{ required: true, message: "请选择类别" }],
@@ -115,12 +120,30 @@ const handleDefTypeTreeCheckDisable = (params: WorkflowDefType.TreeNode[]) => {
 onMounted(async () => {
 	const { data } = await getWorkflowDefTypeTreeApi();
 	handleDefTypeTreeCheckDisable(data);
+	// 默认展开一级的树节点
+	data.forEach((item: { [key: string]: any }) => {
+		if (item.parentId === "0") {
+			defTypeTreeSelectDefaultExpandKeys.value.push(item.deftypeId);
+		}
+	});
 	defTypeTreeSelectDatas.value = data;
 
 	formProps.value.rowData = props.rowData;
 });
 
-const handleSubmit = () => {};
+// 修改基本信息
+const formRef = ref<FormInstance>();
+const handleSubmit = () => {
+	formRef.value!.validate(async valid => {
+		if (!valid) return;
+		try {
+			const { msg } = await editWorkflowHisDeployApi(formProps.value.rowData);
+			ElMessage.success({ message: msg });
+		} catch (e) {
+			console.log(e);
+		}
+	});
+};
 </script>
 
 <style scoped lang="scss"></style>

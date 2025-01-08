@@ -26,6 +26,7 @@
 								v-model="formProps.rowData.deftypeId"
 								:data="defTypeTreeSelectDatas"
 								:props="{ label: 'name' }"
+								:default-expanded-keys="defTypeTreeSelectDefaultExpandKeys"
 								node-key="id"
 								check-strictly
 								filterable
@@ -98,7 +99,10 @@ const formVisible = ref(false);
 const formProps = ref<FormProps>({
 	rowData: {}
 });
+// 类别树数据
 const defTypeTreeSelectDatas = ref<WorkflowDefType.TreeNode[]>([]);
+// 类别树默认展开节点
+const defTypeTreeSelectDefaultExpandKeys = ref<string[]>([]);
 const computedEditMode = computed(() => !!formProps.value.rowData.defId);
 
 const rules = reactive({
@@ -132,6 +136,12 @@ const acceptParams = async (params: FormProps) => {
 
 	const { data } = await getWorkflowDefTypeTreeApi();
 	!computedEditMode.value && handleDefTypeTreeCheckDisable(data);
+	// 默认展开一级的树节点
+	data.forEach((item: { [key: string]: any }) => {
+		if (item.parentId === "0") {
+			defTypeTreeSelectDefaultExpandKeys.value.push(item.deftypeId);
+		}
+	});
 	defTypeTreeSelectDatas.value = data;
 
 	formVisible.value = true;

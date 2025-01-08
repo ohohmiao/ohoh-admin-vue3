@@ -93,3 +93,8 @@ export const deleteWorkflowDefApi = (params: { id: string }) => {
 export const getWorkflowHisDeployApi = (params: { defCode: string; defVersion: number }) => {
 	return http.post<WorkflowDef.Form>("/worflowHisDeploy/get", params);
 };
+
+// * 修复历史流程定义
+export const editWorkflowHisDeployApi = (params: Partial<WorkflowDef.Form>) => {
+	return http.post<string>("/worflowHisDeploy/edit", params);
+};

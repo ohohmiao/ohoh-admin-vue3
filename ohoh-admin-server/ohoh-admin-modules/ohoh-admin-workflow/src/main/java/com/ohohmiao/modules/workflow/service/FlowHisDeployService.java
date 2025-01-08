@@ -1,6 +1,7 @@
 package com.ohohmiao.modules.workflow.service;
 
 import com.ohohmiao.framework.mybatis.service.CommonService;
+import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowHisDeploy;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 
@@ -19,5 +20,11 @@ public interface FlowHisDeployService extends CommonService<FlowHisDeploy> {
      * @return
      */
     FlowDefVO get(String defCode, Integer defVersion);
+
+    /**
+     * 修改流程历史定义
+     * @param hisDTO
+     */
+    void edit(FlowHisDeployDTO hisDTO);
 
 }

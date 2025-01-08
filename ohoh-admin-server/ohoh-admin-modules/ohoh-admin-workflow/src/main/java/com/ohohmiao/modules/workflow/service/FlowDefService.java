@@ -55,4 +55,12 @@ public interface FlowDefService extends CommonService<FlowDef> {
      */
     void delete(CommonIdDTO idDTO);
 
+    /**
+     * 根据流程编码和版本号获取
+     * @param defCode
+     * @param defVersion
+     * @return
+     */
+    FlowDef getByDefCodeAndDefVersion(String defCode, Integer defVersion);
+
 }

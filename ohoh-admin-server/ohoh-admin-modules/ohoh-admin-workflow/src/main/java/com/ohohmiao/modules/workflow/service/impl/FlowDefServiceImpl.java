@@ -179,4 +179,12 @@ public class FlowDefServiceImpl extends CommonServiceImpl<FlowDefMapper, FlowDef
         CommonDataChangeEventCenter.doDeleteWithId(FlowDataListenerEnum.DEF.getName(), idDTO.getId());
     }
 
+    @Override
+    public FlowDef getByDefCodeAndDefVersion(String defCode, Integer defVersion){
+        LambdaQueryWrapper<FlowDef> getWrapper = new LambdaQueryWrapper<>();
+        getWrapper.eq(FlowDef::getDefCode, defCode);
+        getWrapper.eq(FlowDef::getDefVersion, defVersion);
+        return this.getOne(getWrapper);
+    }
+
 }
