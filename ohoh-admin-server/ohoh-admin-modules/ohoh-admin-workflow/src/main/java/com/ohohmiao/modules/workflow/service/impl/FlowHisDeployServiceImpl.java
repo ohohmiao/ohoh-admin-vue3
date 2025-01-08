@@ -7,6 +7,7 @@ import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
 import com.ohohmiao.modules.workflow.mapper.FlowHisDeployMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployListDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowDef;
 import com.ohohmiao.modules.workflow.model.entity.FlowDefType;
 import com.ohohmiao.modules.workflow.model.entity.FlowHisDeploy;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 流程历史部署Service实现类
@@ -41,8 +44,12 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         if(ObjectUtil.isNotNull(flowDef)){
             return BeanUtil.copyProperties(flowDef, FlowDefVO.class);
         }else{
-            // TODO 不存在，再查找历史部署表
-            return null;
+            FlowHisDeploy flowHisDeploy = this.getByDefCodeAndDefVersion(defCode, defVersion);
+            if(ObjectUtil.isNotNull(flowHisDeploy)){
+                return BeanUtil.copyProperties(flowHisDeploy, FlowDefVO.class);
+            }else{
+                return null;
+            }
         }
     }
 
@@ -63,16 +70,33 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
             flowDefService.updateById(flowDef);
         }else{
             // 历史部署表
-            LambdaQueryWrapper<FlowHisDeploy> getWrapper = new LambdaQueryWrapper<>();
-            getWrapper.eq(FlowHisDeploy::getDefCode, hisDTO.getDefCode());
-            getWrapper.eq(FlowHisDeploy::getDefVersion, hisDTO.getDefVersion());
-            FlowHisDeploy flowHisDeploy = this.getOne(getWrapper);
+            FlowHisDeploy flowHisDeploy = this.getByDefCodeAndDefVersion(
+                    hisDTO.getDefCode(), hisDTO.getDefVersion());
             if(ObjectUtil.isNull(flowHisDeploy)){
                 throw new CommonException("流程定义不存在！");
             }
             BeanUtil.copyProperties(hisDTO, flowHisDeploy);
             this.updateById(flowHisDeploy);
         }
+    }
+
+    @Override
+    public List<FlowDefVO> list(FlowHisDeployListDTO listDTO){
+        LambdaQueryWrapper<FlowHisDeploy> listWrapper = new LambdaQueryWrapper<>();
+        listWrapper.eq(FlowHisDeploy::getDefCode, listDTO.getDefCode());
+        listWrapper.eq(ObjectUtil.isNotNull(listDTO.getDefVersion()),
+                FlowHisDeploy::getDefVersion, listDTO.getDefVersion());
+        listWrapper.orderByDesc(FlowHisDeploy::getDefVersion);
+        return this.list(listWrapper).stream().map(f ->
+                BeanUtil.copyProperties(f, FlowDefVO.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public FlowHisDeploy getByDefCodeAndDefVersion(String defCode, Integer defVersion){
+        LambdaQueryWrapper<FlowHisDeploy> getWrapper = new LambdaQueryWrapper<>();
+        getWrapper.eq(FlowHisDeploy::getDefCode, defCode);
+        getWrapper.eq(FlowHisDeploy::getDefVersion, defVersion);
+        return this.getOne(getWrapper);
     }
 
 }

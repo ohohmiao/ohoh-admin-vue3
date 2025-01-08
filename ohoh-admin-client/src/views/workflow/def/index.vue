@@ -63,7 +63,7 @@
 						</el-button>
 						<template #dropdown>
 							<el-dropdown-menu>
-								<el-dropdown-item v-if="BUTTONS.hisDeploy">历史版本</el-dropdown-item>
+								<el-dropdown-item @click="openHisDeployList(scope.row)" v-if="BUTTONS.hisDeploy">历史版本</el-dropdown-item>
 								<el-dropdown-item @click="handleDeleteDef(scope.row)" v-if="BUTTONS.delete">删除</el-dropdown-item>
 							</el-dropdown-menu>
 						</template>
@@ -77,6 +77,8 @@
 		<DefForm ref="defFormRef"></DefForm>
 		<!-- 流程配置对话框 -->
 		<DefConfigTabs ref="defConfigTabsRef"></DefConfigTabs>
+		<!-- 历史版本列表对话框 -->
+		<DefHisDeployList ref="defHisDeployListRef"></DefHisDeployList>
 	</div>
 </template>
 
@@ -104,6 +106,7 @@ import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import DefForm from "./DefForm.vue";
 import DefConfigTabs from "./DefConfigTabs.vue";
+import DefHisDeployList from "@/views/workflow/def/config/DefHisDeployList.vue";
 
 const { BUTTONS, authButtons } = useAuthButtons();
 
@@ -188,10 +191,10 @@ const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {
 };
 
 // 打开流程配置对话框
-const defConfigTabsRef = ref<InstanceType<typeof DefConfigTabs> | null>(null);
+const defConfigTabsRef = ref<InstanceType<typeof DefConfigTabs>>();
 const openDefConfigTabs = (defCode: string, defVersion: number) => {
 	const params = {
-		title: `流程配置[${defCode}-${defVersion}]`,
+		title: `[${defCode}-${defVersion}]流程配置`,
 		rowData: {
 			defCode: defCode,
 			defVersion: defVersion
@@ -204,6 +207,14 @@ const openDefConfigTabs = (defCode: string, defVersion: number) => {
 const handleDeleteDef = async (params: WorkflowDef.Form) => {
 	await useHandleData(deleteWorkflowDefApi, { id: params.defId }, `删除【${params.defName}】流程定义`);
 	proTable.value.getTableList();
+};
+
+const defHisDeployListRef = ref<InstanceType<typeof DefHisDeployList>>();
+const openHisDeployList = (params: WorkflowDef.Form) => {
+	defHisDeployListRef.value?.acceptParams({
+		defCode: params.defCode,
+		getTableList: proTable.value.getTableList
+	});
 };
 </script>
 
