@@ -57,7 +57,17 @@
 						v-auth="'config'"
 						>配置</el-button
 					>
-					<el-button type="primary" link :icon="Delete" @click="handleDeleteDef(scope.row)" v-auth="'delete'">删除</el-button>
+					<el-dropdown v-if="BUTTONS.delete || BUTTONS.hisDeploy">
+						<el-button type="primary" link :icon="More">
+							更多<el-icon class="el-icon--right"><arrow-down /></el-icon>
+						</el-button>
+						<template #dropdown>
+							<el-dropdown-menu>
+								<el-dropdown-item v-if="BUTTONS.hisDeploy">历史版本</el-dropdown-item>
+								<el-dropdown-item @click="handleDeleteDef(scope.row)" v-if="BUTTONS.delete">删除</el-dropdown-item>
+							</el-dropdown-menu>
+						</template>
+					</el-dropdown>
 				</template>
 			</ProTable>
 		</div>
@@ -72,7 +82,7 @@
 
 <script setup lang="tsx" name="WorkflowDefManage">
 import { reactive, ref } from "vue";
-import { CirclePlus, EditPen, Operation, Delete, Setting } from "@element-plus/icons-vue";
+import { CirclePlus, EditPen, Operation, More, Setting, ArrowDown } from "@element-plus/icons-vue";
 import TreeFilter from "@/components/TreeFilter/index.vue";
 import ProTable from "@/components/ProTable/index.vue";
 import {
@@ -123,7 +133,12 @@ const columns: ColumnProps<WorkflowDef.Form>[] = [
 	{ prop: "defVersion", label: "版本号", width: 70 },
 	{ prop: "defSort", label: "排序", width: 70 }
 ];
-if (authButtons.includes("edit") || authButtons.includes("delete")) {
+if (
+	authButtons.includes("edit") ||
+	authButtons.includes("delete") ||
+	authButtons.includes("config") ||
+	authButtons.includes("hisDeploy")
+) {
 	columns.push({ prop: "operation", label: "操作", width: 270, fixed: "right" });
 }
 
@@ -190,3 +205,11 @@ const handleDeleteDef = async (params: WorkflowDef.Form) => {
 	proTable.value.getTableList();
 };
 </script>
+
+<style scoped lang="scss">
+:deep(.el-dropdown) {
+	height: 25px;
+	margin-left: 12px;
+	line-height: 25px;
+}
+</style>

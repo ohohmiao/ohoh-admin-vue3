@@ -17,7 +17,7 @@ const formTitle = ref();
 
 // 接收父组件传过来的参数
 const acceptParams = (params: FormProps) => {
-	formTitle.value = `【${params.nodeName}-${params.nodeId}】环节配置`;
+	formTitle.value = `[${params.nodeName}-${params.nodeId}]环节配置`;
 
 	formVisible.value = true;
 };
