@@ -13,13 +13,17 @@ import { DateClickArg } from "@fullcalendar/interaction";
 import { CalendarOptions } from "@fullcalendar/core";
 import { listSysRestDay4FCApi, addSysRestDayApi, deleteSysRestDayApi } from "@/api/modules/sys/restday";
 import dayjs from "dayjs";
+import solarLunar from "solarLunar-es";
+
+// 节假日标题
+const restDayTitle = "休";
 
 const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
 
 const handleDateClick = (info: DateClickArg) => {
 	handleUpdateEvent({
 		id: info.dateStr,
-		title: "休",
+		title: restDayTitle,
 		start: info.date,
 		allDay: true,
 		color: "#6aba49",
@@ -30,7 +34,9 @@ const handleDateClick = (info: DateClickArg) => {
 const handleUpdateEvent = (newEventData: any) => {
 	const calendarApi = calendarRef.value?.getApi();
 	if (calendarApi) {
-		const existingEvent = calendarApi.getEvents().find(event => event.startStr === newEventData.id);
+		const existingEvent = calendarApi
+			.getEvents()
+			.find(event => event.startStr === newEventData.id && event.title == restDayTitle);
 		if (existingEvent) {
 			// 删除
 			existingEvent.remove();
@@ -52,11 +58,27 @@ const calendarOptions: Ref<CalendarOptions> = ref({
 		if (calendarApi) {
 			calendarApi.getEvents().forEach(event => event.remove());
 		}
-		// 再刷新新面板事件
+		// 请求接口，获取日期期间的休息日fullcalendar event数据
 		const { data } = await listSysRestDay4FCApi({
 			start: dayjs(fetchInfo.start).format("YYYY-MM-DD"),
 			end: dayjs(fetchInfo.end).format("YYYY-MM-DD")
 		});
+		// 组装节日event
+		for (const date = fetchInfo.start; date <= fetchInfo.end; date.setDate(date.getDate() + 1)) {
+			const lunarDate = solarLunar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+			if (typeof lunarDate != "number" && lunarDate.festival) {
+				data.push({
+					title: lunarDate.festival,
+					start: dayjs(date).format("YYYY-MM-DD")
+				});
+			}
+			if (typeof lunarDate != "number" && lunarDate.lunarFestival) {
+				data.push({
+					title: lunarDate.lunarFestival,
+					start: dayjs(date).format("YYYY-MM-DD")
+				});
+			}
+		}
 		successCallback(data);
 	},
 	plugins: [dayGridPlugin, interactionPlugin],
@@ -74,9 +96,19 @@ const calendarOptions: Ref<CalendarOptions> = ref({
 		today: "今天"
 	},
 	dayCellContent: ({ date }) => {
-		return {
-			html: `${date.getDate()}`
-		};
+		const lunarDate = solarLunar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
+		if (typeof lunarDate != "number") {
+			return {
+				html: `<div style="float:left">
+								${lunarDate.lDay === 1 ? lunarDate.monthCn + lunarDate.dayCn : lunarDate.dayCn}
+				  </div>
+					<div style="float:right">${date.getDate()}日</div>`
+			};
+		} else {
+			return {
+				html: `${date.getDate()}日`
+			};
+		}
 	},
 	dateClick: handleDateClick
 });
