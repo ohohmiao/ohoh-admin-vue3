@@ -2,7 +2,7 @@
 	<el-drawer v-model="selectorVisible" destroy-on-close :size="450" :title="title || '请选择'">
 		<el-form ref="formRef" label-position="top" label-suffix=" :" :rules="rules" :model="formProps.rowData">
 			<!-- 表单域字段插槽 -->
-			<slot name="formItem"></slot>
+			<slot name="formItem" :tree-filter-form-props="formProps"></slot>
 			<!-- 主选择区域 -->
 			<el-form-item :label="itemTitle || '选项'" prop="selected" v-if="formProps.isTreeFieldShow">
 				<el-row v-if="allowChangeCheckStrictly">

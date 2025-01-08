@@ -64,12 +64,12 @@
 			:isNotEmpty="false"
 			:checkDisableHookFun="handleGrantDataScopeCheckDisable"
 		>
-			<template #formItem>
+			<template #formItem="{ treeFilterFormProps }">
 				<el-form-item label="姓名" prop="userName" :rules="{ required: true, message: '姓名不能为空' }">
-					<el-input v-model="grantDataScopeFormRef.formProps.rowData.userName" readonly></el-input>
+					<el-input v-model="treeFilterFormProps.rowData.userName" readonly></el-input>
 				</el-form-item>
 				<el-form-item label="账号" prop="userAccount" :rules="{ required: true, message: '账号不能为空' }">
-					<el-input v-model="grantDataScopeFormRef.formProps.rowData.userAccount" readonly></el-input>
+					<el-input v-model="treeFilterFormProps.rowData.userAccount" readonly></el-input>
 				</el-form-item>
 			</template>
 		</TreeFilterSelector>
