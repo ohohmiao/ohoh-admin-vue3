@@ -175,7 +175,7 @@ public class FlowDefServiceImpl extends CommonServiceImpl<FlowDefMapper, FlowDef
     public void delete(CommonIdDTO idDTO){
         //TODO 待实现
         //TODO 判断是否有未办结的流程，存在则拒绝删除
-
+        this.removeById(idDTO.getId());
         CommonDataChangeEventCenter.doDeleteWithId(FlowDataListenerEnum.DEF.getName(), idDTO.getId());
     }
 
