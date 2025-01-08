@@ -2,7 +2,7 @@
 	<div class="def-config-dialog">
 		<el-dialog
 			v-model="formVisible"
-			title="流程配置"
+			:title="formProps.title"
 			fullscreen
 			:close-on-click-modal="false"
 			destroy-on-close
@@ -34,6 +34,7 @@ import DefConfigBaseTab from "./config/BaseTab.vue";
 import DefConfigNodeTab from "./config/NodeTab.vue";
 
 interface FormProps {
+	title: string;
 	rowData: Partial<WorkflowDef.Form>;
 	getTableList: () => void;
 }
@@ -41,12 +42,14 @@ interface FormProps {
 const formVisible = ref(false);
 const activeName = ref();
 const formProps = ref<FormProps>({
+	title: "",
 	rowData: {},
 	getTableList: () => {}
 });
 
 // 接收父组件传过来的参数
 const acceptParams = async (params: FormProps) => {
+	formProps.value.title = params.title;
 	formProps.value.getTableList = params.getTableList;
 	activeName.value = "baseTab";
 
