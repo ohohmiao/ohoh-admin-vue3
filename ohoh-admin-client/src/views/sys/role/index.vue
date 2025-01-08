@@ -63,10 +63,10 @@
 			allowChangeCheckStrictly
 			:checkDisableHookFun="handleGrantDataScopeCheckDisable"
 		>
-			<template #formItem>
+			<template #formItem="{ treeFilterFormProps }">
 				<el-form-item label="所属组织" prop="orgId" :rules="{ required: true, message: '所属组织不能为空' }">
 					<el-tree-select
-						v-model="grantDataScopeFormRef.formProps.rowData.orgId"
+						v-model="treeFilterFormProps.rowData.orgId"
 						:data="authAllOrgTreeSelectDatas"
 						:props="{ label: 'name' }"
 						node-key="id"
@@ -82,22 +82,16 @@
 					</el-tree-select>
 				</el-form-item>
 				<el-form-item label="角色名称" prop="roleName" :rules="{ required: true, message: '角色名称不能为空' }">
-					<el-input v-model="grantDataScopeFormRef.formProps.rowData.roleName" readonly></el-input>
+					<el-input v-model="treeFilterFormProps.rowData.roleName" readonly></el-input>
 				</el-form-item>
 				<el-form-item label="数据范围" prop="datascopeType" :rules="{ required: true, message: '数据范围类别不能为空' }">
 					<el-select
-						v-model="grantDataScopeFormRef.formProps.rowData.datascopeType"
+						v-model="treeFilterFormProps.rowData.datascopeType"
 						placeholder="请选择数据范围类别"
-						@change="
-							grantDataScopeFormRef.formProps.isTreeFieldShow = grantDataScopeFormRef.formProps.rowData.datascopeType === 4
-						"
+						@change="treeFilterFormProps.isTreeFieldShow = treeFilterFormProps.rowData.datascopeType === 4"
 					>
 						<el-option :value="0" label="仅本人数据权限"></el-option>
-						<el-option
-							:value="1"
-							label="全部机构数据权限"
-							v-if="grantDataScopeFormRef.formProps.rowData.orgId === '0'"
-						></el-option>
+						<el-option :value="1" label="全部机构数据权限" v-if="treeFilterFormProps.rowData.orgId === '0'"></el-option>
 						<el-option :value="2" label="角色机构数据权限"></el-option>
 						<el-option :value="3" label="角色机构及下属数据权限"></el-option>
 						<el-option :value="4" label="自定义机构数据权限"></el-option>
@@ -116,10 +110,10 @@
 			allowChangeCheckStrictly
 			:checkDisableHookFun="handleGrantResCheckDisable"
 		>
-			<template #formItem>
+			<template #formItem="{ treeFilterFormProps }">
 				<el-form-item label="所属组织" prop="orgId" :rules="{ required: true, message: '所属组织不能为空' }">
 					<el-tree-select
-						v-model="grantResFormRef.formProps.rowData.orgId"
+						v-model="treeFilterFormProps.rowData.orgId"
 						:data="authAllOrgTreeSelectDatas"
 						:props="{ label: 'name' }"
 						node-key="id"
@@ -135,7 +129,7 @@
 					</el-tree-select>
 				</el-form-item>
 				<el-form-item label="角色名称" prop="roleName" :rules="{ required: true, message: '角色名称不能为空' }">
-					<el-input v-model="grantResFormRef.formProps.rowData.roleName" readonly></el-input>
+					<el-input v-model="treeFilterFormProps.rowData.roleName" readonly></el-input>
 				</el-form-item>
 			</template>
 		</TreeFilterSelector>
@@ -269,7 +263,7 @@ const handleGrantDataScope = async (rowData: Partial<SysRole.Form> = {}) => {
 	if (!rowData.roleId) return;
 	const params = {
 		isTreeFieldShow: rowData.datascopeType === 4,
-		rowData: { ...rowData, selected: rowData.datascopeOrgIds },
+		rowData: { ...rowData, selected: rowData.datascopeOrgIds || [] },
 		api: async (rowData: Partial<SysRole.Form> = {}, selected: string[]) => {
 			if (!rowData.roleId || !rowData.orgId || rowData.datascopeType === undefined) return;
 			const { msg } = await grantDataScopeSysRoleApi({
@@ -302,7 +296,7 @@ const handleGrantRes = async (rowData: Partial<SysRole.Form> = {}) => {
 	const { data: resIdList } = await listResIdSysRoleApi({ id: rowData.roleId });
 	const params = {
 		isTreeFieldShow: true,
-		rowData: { ...rowData, selected: resIdList },
+		rowData: { ...rowData, selected: resIdList || [] },
 		api: async (rowData: Partial<SysRole.Form> = {}, selected: string[]) => {
 			if (!rowData.roleId || !rowData.orgId || !selected.length) return;
 			const { msg } = await grantResSysRoleApi({ roleId: rowData.roleId, resIdList: selected });

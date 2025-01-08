@@ -60,7 +60,7 @@ export const grantDataScopeSysRoleApi = (params: SysRole.grantDataScopeForm) => 
 
 // * 列出某角色所授予的资源id集合
 export const listResIdSysRoleApi = (params: { id: string }) => {
-	return http.post("/sysRole/ownSysRes", params);
+	return http.post<string[]>("/sysRole/ownSysRes", params);
 };
 
 // * 给角色授权资源
