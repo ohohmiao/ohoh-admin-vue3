@@ -1,5 +1,41 @@
 <template>
-	<div class="card">
+	<div class="card fc">
+		<div class="fc-header-toolbar fc-toolbar fc-toolbar-ltr">
+			<div class="fc-toolbar-chunk">
+				<div class="fc-button-group">
+					<el-button-group>
+						<el-button :color="toolbarColor" @click="handlePreMonth">上一月</el-button>
+						<el-button :color="toolbarColor" @click="handleNextMonth">下一月</el-button>
+					</el-button-group>
+				</div>
+				<el-button
+					:color="toolbarColor"
+					@click="handleGotoThisMonth"
+					:disabled="thizMonthButtonDisable"
+					style="margin-left: 0.75em"
+					>今天</el-button
+				>
+			</div>
+			<div class="fc-toolbar-chunk">
+				<h2 class="fc-toolbar-title">
+					<el-date-picker
+						v-model="datePicker"
+						type="month"
+						@change="handleDatePickerChange"
+						:editable="false"
+						:clearable="false"
+					></el-date-picker>
+				</h2>
+			</div>
+			<div class="fc-toolbar-chunk">
+				<div class="fc-button-group">
+					<el-button-group>
+						<el-button :color="toolbarColor" @click="handlePreYear">上一年</el-button>
+						<el-button :color="toolbarColor" @click="handleNextYear">下一年</el-button>
+					</el-button-group>
+				</div>
+			</div>
+		</div>
 		<FullCalendar ref="calendarRef" :options="calendarOptions"></FullCalendar>
 	</div>
 </template>
@@ -17,9 +53,16 @@ import solarLunar from "solarLunar-es";
 
 // 节假日标题
 const restDayTitle = "休";
+// 当前年月
+const thizDayjsMonth = dayjs().format("YYYY-MM");
+// toolbar按钮颜色
+const toolbarColor = "#191a20";
 
-const calendarRef = ref<InstanceType<typeof FullCalendar> | null>(null);
+const calendarRef = ref<InstanceType<typeof FullCalendar>>();
+const thizMonthButtonDisable = ref(true);
+const datePicker = ref();
 
+// 日历面板日期点击，切换是否节假日
 const handleDateClick = (info: DateClickArg) => {
 	handleUpdateEvent({
 		id: info.dateStr,
@@ -52,18 +95,23 @@ const handleUpdateEvent = (newEventData: any) => {
 const calendarOptions: Ref<CalendarOptions> = ref({
 	locale: "zh-cn",
 	contentHeight: 530,
+	datesSet: fetchInfo => {
+		const currentDate = dayjs(fetchInfo.view.currentStart).format("YYYY-MM");
+		datePicker.value = currentDate;
+		thizMonthButtonDisable.value = currentDate == thizDayjsMonth;
+	},
 	events: async (fetchInfo, successCallback) => {
-		// 先清空旧面板事件
+		// 先清空旧面板event
 		const calendarApi = calendarRef.value?.getApi();
 		if (calendarApi) {
 			calendarApi.getEvents().forEach(event => event.remove());
 		}
-		// 请求接口，获取日期期间的休息日fullcalendar event数据
+		// 请求接口，获取当前日期期间的休息日fullcalendar event数据
 		const { data } = await listSysRestDay4FCApi({
 			start: dayjs(fetchInfo.start).format("YYYY-MM-DD"),
 			end: dayjs(fetchInfo.end).format("YYYY-MM-DD")
 		});
-		// 组装节日event
+		// 组装当前日期期间内的节日event
 		for (const date = fetchInfo.start; date <= fetchInfo.end; date.setDate(date.getDate() + 1)) {
 			const lunarDate = solarLunar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
 			if (typeof lunarDate != "number" && lunarDate.festival) {
@@ -83,18 +131,7 @@ const calendarOptions: Ref<CalendarOptions> = ref({
 	},
 	plugins: [dayGridPlugin, interactionPlugin],
 	initialView: "dayGridMonth",
-	headerToolbar: {
-		left: "prev,next today",
-		center: "title",
-		right: "prevYear,nextYear"
-	},
-	buttonText: {
-		prev: "上一月",
-		next: "下一月",
-		prevYear: "上一年",
-		nextYear: "下一年",
-		today: "今天"
-	},
+	headerToolbar: false,
 	dayCellContent: ({ date }) => {
 		const lunarDate = solarLunar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
 		if (typeof lunarDate != "number") {
@@ -112,6 +149,42 @@ const calendarOptions: Ref<CalendarOptions> = ref({
 	},
 	dateClick: handleDateClick
 });
+
+// 年月选择器变更
+const handleDatePickerChange = () => {
+	const calendarApi = calendarRef.value?.getApi();
+	calendarApi?.gotoDate(dayjs(datePicker.value).format("YYYY-MM-DD"));
+};
+
+// 上一月
+const handlePreMonth = () => {
+	const calendarApi = calendarRef.value?.getApi();
+	calendarApi?.prev();
+};
+
+// 下一月
+const handleNextMonth = () => {
+	const calendarApi = calendarRef.value?.getApi();
+	calendarApi?.next();
+};
+
+// 跳转这个月
+const handleGotoThisMonth = () => {
+	const calendarApi = calendarRef.value?.getApi();
+	calendarApi?.today();
+};
+
+// 上一年
+const handlePreYear = () => {
+	const calendarApi = calendarRef.value?.getApi();
+	calendarApi?.prevYear();
+};
+
+// 下一年
+const handleNextYear = () => {
+	const calendarApi = calendarRef.value?.getApi();
+	calendarApi?.nextYear();
+};
 </script>
 
 <style lang="scss" scoped>
