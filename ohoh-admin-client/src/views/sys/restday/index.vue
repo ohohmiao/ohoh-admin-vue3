@@ -136,14 +136,14 @@ const calendarOptions: Ref<CalendarOptions> = ref({
 		const lunarDate = solarLunar.solar2lunar(date.getFullYear(), date.getMonth() + 1, date.getDate());
 		if (typeof lunarDate != "number") {
 			return {
-				html: `<div style="float:left">
+				html: `<div title="${dayjs(date).format("YYYY-MM-DD")}"><div style="float:left">
 								${lunarDate.lDay === 1 ? lunarDate.monthCn + lunarDate.dayCn : lunarDate.dayCn}
 				  </div>
-					<div style="float:right">${date.getDate()}日</div>`
+					<div style="float:right">${date.getDate()}日</div></div>`
 			};
 		} else {
 			return {
-				html: `${date.getDate()}日`
+				html: `<div title="${dayjs(date).format("YYYY-MM-DD")}">${date.getDate()}日</div>`
 			};
 		}
 	},
