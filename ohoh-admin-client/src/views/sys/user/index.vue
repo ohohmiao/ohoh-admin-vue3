@@ -51,7 +51,7 @@
 		<!-- 系统用户信息表单 -->
 		<SysUserForm ref="formRef" />
 		<!-- 授权角色选择器 -->
-		<SysRoleSelector ref="roleSelectorRef" title="给用户授权角色" :notEmpty="false" @select="handleSysRoleSelected" />
+		<SysRoleSelector ref="roleSelectorRef" :title="roleSelectorTitle" :notEmpty="false" @select="handleSysRoleSelected" />
 		<!-- 授权数据范围对话框 -->
 		<TreeFilterSelector
 			ref="grantDataScopeFormRef"
@@ -209,12 +209,14 @@ const handleResetUserPassword = async (params: SysUser.Form) => {
 // 授权角色
 let operateRecord: SysUser.Form | null = null;
 const roleSelectorRef = ref<InstanceType<typeof SysRoleSelector>>();
+const roleSelectorTitle = ref();
 const handleGrantRole = async (param: SysUser.Form) => {
 	operateRecord = param;
 	const { data } = await listOwnSysRolesApi({ id: param.userId });
 	const selectedData = data.map(d => {
 		return { value: d.roleId, label: d.roleName };
 	});
+	roleSelectorTitle.value = `给用户[${param.userName}]授权角色`;
 	roleSelectorRef.value?.acceptParams({ selected: selectedData });
 };
 const handleSysRoleSelected = async (datas: { [key: string]: any }[]) => {
