@@ -194,7 +194,6 @@ const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {
 const defConfigTabsRef = ref<InstanceType<typeof DefConfigTabs>>();
 const openDefConfigTabs = (defCode: string, defVersion: number) => {
 	const params = {
-		title: `流程配置[${defCode}-${defVersion}]`,
 		rowData: {
 			defCode: defCode,
 			defVersion: defVersion

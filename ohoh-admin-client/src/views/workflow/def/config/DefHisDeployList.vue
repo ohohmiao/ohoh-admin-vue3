@@ -3,7 +3,7 @@
 		v-model="formVisible"
 		destroy-on-close
 		:size="700"
-		:title="`[${formProps.defCode}]历史版本列表`"
+		:title="`历史版本列表[${formProps.defCode}]`"
 		@closed="handleDialogClose"
 	>
 		<div class="table-box">
@@ -72,7 +72,6 @@ const acceptParams = (params: FormProps) => {
 const defConfigTabsRef = ref<InstanceType<typeof DefConfigTabs>>();
 const openDefConfigTabs = (defCode: string, defVersion: number) => {
 	const params = {
-		title: `[${defCode}-${defVersion}]流程配置`,
 		rowData: {
 			defCode: defCode,
 			defVersion: defVersion
