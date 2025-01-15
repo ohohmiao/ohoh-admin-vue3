@@ -24,7 +24,7 @@ const formProps = ref<FormProps>({
 	nodeId: "",
 	nodeName: "",
 	defCode: "",
-	defVersion: 1
+	defVersion: -1
 });
 
 // 接收父组件传过来的参数
