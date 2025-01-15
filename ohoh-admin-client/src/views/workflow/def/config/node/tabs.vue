@@ -1,5 +1,12 @@
 <template>
-	<el-dialog v-model="formVisible" :title="formTitle" fullscreen :close-on-click-modal="false" destroy-on-close> </el-dialog>
+	<el-dialog
+		v-model="formVisible"
+		:title="`环节配置[${formProps.nodeName}-${formProps.nodeId}]`"
+		fullscreen
+		:close-on-click-modal="false"
+		destroy-on-close
+	>
+	</el-dialog>
 </template>
 
 <script setup lang="ts">
@@ -13,11 +20,16 @@ interface FormProps {
 }
 
 const formVisible = ref(false);
-const formTitle = ref();
+const formProps = ref<FormProps>({
+	nodeId: "",
+	nodeName: "",
+	defCode: "",
+	defVersion: 1
+});
 
 // 接收父组件传过来的参数
 const acceptParams = (params: FormProps) => {
-	formTitle.value = `[${params.nodeName}-${params.nodeId}]环节配置`;
+	formProps.value = params;
 
 	formVisible.value = true;
 };
