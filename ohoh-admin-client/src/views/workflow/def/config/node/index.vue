@@ -10,7 +10,7 @@ import { Element } from "bpmn-js/lib/model/Types";
 import Modeler from "bpmn-js/lib/Modeler";
 import type ElementRegistry from "diagram-js/lib/core/ElementRegistry";
 import type Modeling from "bpmn-js/lib/features/modeling/Modeling";
-import DefConfigNodeTabs from "./node/tabs.vue";
+import DefConfigNodeTabs from "./tabs.vue";
 
 const props = defineProps({
 	defXml: String,

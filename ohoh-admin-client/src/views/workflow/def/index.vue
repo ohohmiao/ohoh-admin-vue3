@@ -106,7 +106,7 @@ import { useHandleData } from "@/hooks/useHandleData";
 import { useAuthButtons } from "@/hooks/useAuthButtons";
 import DefForm from "./DefForm.vue";
 import DefConfigTabs from "./DefConfigTabs.vue";
-import DefHisDeployList from "@/views/workflow/def/config/DefHisDeployList.vue";
+import DefHisDeployList from "@/views/workflow/def/DefHisDeployList.vue";
 
 const { BUTTONS, authButtons } = useAuthButtons();
 

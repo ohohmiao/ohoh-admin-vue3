@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohohmiao.modules.workflow.mapper.FlowEventMapper">
+
+    <select id="page" resultType="com.ohohmiao.modules.workflow.model.vo.FlowEventVO">
+        SELECT
+            e.event_name, e.event_type, d.bind_node_ids, d.bind_node_names,
+            e.impl_type, e.impl_localservice
+        FROM workflow_event e
+        LEFT JOIN (SELECT b.bind_objid, GROUP_CONCAT(b.node_id) AS bind_node_ids,
+             GROUP_CONCAT(b.node_name) AS bind_node_names
+             FROM workflow_nodebind b
+             WHERE b.def_code = #{bind.defCode} and b.def_version = #{bind.defVersion} and b.bind_type = #{bind.bindType}
+             GROUP BY b.bind_objid) d
+        ON e.event_id = d.bind_objid
+        WHERE d.bind_objid IS NOT NULL
+        ORDER BY e.create_time desc
+    </select>
+
+</mapper>
