@@ -19,10 +19,27 @@ export namespace WorkflowEvent {
 		implType: number;
 		implLocalservice: string;
 		implScript: string;
+		defCode?: string;
+		defVersion?: number;
 	}
 }
 
 // * 获取流程事件分页列表
 export const getWorkflowEventPageApi = (params: WorkflowEvent.ReqParams) => {
 	return http.post<WorkflowEvent.Form>("/workflowEvent/page", params);
+};
+
+// * 新增流程事件
+export const addWorkflowEventApi = (params: WorkflowEvent.Form) => {
+	return http.post<string>("/workflowEvent/add", params);
+};
+
+// * 修改流程事件
+export const editWorkflowEventApi = (params: WorkflowEvent.Form) => {
+	return http.post<string>("/workflowEvent/edit", params);
+};
+
+// * 删除流程事件
+export const deleteWorkflowEventApi = (params: { id: string }) => {
+	return http.post("/workflowEvent/delete", params);
 };

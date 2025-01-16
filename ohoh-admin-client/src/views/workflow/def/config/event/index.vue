@@ -23,7 +23,7 @@ import { ref, defineProps } from "vue";
 import { CirclePlus } from "@element-plus/icons-vue";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
-import { WorkflowEvent, getWorkflowEventPageApi } from "@/api/modules/workflow/event";
+import { WorkflowEvent, getWorkflowEventPageApi, addWorkflowEventApi, editWorkflowEventApi } from "@/api/modules/workflow/event";
 import DefConfigEventForm from "./form.vue";
 
 const props = defineProps({
@@ -54,10 +54,13 @@ const columns: ColumnProps<WorkflowEvent.Form>[] = [
 // 打开事件绑定表单
 const defConfigEventFormRef = ref<InstanceType<typeof DefConfigEventForm>>();
 const openEventForm = (title: string, rowData: Partial<WorkflowEvent.Form> = {}) => {
+	rowData.defCode = props.defCode;
+	rowData.defVersion = props.defVersion;
 	defConfigEventFormRef.value?.acceptParams({
 		title,
 		rowData: { ...rowData },
 		isView: title === "查看",
+		api: title === "新增" ? addWorkflowEventApi : title === "编辑" ? editWorkflowEventApi : undefined,
 		getTableList: proTable.value.getTableList
 	});
 };
