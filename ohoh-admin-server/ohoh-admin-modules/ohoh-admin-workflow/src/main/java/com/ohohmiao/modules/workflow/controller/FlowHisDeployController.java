@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
+import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployGetDTO;
@@ -60,6 +61,7 @@ public class FlowHisDeployController {
      */
     @ApiOperation(value = "修改流程历史定义")
     @ApiOperationSupport(order = 2)
+    @CommonLog("修改流程历史定义")
     @SaPcCheckPermission("/workflowHisDeploy/edit")
     @PostMapping("/workflowHisDeploy/edit")
     public CommonResp<String> edit(@RequestBody @Validated FlowHisDeployDTO flowHisDeployDTO){

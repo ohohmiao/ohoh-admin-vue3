@@ -7,6 +7,7 @@ import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
 import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
+import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowEventAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowEventPageDTO;
@@ -55,6 +56,7 @@ public class FlowEventController {
      */
     @ApiOperation(value = "新增流程事件")
     @ApiOperationSupport(order = 2)
+    @CommonLog("新增流程事件")
     @SaPcCheckPermission("/workflowEvent/add")
     @PostMapping("/workflowEvent/add")
     public CommonResp<String> add(@RequestBody @Validated(CommonAddGroup.class) FlowEventAddOrEditDTO flowEventAddOrEditDTO){
@@ -69,6 +71,7 @@ public class FlowEventController {
      */
     @ApiOperation(value = "修改流程事件")
     @ApiOperationSupport(order = 3)
+    @CommonLog("修改流程事件")
     @SaPcCheckPermission("/workflowEvent/edit")
     @PostMapping("/workflowEvent/edit")
     public CommonResp<String> edit(@RequestBody @Validated(CommonEditGroup.class) FlowEventAddOrEditDTO flowEventAddOrEditDTO){
@@ -83,6 +86,7 @@ public class FlowEventController {
      */
     @ApiOperation(value = "删除流程事件")
     @ApiOperationSupport(order = 4)
+    @CommonLog("删除流程事件")
     @SaPcCheckPermission("/workflowEvent/delete")
     @PostMapping("/workflowEvent/delete")
     public CommonResp<String> delete(@RequestBody @Validated CommonIdDTO idDTO){
