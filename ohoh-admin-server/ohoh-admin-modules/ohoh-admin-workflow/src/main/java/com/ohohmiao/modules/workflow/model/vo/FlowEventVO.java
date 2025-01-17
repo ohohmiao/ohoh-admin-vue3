@@ -43,4 +43,7 @@ public class FlowEventVO {
     @ApiModelProperty(value = "本地服务")
     private String implLocalservice;
 
+    @ApiModelProperty(value = "实现脚本")
+    private String implScript;
+
 }

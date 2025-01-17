@@ -53,6 +53,7 @@ const props = defineProps({
 const proTable = ref();
 // 表格配置项
 const columns: ColumnProps<WorkflowEvent.Form>[] = [
+	{ type: "index", label: "#", width: 50 },
 	{
 		prop: "eventType",
 		label: "事件类别",

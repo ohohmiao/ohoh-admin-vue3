@@ -11,10 +11,12 @@ import com.ohohmiao.modules.workflow.enums.FlowNodeBindTypeEnum;
 import com.ohohmiao.modules.workflow.mapper.FlowEventMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowEventAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowEventPageDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowNodeBindAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeBindQueryDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowEvent;
 import com.ohohmiao.modules.workflow.model.vo.FlowEventVO;
 import com.ohohmiao.modules.workflow.service.FlowEventService;
+import com.ohohmiao.modules.workflow.service.FlowNodeBindService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,9 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
     @Resource
     private FlowEventMapper flowEventMapper;
 
+    @Resource
+    private FlowNodeBindService flowNodeBindService;
+
     @Override
     public Page<FlowEventVO> listByPage(FlowEventPageDTO flowEventPageDTO){
         FlowNodeBindQueryDTO queryDTO = new FlowNodeBindQueryDTO();
@@ -49,8 +54,12 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
         FlowEvent flowEvent = BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowEvent.class);
         flowEvent.setCreateTime(new Date());
         flowEventMapper.insert(flowEvent);
-        // TODO 绑定关系表
-
+        // 绑定关系表
+        FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO =
+                BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowNodeBindAddOrEditDTO.class);
+        flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.EVENT.ordinal());
+        flowNodeBindAddOrEditDTO.setBindObjid(flowEvent.getEventId());
+        flowNodeBindService.addOrEdit(flowNodeBindAddOrEditDTO);
     }
 
     @Override
@@ -62,16 +71,25 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
         }
         BeanUtil.copyProperties(flowEventAddOrEditDTO, flowEvent);
         flowEventMapper.updateById(flowEvent);
-        // TODO 绑定关系表
-
+        // 绑定关系表
+        FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO =
+                BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowNodeBindAddOrEditDTO.class);
+        flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.EVENT.ordinal());
+        flowNodeBindAddOrEditDTO.setBindObjid(flowEvent.getEventId());
+        flowNodeBindService.addOrEdit(flowNodeBindAddOrEditDTO);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(CommonIdDTO idDTO){
+        FlowEvent flowEvent = this.getById(idDTO.getId());
+        if(ObjectUtil.isNull(flowEvent)){
+            throw new CommonException("流程事件不存在！");
+        }
+        // 删除绑定关系表
+        flowNodeBindService.delete(flowEvent.getDefCode(),
+                flowEvent.getDefVersion(), flowEvent.getEventId());
         flowEventMapper.deleteById(idDTO.getId());
-        // TODO 绑定关系表
-
     }
 
 }

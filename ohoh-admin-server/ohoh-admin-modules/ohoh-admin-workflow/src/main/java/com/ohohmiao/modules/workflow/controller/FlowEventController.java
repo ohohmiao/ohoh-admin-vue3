@@ -28,7 +28,7 @@ import javax.annotation.Resource;
  * @date 2025-01-16 13:24
  */
 @Api(tags = "流程事件")
-@ApiSupport(order = 5)
+@ApiSupport(order = 4)
 @RestController
 public class FlowEventController {
 

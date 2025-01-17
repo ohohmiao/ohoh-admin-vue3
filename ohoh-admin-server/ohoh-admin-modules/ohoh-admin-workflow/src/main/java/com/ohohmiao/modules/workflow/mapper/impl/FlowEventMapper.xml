@@ -14,7 +14,7 @@
     <select id="page" resultMap="FlowEventVO">
         SELECT
             e.event_id, e.event_name, e.event_type, e.create_time,
-            d.bind_node_ids, d.bind_node_names, e.impl_type, e.impl_localservice
+            d.bind_node_ids, d.bind_node_names, e.impl_type, e.impl_localservice, e.impl_script
         FROM workflow_event e
         LEFT JOIN (SELECT b.bind_objid, GROUP_CONCAT(b.node_id) AS bind_node_ids,
              GROUP_CONCAT(b.node_name) AS bind_node_names

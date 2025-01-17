@@ -8,6 +8,7 @@
 			:disabled="formProps.isView"
 			:model="formProps.rowData"
 			:hide-required-asterisk="formProps.isView"
+			:close-on-click-modal="false"
 		>
 			<el-form-item label="事件类别" prop="eventType">
 				<el-radio-group v-model="formProps.rowData.eventType">
