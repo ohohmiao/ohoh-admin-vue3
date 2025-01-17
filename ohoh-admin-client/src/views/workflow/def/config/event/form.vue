@@ -59,10 +59,15 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { defineProps, reactive, ref } from "vue";
 import { WorkflowEvent } from "@/api/modules/workflow/event";
 import { ElMessage, FormInstance } from "element-plus";
 import { Delete, Pointer } from "@element-plus/icons-vue";
+
+const props = defineProps({
+	defCode: String,
+	defVersion: Number
+});
 
 interface FormProps {
 	[key: string]: any;
@@ -131,12 +136,16 @@ const acceptParams = async (params: FormProps) => {
 			} else {
 				formProps.value[key] = Object.assign({}, params[key], {
 					//表单字段默认值
+					eventType: 0,
+					implType: 0
 				});
 			}
 		} else {
 			formProps.value[key] = params[key];
 		}
 	});
+	formProps.value.rowData.defCode = props.defCode;
+	formProps.value.rowData.defVersion = props.defVersion;
 
 	formVisible.value = true;
 };

@@ -15,7 +15,8 @@
 			</template>
 		</ProTable>
 	</div>
-	<DefConfigEventForm ref="defConfigEventFormRef"></DefConfigEventForm>
+	<!-- 流程事件绑定表单 -->
+	<DefConfigEventForm ref="defConfigEventFormRef" :def-code="props.defCode" :def-version="props.defVersion"></DefConfigEventForm>
 </template>
 
 <script setup lang="ts">
@@ -54,8 +55,6 @@ const columns: ColumnProps<WorkflowEvent.Form>[] = [
 // 打开事件绑定表单
 const defConfigEventFormRef = ref<InstanceType<typeof DefConfigEventForm>>();
 const openEventForm = (title: string, rowData: Partial<WorkflowEvent.Form> = {}) => {
-	rowData.defCode = props.defCode;
-	rowData.defVersion = props.defVersion;
 	defConfigEventFormRef.value?.acceptParams({
 		title,
 		rowData: { ...rowData },
