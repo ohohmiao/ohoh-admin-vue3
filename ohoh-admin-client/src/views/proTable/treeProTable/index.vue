@@ -146,7 +146,7 @@ const drawerRef = ref<InstanceType<typeof UserDrawer> | null>(null);
 const openDrawer = (title: string, rowData: Partial<User.ResUserList> = {}) => {
 	const params = {
 		title,
-		rowData: { ...rowData },
+		rowData: { ...JSON.parse(JSON.stringify(rowData)) },
 		isView: title === "查看",
 		api: title === "新增" ? addUser : title === "编辑" ? editUser : undefined,
 		getTableList: proTable.value.getTableList

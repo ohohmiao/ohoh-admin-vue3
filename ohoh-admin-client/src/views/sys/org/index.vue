@@ -104,7 +104,7 @@ const openForm = (title: string, rowData: Partial<SysOrg.Form> = {}) => {
 	}
 	const params = {
 		title,
-		rowData: { ...rowData },
+		rowData: { ...JSON.parse(JSON.stringify(rowData)) },
 		isView: title === "查看",
 		api: title === "新增" ? addSysOrgApi : title === "编辑" ? editSysOrgApi : undefined,
 		getTableList: async () => {

@@ -246,7 +246,7 @@ const openForm = (title: string, rowData: Partial<SysRole.Form> = {}) => {
 	}
 	const params = {
 		title,
-		rowData: { ...rowData },
+		rowData: { ...JSON.parse(JSON.stringify(rowData)) },
 		isView: title === "查看",
 		api: title === "新增" ? addSysRoleApi : title === "编辑" ? editSysRoleApi : undefined,
 		getTableList: async () => {

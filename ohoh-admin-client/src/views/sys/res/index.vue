@@ -93,7 +93,7 @@ const formRef = ref<InstanceType<typeof SysResForm> | null>(null);
 const openForm = (title: string, rowData: Partial<SysRes.Form> = {}) => {
 	const params = {
 		title,
-		rowData: { ...rowData },
+		rowData: { ...JSON.parse(JSON.stringify(rowData)) },
 		isView: title === "查看",
 		api: title === "新增" ? addSysResApi : title === "编辑" ? editSysResApi : undefined,
 		getTableList: proTable.value.getTableList

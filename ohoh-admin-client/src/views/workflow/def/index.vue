@@ -183,7 +183,7 @@ const openDefForm = async (title: string, rowData: Partial<WorkflowDef.Form> = {
 		rowData = data;
 	}
 	const params = {
-		rowData: { ...rowData },
+		rowData: { ...JSON.parse(JSON.stringify(rowData)) },
 		api: title === "新增" ? addWorkflowDefApi : title === "编辑" ? editWorkflowDefApi : undefined,
 		getTableList: proTable.value.getTableList
 	};
