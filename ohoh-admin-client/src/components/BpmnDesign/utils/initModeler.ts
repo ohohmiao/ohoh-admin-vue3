@@ -27,4 +27,6 @@ export default function (designer: ShallowRef<HTMLElement | null>, modelerModule
 	store.setModeler(markRaw(modeler));
 
 	EventEmitter.emit("modeler-init", modeler);
+
+	return modeler;
 }

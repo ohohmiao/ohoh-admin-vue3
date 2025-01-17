@@ -17,6 +17,7 @@
 					><DefConfigEventTab
 						:def-code="formProps.rowData.defCode"
 						:def-version="formProps.rowData.defVersion"
+						:def-xml="formProps.rowData.defXml"
 					></DefConfigEventTab
 				></el-tab-pane>
 				<el-tab-pane label="按钮绑定" name="buttonTab">绑定按钮内容</el-tab-pane>
@@ -59,7 +60,7 @@ const acceptParams = async (params: FormProps) => {
 	// 根据流程编码和版本号，获取流程定义
 	const { data } = await getWorkflowHisDeployApi({
 		defCode: params.rowData.defCode || "",
-		defVersion: params.rowData.defVersion || 1
+		defVersion: params.rowData.defVersion || -1
 	});
 	formProps.value.rowData = data;
 

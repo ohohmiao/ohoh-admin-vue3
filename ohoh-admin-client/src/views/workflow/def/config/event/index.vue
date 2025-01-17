@@ -16,7 +16,12 @@
 		</ProTable>
 	</div>
 	<!-- 流程事件绑定表单 -->
-	<DefConfigEventForm ref="defConfigEventFormRef" :def-code="props.defCode" :def-version="props.defVersion"></DefConfigEventForm>
+	<DefConfigEventForm
+		ref="defConfigEventFormRef"
+		:def-code="props.defCode"
+		:def-version="props.defVersion"
+		:def-xml="props.defXml"
+	></DefConfigEventForm>
 </template>
 
 <script setup lang="ts">
@@ -29,7 +34,8 @@ import DefConfigEventForm from "./form.vue";
 
 const props = defineProps({
 	defCode: String,
-	defVersion: Number
+	defVersion: Number,
+	defXml: String
 });
 
 const proTable = ref();

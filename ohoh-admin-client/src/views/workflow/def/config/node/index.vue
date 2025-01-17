@@ -26,7 +26,7 @@ const handleElementClick = (element: Element) => {
 			nodeId: element.id,
 			nodeName: String(element.name),
 			defCode: props.defCode || "",
-			defVersion: props.defVersion || 1
+			defVersion: props.defVersion || -1
 		};
 		defConfigNodeTabs.value?.acceptParams(params);
 	}
