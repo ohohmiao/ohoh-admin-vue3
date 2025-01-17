@@ -23,11 +23,11 @@
 			</el-form-item>
 			<el-form-item label="绑定环节" prop="bindNodeNames">
 				<div class="selector-box">
-					<div class="selector-box-top" v-show="formProps.rowData.bindNodeNames?.length">
+					<div class="selector-box-top">
 						<el-tag
-							v-for="(item, index) in formProps.rowData.bindNodeNames?.split(',')"
-							@close="handleCloseSelectedNode(index)"
+							v-for="(item, index) in formProps.rowData.bindNodeNames"
 							:key="index"
+							@close="handleCloseSelectedNode(index)"
 							plain
 							closable
 							>{{ item }}</el-tag
@@ -72,6 +72,7 @@
 	<!-- 流程环节选择器 -->
 	<BpmnNodeSelector
 		ref="nodeSelectorRef"
+		title="请选择流程环节"
 		:node-types="['bpmn:Task', 'bpmn:ExclusiveGateway']"
 		@select="handleNodeSelect"
 	></BpmnNodeSelector>
@@ -125,7 +126,7 @@ watch(formProps.value, newFormProps => {
 const rules = reactive({
 	eventType: [{ required: true, message: "请选择事件类别" }],
 	eventName: [{ required: true, message: "请输入事件名称" }],
-	bindNodeNames: [{ required: true, message: "请选择绑定环节" }],
+	bindNodeNames: [{ type: "array", required: true, message: "请选择绑定环节" }],
 	implType: [{ required: true, message: "请选择实现方式" }],
 	implLocalservice: [
 		{
@@ -170,27 +171,23 @@ const nodeSelectorRef = ref<InstanceType<typeof BpmnNodeSelector>>();
 const openNodeSelector = () => {
 	nodeSelectorRef.value?.acceptParams({
 		bpmnXml: props.defXml,
-		selected: formProps.value.rowData.bindNodeIds?.split(",") || []
+		selected: formProps.value.rowData.bindNodeIds
 	});
 };
 // 删掉某个已选择的环节
 const handleCloseSelectedNode = (index: number) => {
-	const tempIdArray = formProps.value.rowData.bindNodeIds?.split(",");
-	const tempNameArray = formProps.value.rowData.bindNodeNames?.split(",");
-	tempIdArray?.splice(index, 1);
-	tempNameArray?.splice(index, 1);
-	formProps.value.rowData.bindNodeIds = tempIdArray?.join(",") || "";
-	formProps.value.rowData.bindNodeNames = tempNameArray?.join(",") || "";
+	formProps.value.rowData.bindNodeIds?.splice(index, 1);
+	formProps.value.rowData.bindNodeNames?.splice(index, 1);
 };
 // 清空已选择的环节
 const handleClearSelectedNodes = () => {
-	formProps.value.rowData.bindNodeIds = "";
-	formProps.value.rowData.bindNodeNames = "";
+	formProps.value.rowData.bindNodeIds?.splice(0, formProps.value.rowData.bindNodeIds.length);
+	formProps.value.rowData.bindNodeNames?.splice(0, formProps.value.rowData.bindNodeNames.length);
 };
 // 环节选择器回调
 const handleNodeSelect = (selected: { [key: string]: any }[]) => {
-	formProps.value.rowData.bindNodeIds = selected.map(n => n.value).join(",");
-	formProps.value.rowData.bindNodeNames = selected.map(n => n.label).join(",");
+	formProps.value.rowData.bindNodeIds = selected.map(n => n.value);
+	formProps.value.rowData.bindNodeNames = selected.map(n => n.label);
 };
 
 // 提交数据（新增/编辑）

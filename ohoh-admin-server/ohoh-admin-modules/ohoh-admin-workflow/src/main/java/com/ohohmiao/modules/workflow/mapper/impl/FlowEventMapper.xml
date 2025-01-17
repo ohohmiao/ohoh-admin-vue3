@@ -2,10 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohohmiao.modules.workflow.mapper.FlowEventMapper">
 
-    <select id="page" resultType="com.ohohmiao.modules.workflow.model.vo.FlowEventVO">
+    <resultMap id="FlowEventVO" type="com.ohohmiao.modules.workflow.model.vo.FlowEventVO">
+        <result column="bind_node_ids"
+                property="bindNodeIds"
+                typeHandler="com.ohohmiao.framework.mybatis.handler.ConvertCommaSeparatedStrToListTypeHandler"/>
+        <result column="bind_node_names"
+                property="bindNodeNames"
+                typeHandler="com.ohohmiao.framework.mybatis.handler.ConvertCommaSeparatedStrToListTypeHandler"/>
+    </resultMap>
+
+    <select id="page" resultMap="FlowEventVO">
         SELECT
-            e.event_name, e.event_type, d.bind_node_ids, d.bind_node_names,
-            e.impl_type, e.impl_localservice
+            e.event_id, e.event_name, e.event_type, e.create_time,
+            d.bind_node_ids, d.bind_node_names, e.impl_type, e.impl_localservice
         FROM workflow_event e
         LEFT JOIN (SELECT b.bind_objid, GROUP_CONCAT(b.node_id) AS bind_node_ids,
              GROUP_CONCAT(b.node_name) AS bind_node_names

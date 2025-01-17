@@ -14,8 +14,8 @@ export namespace WorkflowEvent {
 		eventId: string;
 		eventName: string;
 		eventType: number;
-		bindNodeIds: string;
-		bindNodeNames: string;
+		bindNodeIds: string[];
+		bindNodeNames: string[];
 		implType: number;
 		implLocalservice: string;
 		implScript: string;

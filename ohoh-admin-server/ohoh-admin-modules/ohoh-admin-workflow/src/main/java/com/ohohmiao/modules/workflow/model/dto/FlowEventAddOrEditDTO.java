@@ -12,8 +12,10 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import java.util.List;
 
 /**
  * 流程事件新增或编辑
@@ -49,12 +51,12 @@ public class FlowEventAddOrEditDTO {
     private String eventType;
 
     @ApiModelProperty(value = "绑定环节id", required = true)
-    @NotBlank(message = "绑定环节id不能为空")
-    private String bindNodeIds;
+    @NotEmpty(message = "绑定环节id不能为空")
+    private List<String> bindNodeIds;
 
     @ApiModelProperty(value = "绑定环节名称", required = true)
-    @NotBlank(message = "绑定环节名称不能为空")
-    private String bindNodeNames;
+    @NotEmpty(message = "绑定环节名称不能为空")
+    private List<String> bindNodeNames;
 
     @ApiModelProperty(value = "实现方式", required = true)
     @NotNull(message = "实现方式不能为空")

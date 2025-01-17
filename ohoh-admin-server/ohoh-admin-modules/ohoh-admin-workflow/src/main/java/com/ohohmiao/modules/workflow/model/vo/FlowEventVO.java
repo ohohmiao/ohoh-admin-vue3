@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 流程事件
@@ -31,10 +32,10 @@ public class FlowEventVO {
     private Integer eventType;
 
     @ApiModelProperty(value = "绑定环节id")
-    private String bindNodeIds;
+    private List<String> bindNodeIds;
 
     @ApiModelProperty(value = "绑定环节名称")
-    private String bindNodeNames;
+    private List<String> bindNodeNames;
 
     @ApiModelProperty(value = "实现类别")
     private Integer implType;
