@@ -74,13 +74,13 @@ public class FlowEventAddOrEditDTO {
                 if(StrUtil.isBlank(this.implLocalservice)){
                     return false;
                 }
-                this.implScript = null;
+                this.setImplScript(null);
             }
             if(this.implType.equals(FlowEventImplTypeEnum.SCRIPT.ordinal())){
                 if(StrUtil.isBlank(this.implScript)){
                     return false;
                 }
-                this.implLocalservice = null;
+                this.setImplLocalservice(null);
             }
         }
         return true;

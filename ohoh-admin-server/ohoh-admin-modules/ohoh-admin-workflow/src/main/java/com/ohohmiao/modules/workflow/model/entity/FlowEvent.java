@@ -1,9 +1,6 @@
 package com.ohohmiao.modules.workflow.model.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,10 +38,10 @@ public class FlowEvent {
     @TableField
     private Integer implType;
 
-    @TableField
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
     private String implLocalservice;
 
-    @TableField
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
     private String implScript;
 
 }
