@@ -14,8 +14,8 @@
 <script setup lang="ts">
 import { nextTick, shallowRef, ref } from "vue";
 import { EditorSettings } from "@/components/BpmnDesign/settings";
-import initModeler from "@/components/BpmnDesign/utils/initModeler";
-import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
+import { initModeler4Viewer } from "@/components/BpmnDesign/utils/initModeler";
+import { createNewDiagram4Viewer } from "@/components/BpmnDesign/utils/createNewDiagram";
 import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
 import Modeler from "bpmn-js/lib/Modeler";
 import type ElementRegistry from "diagram-js/lib/core/ElementRegistry";
@@ -64,8 +64,8 @@ const designerRef = shallowRef<HTMLDivElement | null>(null);
 const initBpmnDesigner = async (defXml: string, selected?: string[]) => {
 	const modelerModules = modulesAndModdle(ref(editorSettings));
 	await nextTick();
-	modeler = initModeler(designerRef, modelerModules);
-	await createNewDiagram(defXml, editorSettings);
+	modeler = initModeler4Viewer(designerRef, modelerModules);
+	await createNewDiagram4Viewer(modeler, defXml, editorSettings);
 	// 初始化处理
 	if (selected && selected.length) {
 		setNodeColor(selected, { fill: "#fff", stroke: selectedColor });
@@ -99,7 +99,7 @@ const setNodeColor = (nodeIds: string[], colors: { [key: string]: any }) => {
 
 // 处理关闭
 const handleClose = () => {
-	modeler?.destroy();
+	modeler.destroy();
 };
 
 // 提交确定

@@ -7,7 +7,7 @@ import { nextTick, onMounted, shallowRef } from "vue";
 import { storeToRefs } from "pinia";
 import BpmnEditorState from "@/stores/modules/bpmn/editor";
 import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
-import initModeler from "@/components/BpmnDesign/utils/initModeler";
+import { initModeler } from "@/components/BpmnDesign/utils/initModeler";
 import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
 import BpmnModelerState from "@/stores/modules/bpmn/modeler";
 import BpmnModdle from "bpmn-moddle";

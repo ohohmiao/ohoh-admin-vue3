@@ -5,10 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, shallowRef, onMounted, ref } from "vue";
+import { nextTick, shallowRef, onMounted, ref, onUnmounted } from "vue";
 import { EditorSettings } from "@/components/BpmnDesign/settings";
-import initModeler from "@/components/BpmnDesign/utils/initModeler";
-import { createNewDiagram } from "@/components/BpmnDesign/utils/createNewDiagram";
+import { initModeler4Viewer } from "@/components/BpmnDesign/utils/initModeler";
+import { createNewDiagram4Viewer } from "@/components/BpmnDesign/utils/createNewDiagram";
 import modulesAndModdle from "@/components/BpmnDesign/utils/modulesAndModdle";
 import { Element } from "bpmn-js/lib/model/Types";
 import Modeler from "bpmn-js/lib/Modeler";
@@ -25,6 +25,7 @@ const editorSettings: EditorSettings = {
 };
 
 const designerRef = shallowRef<HTMLDivElement | null>(null);
+let modeler: Modeler;
 
 // 定义图形点击事件
 type EmitProps = {
@@ -36,14 +37,28 @@ const emit = defineEmits<EmitProps>();
 const initBpmnDesigner = async (defXml: string) => {
 	const modelerModules = modulesAndModdle(ref(editorSettings));
 	await nextTick();
-	initModeler(designerRef, modelerModules);
-	await createNewDiagram(defXml, editorSettings, emit);
+	modeler = initModeler4Viewer(designerRef, modelerModules);
+	await createNewDiagram4Viewer(modeler, defXml, editorSettings);
+	emit("modeler-init", modeler);
+	modeler.on("element.click", event => {
+		const { element } = event;
+		if (!event || !element.parent || element.type === "bpmn:Process") {
+			return false;
+		} else {
+			element.name = element.di.bpmnElement.name;
+			emit("element-click", element);
+		}
+	});
 };
 
 onMounted(() => {
 	if (props.bpmnXml) {
 		initBpmnDesigner(props.bpmnXml);
 	}
+});
+
+onUnmounted(() => {
+	modeler.destroy();
 });
 </script>
 
