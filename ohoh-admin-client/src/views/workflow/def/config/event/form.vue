@@ -25,14 +25,15 @@
 			<el-form-item label="绑定环节" prop="bindNodeNames">
 				<div class="selector-box">
 					<div class="selector-box-top">
-						<el-tag
+						<el-tooltip
+							effect="light"
+							placement="top"
 							v-for="(item, index) in formProps.rowData.bindNodeNames"
 							:key="index"
-							@close="handleCloseSelectedNode(index)"
-							plain
-							closable
-							>{{ item }}</el-tag
+							:content="formProps.rowData.bindNodeIds![index]"
 						>
+							<el-tag @close="handleCloseSelectedNode(index)" plain closable>{{ item }}</el-tag>
+						</el-tooltip>
 					</div>
 					<div class="selector-box-bottom">
 						<span class="selector-btn" @click="handleClearSelectedNodes"
@@ -55,14 +56,11 @@
 			</el-form-item>
 			<el-form-item label="实现脚本" prop="implScript" v-if="formProps.rowData.implType == 1" required>
 				<Codemirror
-					v-model:value="formProps.rowData.implScript"
-					ref="cmRef"
-					:options="cmOptions"
-					border
-					width="100%"
-					height="200"
-				>
-				</Codemirror>
+					v-model="formProps.rowData.implScript"
+					:disabled="formProps.isView"
+					:style="{ width: '100%', height: '150px' }"
+					:extensions="[{ javascript }['javascript'](), oneDark]"
+				></Codemirror>
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -80,16 +78,14 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onUnmounted, reactive, ref, watch } from "vue";
+import { defineProps, reactive, ref } from "vue";
 import { WorkflowEvent } from "@/api/modules/workflow/event";
 import { ElMessage, FormInstance } from "element-plus";
 import { Delete, Pointer } from "@element-plus/icons-vue";
-import "codemirror/mode/javascript/javascript.js";
-import Codemirror from "codemirror-editor-vue3";
-import type { CmComponentRef } from "codemirror-editor-vue3";
-import type { EditorConfiguration } from "codemirror";
-import "codemirror/theme/3024-night.css";
 import BpmnNodeSelector from "@/components/BpmnDesign/BpmnNodeSelector.vue";
+import { Codemirror } from "vue-codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import { oneDark } from "@codemirror/theme-one-dark";
 
 const props = defineProps({
 	defCode: String,
@@ -111,17 +107,6 @@ const formProps = ref<FormProps>({
 	title: "",
 	isView: false,
 	rowData: {}
-});
-
-// codemirror实例
-const cmRef = ref<CmComponentRef>();
-const cmOptions = ref<EditorConfiguration>({
-	mode: "text/x-java",
-	theme: "3024-night"
-});
-
-watch(formProps.value, newFormProps => {
-	cmOptions.value.readOnly = newFormProps.isView;
 });
 
 const rules = reactive({
@@ -230,10 +215,6 @@ const acceptParams = async (params: FormProps) => {
 
 	formVisible.value = true;
 };
-
-onUnmounted(() => {
-	cmRef.value?.destroy();
-});
 
 defineExpose({
 	acceptParams
