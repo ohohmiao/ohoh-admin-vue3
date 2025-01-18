@@ -26,14 +26,22 @@
 		</el-descriptions>
 		<el-space direction="vertical" style="width: 100%" alignment="normal" v-if="!computedIsLoginAccessLog">
 			请求参数：
-			<div class="hljs-container">
-				<highlightjs language="JSON" :autodetect="false" :code="formProps.rowData.paramJson || '无'"></highlightjs>
-			</div>
+			<Codemirror
+				v-model="formProps.rowData.paramJson"
+				disabled
+				:style="{ width: '100%', height: '150px' }"
+				:extensions="[{ javascript }['javascript'](), oneDark]"
+			></Codemirror>
 		</el-space>
 		<el-space direction="vertical" style="width: 100%" alignment="normal" v-if="!computedIsLoginAccessLog">
 			返回结果：
 			<div class="hljs-container">
-				<highlightjs language="JSON" :autodetect="false" :code="formProps.rowData.resultJson || '无'"></highlightjs>
+				<Codemirror
+					v-model="formProps.rowData.resultJson"
+					disabled
+					:style="{ width: '100%', height: '150px' }"
+					:extensions="[{ javascript }['javascript'](), oneDark]"
+				></Codemirror>
 			</div>
 		</el-space>
 		<template #footer>
@@ -45,6 +53,9 @@
 <script setup lang="ts" name="SysLogInfo">
 import { ref, computed } from "vue";
 import { SysLog } from "@/api/modules/sys/log";
+import { javascript } from "@codemirror/lang-javascript";
+import { oneDark } from "@codemirror/theme-one-dark";
+import { Codemirror } from "vue-codemirror";
 
 interface FormProps {
 	[key: string]: any;
@@ -78,6 +89,13 @@ const acceptParams = (params: FormProps) => {
 			formProps.value[key] = params[key];
 		}
 	});
+	// 格式化json
+	if (formProps.value.rowData.paramJson) {
+		formProps.value.rowData.paramJson = JSON.stringify(JSON.parse(formProps.value.rowData.paramJson), null, 2);
+	}
+	if (formProps.value.rowData.resultJson) {
+		formProps.value.rowData.resultJson = JSON.stringify(JSON.parse(formProps.value.rowData.resultJson || ""), null, 2);
+	}
 
 	formVisible.value = true;
 };

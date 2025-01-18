@@ -32,10 +32,6 @@ import pinia from "@/stores/index";
 import "virtual:svg-icons-register";
 // errorHandler
 import errorHandler from "@/utils/errorHandler";
-// highlight.js
-import "highlight.js/styles/atom-one-dark.css";
-import hljsCommon from "highlight.js/lib/common";
-import hljsVuePlugin from "@highlightjs/vue-plugin";
 
 const app = createApp(App);
 
@@ -46,6 +42,4 @@ Object.keys(Icons).forEach(key => {
 	app.component(key, Icons[key as keyof typeof Icons]);
 });
 
-hljsCommon.highlightAuto("<h1>Highlight.js has been registered successfully!</h1>").value;
-
-app.use(router).use(I18n).use(pinia).use(directives).use(ElementPlus).use(hljsVuePlugin).mount("#app");
+app.use(router).use(I18n).use(pinia).use(directives).use(ElementPlus).mount("#app");

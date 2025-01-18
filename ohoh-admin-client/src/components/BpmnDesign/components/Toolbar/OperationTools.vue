@@ -28,7 +28,7 @@
 	<div class="preview-dialog">
 		<el-dialog v-model="previewDialogVisible" title="预览文件">
 			<div class="preview-model">
-				<highlightjs autodetect :code="previewDialogContent"></highlightjs>
+				<Codemirror v-model="previewDialogContent" disabled :extensions="[{ javascript }['javascript'](), oneDark]"></Codemirror>
 			</div>
 		</el-dialog>
 	</div>
@@ -40,6 +40,9 @@ import BpmnModelerState from "@/stores/modules/bpmn/modeler";
 import BpmnModdle from "bpmn-moddle";
 import { ElMessage } from "element-plus";
 import { downloadFile, setEncoded } from "@/components/BpmnDesign/utils/files";
+import { Codemirror } from "vue-codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import { oneDark } from "@codemirror/theme-one-dark";
 
 const modelerStore = BpmnModelerState();
 const importRef = ref<HTMLInputElement | null>(null);
