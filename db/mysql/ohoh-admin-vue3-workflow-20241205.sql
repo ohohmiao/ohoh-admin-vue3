@@ -11,7 +11,7 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 08/01/2025 16:47:55
+ Date: 19/01/2025 17:00:37
 */
 
 SET NAMES utf8mb4;
@@ -93,6 +93,30 @@ INSERT INTO `workflow_deftype` (`deftype_id`, `delete_flag`, `create_userid`, `c
 COMMIT;
 
 -- ----------------------------
+-- Table structure for workflow_event
+-- ----------------------------
+DROP TABLE IF EXISTS `workflow_event`;
+CREATE TABLE `workflow_event` (
+  `event_id` varchar(32) NOT NULL COMMENT '事件id',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `def_code` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '流程编码',
+  `def_version` int DEFAULT NULL COMMENT '版本号',
+  `event_name` varchar(64) DEFAULT NULL COMMENT '事件名称',
+  `event_type` int DEFAULT NULL COMMENT '事件类别0-存储1-前置2-后置3-判断4-读取',
+  `impl_type` int DEFAULT NULL COMMENT '实现类别0-本地服务1-脚本方式',
+  `impl_localservice` varchar(128) DEFAULT NULL COMMENT '本地服务',
+  `impl_script` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '实现脚本',
+  PRIMARY KEY (`event_id`),
+  KEY `idx_flowevent_defcodever` (`def_code`,`def_version`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='流程事件表';
+
+-- ----------------------------
+-- Records of workflow_event
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for workflow_hisdeploy
 -- ----------------------------
 DROP TABLE IF EXISTS `workflow_hisdeploy`;
@@ -117,6 +141,28 @@ CREATE TABLE `workflow_hisdeploy` (
 
 -- ----------------------------
 -- Records of workflow_hisdeploy
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for workflow_nodebind
+-- ----------------------------
+DROP TABLE IF EXISTS `workflow_nodebind`;
+CREATE TABLE `workflow_nodebind` (
+  `bind_id` varchar(32) NOT NULL COMMENT '绑定id',
+  `def_code` varchar(64) DEFAULT NULL COMMENT '流程编码',
+  `def_version` int DEFAULT NULL COMMENT '版本号',
+  `node_id` varchar(64) DEFAULT NULL COMMENT '环节id',
+  `node_name` varchar(64) DEFAULT NULL COMMENT '环节名称',
+  `bind_type` int DEFAULT NULL COMMENT '绑定类别0-表单1-事件',
+  `bind_objid` varchar(32) DEFAULT NULL COMMENT '绑定对象id',
+  PRIMARY KEY (`bind_id`),
+  KEY `idx_flownodebind_defcodever` (`def_code`,`def_version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='流程环节绑定信息表';
+
+-- ----------------------------
+-- Records of workflow_nodebind
 -- ----------------------------
 BEGIN;
 COMMIT;
