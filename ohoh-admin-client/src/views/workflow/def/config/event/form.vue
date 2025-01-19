@@ -1,5 +1,11 @@
 <template>
-	<el-dialog v-model="formVisible" destroy-on-close :size="450" :title="`${formProps.title}流程事件`">
+	<el-dialog
+		v-model="formVisible"
+		destroy-on-close
+		:close-on-click-modal="false"
+		:size="450"
+		:title="`${formProps.title}流程事件`"
+	>
 		<el-form
 			ref="formRef"
 			label-suffix=" :"
@@ -8,7 +14,6 @@
 			:disabled="formProps.isView"
 			:model="formProps.rowData"
 			:hide-required-asterisk="formProps.isView"
-			:close-on-click-modal="false"
 		>
 			<el-form-item label="事件类别" prop="eventType">
 				<el-radio-group v-model="formProps.rowData.eventType">

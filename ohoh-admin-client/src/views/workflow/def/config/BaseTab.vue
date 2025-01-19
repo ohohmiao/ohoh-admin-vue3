@@ -1,7 +1,7 @@
 <template>
 	<el-card>
 		<template #header>
-			<el-button type="primary" plain @click="handleSubmit">保存</el-button>
+			<el-button type="primary" @click="handleSubmit">保存</el-button>
 		</template>
 		<el-form ref="formRef" label-width="120" label-suffix=" :" :rules="rules" :model="formProps.rowData">
 			<el-row :gutter="16">

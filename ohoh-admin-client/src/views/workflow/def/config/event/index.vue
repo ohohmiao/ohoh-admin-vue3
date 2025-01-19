@@ -11,12 +11,12 @@
 		>
 			<!-- 表格 header 按钮 -->
 			<template #tableHeader>
-				<el-button type="primary" :icon="CirclePlus" @click="openEventForm('新增')">新增</el-button>
+				<el-button type="primary" @click="openEventForm('新增')">新增</el-button>
 			</template>
 			<!-- 表格操作 -->
 			<template #operation="scope">
-				<el-button type="primary" link :icon="EditPen" @click="openEventForm('编辑', scope.row)">编辑</el-button>
-				<el-button type="primary" link :icon="Delete" @click="handleDeleteEvent(scope.row)">删除</el-button>
+				<el-button type="primary" link @click="openEventForm('编辑', scope.row)">编辑</el-button>
+				<el-button type="primary" link @click="handleDeleteEvent(scope.row)">删除</el-button>
 			</template>
 		</ProTable>
 	</div>
@@ -31,7 +31,6 @@
 
 <script setup lang="ts">
 import { ref, defineProps } from "vue";
-import { CirclePlus, Delete, EditPen } from "@element-plus/icons-vue";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import {
