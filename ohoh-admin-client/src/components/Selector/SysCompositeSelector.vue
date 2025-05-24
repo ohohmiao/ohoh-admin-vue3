@@ -355,44 +355,52 @@ const positionTreeDefaultExpandKeys = ref<string[]>([]);
 // 获取选择器数据
 const getSelectorData = async () => {
 	// 选人员->按部门树
-	if (curSelType.value === SelectorTypeEnum.USER && curSelUserType.value === SelectorUserTypeEnum.ORG) {
-		const { data } = await selectorProps.orgUserTreeApi();
-		data.forEach((item: { [key: string]: any }) => {
-			if (item.parentId === "0") {
-				orgUserTreeDefaultExpandKeys.value.push(item.id);
-			}
-		});
-		orgUserTreeData.value = data;
+	if (!orgUserTreeData.value.length) {
+		if (curSelType.value === SelectorTypeEnum.USER && curSelUserType.value === SelectorUserTypeEnum.ORG) {
+			const { data } = await selectorProps.orgUserTreeApi();
+			data.forEach((item: { [key: string]: any }) => {
+				if (item.parentId === "0") {
+					orgUserTreeDefaultExpandKeys.value.push(item.id);
+				}
+			});
+			orgUserTreeData.value = data;
+		}
 	}
 	// 选人员->按岗位树
-	if (curSelType.value === SelectorTypeEnum.USER && curSelUserType.value === SelectorUserTypeEnum.POSITION) {
-		const { data } = await selectorProps.positionUserTreeApi();
-		data.forEach((item: { [key: string]: any }) => {
-			if (item.parentId === "0") {
-				positionUserTreeDefaultExpandKeys.value.push(item.id);
-			}
-		});
-		positionUserTreeData.value = data;
+	if (!positionUserTreeData.value.length) {
+		if (curSelType.value === SelectorTypeEnum.USER && curSelUserType.value === SelectorUserTypeEnum.POSITION) {
+			const { data } = await selectorProps.positionUserTreeApi();
+			data.forEach((item: { [key: string]: any }) => {
+				if (item.parentId === "0") {
+					positionUserTreeDefaultExpandKeys.value.push(item.id);
+				}
+			});
+			positionUserTreeData.value = data;
+		}
 	}
 	// 选部门树
-	if (curSelType.value === SelectorTypeEnum.ORG) {
-		const { data } = await selectorProps.orgTreeApi();
-		data.forEach((item: { [key: string]: any }) => {
-			if (item.parentId === "0") {
-				orgTreeDefaultExpandKeys.value.push(item.id);
-			}
-		});
-		orgTreeData.value = data;
+	if (!orgTreeData.value.length) {
+		if (curSelType.value === SelectorTypeEnum.ORG) {
+			const { data } = await selectorProps.orgTreeApi();
+			data.forEach((item: { [key: string]: any }) => {
+				if (item.parentId === "0") {
+					orgTreeDefaultExpandKeys.value.push(item.id);
+				}
+			});
+			orgTreeData.value = data;
+		}
 	}
 	// 选岗位树
-	if (curSelType.value === SelectorTypeEnum.POSITION) {
-		const { data } = await selectorProps.positionTreeApi();
-		data.forEach((item: { [key: string]: any }) => {
-			if (item.parentId === "0") {
-				positionTreeDefaultExpandKeys.value.push(item.id);
-			}
-		});
-		positionTreeData.value = data;
+	if (!positionTreeData.value.length) {
+		if (curSelType.value === SelectorTypeEnum.POSITION) {
+			const { data } = await selectorProps.positionTreeApi();
+			data.forEach((item: { [key: string]: any }) => {
+				if (item.parentId === "0") {
+					positionTreeDefaultExpandKeys.value.push(item.id);
+				}
+			});
+			positionTreeData.value = data;
+		}
 	}
 };
 
@@ -504,7 +512,7 @@ const handleSingleSelect = () => {
 	}
 };
 const handleSingleDisSelect = () => {
-	handleDelSelectedData(selectedTableData.value.find(data => data.value === selectedTableCurRowKey.value));
+	handleDelSelectedData(selectedTableData.value.find(data => data.value === selectedTableCurRowKey.value) || {});
 };
 const handleAllSelect = () => {
 	const curNotSelDatas = getCurNotSelectedDatas();
@@ -710,7 +718,7 @@ const handleSelectData = (param: { [key: string]: any }) => {
 };
 
 // 移除选择的数据
-const handleDelSelectedData = (row: SelectorResult | undefined) => {
+const handleDelSelectedData = (row: { [key: string]: any }) => {
 	if (!row) return;
 	selectedTableData.value.splice(
 		selectedTableData.value.findIndex(data => data.value === row.value),
