@@ -281,12 +281,12 @@ const handleSubmit = () => {
 <style scoped lang="scss">
 .selector-box {
 	width: 100%;
-	height: 70px;
+	height: 95px;
 	padding: 5px 5px 0;
 	border: 1px solid #dcdfe6;
 	border-radius: 4px;
 	.selector-box-top {
-		height: 40px;
+		height: 65px;
 		overflow-y: auto;
 		.el-scrollbar__wrap {
 			overflow: hidden;
