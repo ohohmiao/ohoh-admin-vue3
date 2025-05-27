@@ -272,6 +272,7 @@ import { getAllSysPositionTreeApi } from "@/api/modules/sys/position";
 import { SelectorTypeEnum, SelectorUserTypeEnum } from "@/components/Selector/interface";
 import { ElAutocomplete, ElDivider, ElMessage, ElTable, ElTree } from "element-plus";
 import { GlobalStore } from "@/stores";
+import Sortable from "sortablejs";
 
 const globalStore = GlobalStore();
 const loginUserInfo = globalStore.userInfo;
@@ -585,6 +586,21 @@ const acceptParams = async (params: { [key: string]: any }) => {
 		}
 	}
 	selectorVisible.value = true;
+
+	await nextTick();
+	//获取el-table对应的DOM元素（tbody），实现行拖拽排序
+	const selectedTableBodyEl = selectedTableRef.value?.$el.querySelectorAll(".el-table__body-wrapper tbody")[0];
+	selectedTableBodyEl &&
+		Sortable.create(selectedTableBodyEl, {
+			handle: "tr", // 拖拽手柄（行）
+			onEnd(evt) {
+				const { oldIndex, newIndex } = evt;
+				if (oldIndex != null && newIndex != null && oldIndex !== newIndex) {
+					const targetRow = selectedTableData.value.splice(oldIndex, 1)[0];
+					selectedTableData.value.splice(newIndex, 0, targetRow);
+				}
+			}
+		});
 };
 
 // 判断待选节点id是否在已选择的表格中
