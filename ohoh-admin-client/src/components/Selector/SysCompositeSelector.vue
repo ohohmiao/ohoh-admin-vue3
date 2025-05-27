@@ -760,8 +760,11 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
+.selector-dialog :deep(.el-dialog) {
+	padding: 0;
+}
 .selector-dialog :deep(.el-dialog__body) {
-	padding: 10px 20px 0;
+	padding: 0 20px;
 	.selector-tab-divider {
 		margin: 5px 0;
 	}
@@ -798,7 +801,7 @@ defineExpose({
 	}
 }
 .selector-dialog :deep(.el-dialog__footer) {
-	padding-top: 0;
+	padding: 0 20px 10px 0;
 	.selector-selected-tip {
 		height: 32px;
 		font-size: 14px;
