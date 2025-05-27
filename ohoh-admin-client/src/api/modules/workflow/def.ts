@@ -41,6 +41,10 @@ export namespace WorkflowDef {
 		defXml: string;
 		defJson: string;
 		defSvg: string;
+		initiatorScope: number;
+		targetInitiators: { [key: string]: any }[];
+		processLimittype: number;
+		processLimitvalue: number;
 	}
 }
 

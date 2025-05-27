@@ -5,6 +5,8 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
+import com.ohohmiao.modules.workflow.enums.FlowDefPropTypeEnum;
+import com.ohohmiao.modules.workflow.enums.FlowInitiatorScopeEnum;
 import com.ohohmiao.modules.workflow.mapper.FlowHisDeployMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployListDTO;
@@ -12,6 +14,7 @@ import com.ohohmiao.modules.workflow.model.entity.FlowDef;
 import com.ohohmiao.modules.workflow.model.entity.FlowDefType;
 import com.ohohmiao.modules.workflow.model.entity.FlowHisDeploy;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
+import com.ohohmiao.modules.workflow.service.FlowDefPropService;
 import com.ohohmiao.modules.workflow.service.FlowDefService;
 import com.ohohmiao.modules.workflow.service.FlowDefTypeService;
 import com.ohohmiao.modules.workflow.service.FlowHisDeployService;
@@ -37,20 +40,31 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
     @Resource
     private FlowDefTypeService flowDefTypeService;
 
+    @Resource
+    private FlowDefPropService flowDefPropService;
+
     @Override
     public FlowDefVO get(String defCode, Integer defVersion){
+        FlowDefVO flowDefVO = null;
         // 先查找流程定义表
         FlowDef flowDef = flowDefService.getByDefCodeAndDefVersion(defCode, defVersion);
         if(ObjectUtil.isNotNull(flowDef)){
-            return BeanUtil.copyProperties(flowDef, FlowDefVO.class);
+            flowDefVO = BeanUtil.copyProperties(flowDef, FlowDefVO.class);
         }else{
+            // 再查找历史部署表
             FlowHisDeploy flowHisDeploy = this.getByDefCodeAndDefVersion(defCode, defVersion);
             if(ObjectUtil.isNotNull(flowHisDeploy)){
-                return BeanUtil.copyProperties(flowHisDeploy, FlowDefVO.class);
-            }else{
-                return null;
+                flowDefVO = BeanUtil.copyProperties(flowHisDeploy, FlowDefVO.class);
             }
         }
+        // 组装流程属性
+        if(ObjectUtil.isNotNull(flowDefVO)){
+            if(flowDefVO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
+                flowDefVO.setTargetInitiators(flowDefPropService.list(
+                        FlowDefPropTypeEnum.INITIATOR.ordinal(), defCode, defVersion));
+            }
+        }
+        return flowDefVO;
     }
 
     @Override
@@ -62,6 +76,13 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         }
         if(flowDefType.getTreeLevel() != 2){
             throw new CommonException("仅限挂在二级类别下！");
+        }
+        // 更新流程发起范围数据
+        if(hisDTO.getInitiatorScope().equals(FlowInitiatorScopeEnum.ALL.ordinal())){
+            flowDefPropService.delete(FlowDefPropTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(), hisDTO.getDefVersion());
+        }else{
+            flowDefPropService.saveOrUpdate(FlowDefPropTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(),
+                    hisDTO.getDefVersion(), hisDTO.getTargetInitiators());
         }
         FlowDef flowDef = flowDefService.getByDefCodeAndDefVersion(hisDTO.getDefCode(), hisDTO.getDefVersion());
         if(ObjectUtil.isNotNull(flowDef)){
