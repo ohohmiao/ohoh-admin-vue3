@@ -1,35 +1,60 @@
 <template>
 	<el-dialog
 		v-model="formVisible"
-		:title="`环节配置[${formProps.nodeName}-${formProps.nodeId}]`"
+		:title="`环节配置[${tabProps.nodeName}-${tabProps.nodeId}]`"
 		fullscreen
 		:close-on-click-modal="false"
 		destroy-on-close
 	>
+		<el-tabs v-model="activeTabName" tab-position="left">
+			<el-tab-pane label="环节属性" name="baseTab">
+				<DefNodePropTab :row-data="formProps.rowData"></DefNodePropTab>
+			</el-tab-pane>
+			<el-tab-pane label="表单字段权限" name="formTab"></el-tab-pane>
+			<el-tab-pane label="下一步审核人" name="nextHandlerTab"></el-tab-pane>
+		</el-tabs>
 	</el-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import DefNodePropTab from "./DefNodePropTab.vue";
+import { getWorkflowNodeApi, WorkflowNode } from "@/api/modules/workflow/node";
 
-interface FormProps {
+interface TabProps {
 	nodeId: string;
 	nodeName: string;
 	defCode: string;
 	defVersion: number;
 }
+interface FormProps {
+	rowData: Partial<WorkflowNode.Form>;
+}
 
 const formVisible = ref(false);
-const formProps = ref<FormProps>({
+const activeTabName = ref();
+const tabProps = ref<TabProps>({
 	nodeId: "",
 	nodeName: "",
 	defCode: "",
 	defVersion: -1
 });
+const formProps = ref<FormProps>({
+	rowData: {}
+});
 
 // 接收父组件传过来的参数
-const acceptParams = (params: FormProps) => {
-	formProps.value = params;
+const acceptParams = async (params: TabProps) => {
+	tabProps.value = params;
+	activeTabName.value = "baseTab";
+
+	const { data } = await getWorkflowNodeApi({
+		defCode: params.defCode,
+		defVersion: params.defVersion,
+		nodeId: params.nodeId,
+		nodeName: params.nodeName
+	});
+	formProps.value.rowData = data;
 
 	formVisible.value = true;
 };
