@@ -59,7 +59,8 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         }
         // 组装流程属性
         if(ObjectUtil.isNotNull(flowDefVO)){
-            if(flowDefVO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
+            if(flowDefVO.getInitiatorScope() != null &&
+               flowDefVO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
                 flowDefVO.setTargetInitiators(flowDefPropService.list(
                         FlowDefPropTypeEnum.INITIATOR.ordinal(), defCode, defVersion));
             }
