@@ -1,5 +1,6 @@
 package com.ohohmiao.modules.workflow.model.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -35,6 +36,15 @@ public class FlowHisDeploy extends CommonEntity {
 
     @TableField
     private Integer defSort;
+
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    private Integer initiatorScope;
+
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    private Integer processLimittype;
+
+    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    private Integer processLimitvalue;
 
     @TableField
     private String defXml;
