@@ -14,10 +14,15 @@ export namespace WorkflowNode {
 		taskAssigntype?: number;
 		multiassignRule?: number;
 		multiassignRatio?: number;
-		multiassignWeightjson?: string;
+		multiassignWeightjson?: WeightForm[];
 		taskReturntype?: number;
 		processlimitPermit?: number;
 		approvalPermit?: number;
+	}
+	export interface WeightForm {
+		handlerId: string;
+		handlerName: string;
+		weight: number;
 	}
 }
 
@@ -29,4 +34,8 @@ export const getWorkflowNodeApi = (params: { defCode: string; defVersion: number
 // * 保存或修改流程某环节属性
 export const addOrEditWorkflowNodeApi = (params: WorkflowNode.Form) => {
 	return http.post<string>("/workflowNode/addOrEdit", params);
+};
+
+export const getMultiAssignWeightListApi = (params: { defCode: string; defVersion: number; nodeId: string }) => {
+	return http.post<WorkflowNode.WeightForm[]>("/workflowNode/listMultiAssignWeight", params);
 };

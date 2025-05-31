@@ -175,7 +175,7 @@ const rules = reactive({
 	targetInitiators: [
 		{
 			type: "array",
-			validator: (rule: any, value: string) => {
+			validator: (rule: any, value: any) => {
 				return new Promise((resolve, reject) => {
 					if (formProps.value.rowData.initiatorScope == 1) {
 						if (value == undefined || !value.length) {
@@ -194,7 +194,7 @@ const rules = reactive({
 	processLimitvalue: [
 		{
 			type: "number",
-			validator: (rule: any, value: string) => {
+			validator: (rule: any, value: any) => {
 				return new Promise((resolve, reject) => {
 					if (formProps.value.rowData.processLimittype != 0) {
 						if (!value) {

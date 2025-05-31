@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.Fastjson2TypeHandler;
+import com.ohohmiao.modules.workflow.model.pojo.FlowTaskMultiAssignWeight;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 流程环节
@@ -15,7 +19,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName(value = "workflow_node")
+@TableName(value = "workflow_node", autoResultMap = true)
 public class FlowNode {
 
     @TableId
@@ -36,14 +40,16 @@ public class FlowNode {
     @TableField
     private Integer taskAssigntype;
 
-    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    @TableField(insertStrategy = FieldStrategy.ALWAYS, updateStrategy = FieldStrategy.ALWAYS)
     private Integer multiassignRule;
 
-    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    @TableField(insertStrategy = FieldStrategy.ALWAYS, updateStrategy = FieldStrategy.ALWAYS)
     private Integer multiassignRatio;
 
-    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
-    private String multiassignWeightjson;
+    @TableField(insertStrategy = FieldStrategy.ALWAYS,
+            updateStrategy = FieldStrategy.ALWAYS,
+            typeHandler = Fastjson2TypeHandler.class)
+    private List<FlowTaskMultiAssignWeight> multiassignWeightjson;
 
     @TableField
     private Integer taskReturntype;

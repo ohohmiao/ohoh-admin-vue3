@@ -105,5 +105,5 @@ export const editWorkflowHisDeployApi = (params: Partial<WorkflowDef.Form>) => {
 
 // * 获取历史流程版本列表
 export const getWorkflowHisDeployListApi = (params: { defCode: string; defVersion: number }) => {
-	return http.post<WorkflowDef.Form>("/workflowHisDeploy/list", params);
+	return http.post<WorkflowDef.Form[]>("/workflowHisDeploy/list", params);
 };

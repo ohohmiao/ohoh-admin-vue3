@@ -37,7 +37,7 @@ public class SysDic extends CommonEntity {
     @TableField
     private Integer dicSort;
 
-    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    @TableField(insertStrategy = FieldStrategy.ALWAYS, updateStrategy = FieldStrategy.ALWAYS)
     private String extendField;
 
 }

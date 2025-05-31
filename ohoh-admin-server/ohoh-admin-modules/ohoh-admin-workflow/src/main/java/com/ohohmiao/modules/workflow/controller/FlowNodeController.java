@@ -7,6 +7,7 @@ import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeGetDTO;
+import com.ohohmiao.modules.workflow.model.pojo.FlowTaskMultiAssignWeight;
 import com.ohohmiao.modules.workflow.model.vo.FlowNodeVO;
 import com.ohohmiao.modules.workflow.service.FlowNodeService;
 import io.swagger.annotations.Api;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 流程环节controller
@@ -59,6 +61,19 @@ public class FlowNodeController {
     public CommonResp<String> addOrEdit(@RequestBody @Validated FlowNodeAddOrEditDTO flowNodeAddOrEditDTO){
         flowNodeService.saveOrUpdate(flowNodeAddOrEditDTO);
         return CommonResp.success("保存成功");
+    }
+
+    /**
+     * 获取流程某环节多人决策权重配置列表
+     * @param listDTO
+     * @return
+     */
+    @ApiOperation(value = "获取流程某环节多人决策权重配置列表")
+    @ApiOperationSupport(order = 3)
+    @SaPcCheckPermission("/workflowNode/listMultiAssignWeight")
+    @PostMapping("/workflowNode/listMultiAssignWeight")
+    public CommonResp<List<FlowTaskMultiAssignWeight>> listMultiAssignWeight(@RequestBody @Validated FlowNodeGetDTO listDTO){
+        return CommonResp.data(flowNodeService.listMultiAssignWeight(listDTO));
     }
 
 }

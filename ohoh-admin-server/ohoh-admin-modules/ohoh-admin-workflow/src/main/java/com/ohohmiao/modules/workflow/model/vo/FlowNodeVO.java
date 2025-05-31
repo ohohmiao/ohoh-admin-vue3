@@ -1,9 +1,12 @@
 package com.ohohmiao.modules.workflow.model.vo;
 
+import com.ohohmiao.modules.workflow.model.pojo.FlowTaskMultiAssignWeight;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 /**
  * 流程环节属性
@@ -41,7 +44,7 @@ public class FlowNodeVO {
     private Integer multiassignRatio;
 
     @ApiModelProperty(value = "多人决策权重json")
-    private String multiassignWeightjson;
+    private List<FlowTaskMultiAssignWeight> multiassignWeightjson;
 
     @ApiModelProperty(value = "退回执行方式")
     private Integer taskReturntype;

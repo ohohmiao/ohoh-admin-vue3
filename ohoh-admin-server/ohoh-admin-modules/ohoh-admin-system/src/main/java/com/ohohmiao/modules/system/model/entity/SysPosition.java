@@ -31,7 +31,7 @@ public class SysPosition extends CommonTreeEntity {
     @TableField
     private Integer positionLevel;
 
-    @TableField(insertStrategy = FieldStrategy.IGNORED, updateStrategy = FieldStrategy.IGNORED)
+    @TableField(insertStrategy = FieldStrategy.ALWAYS, updateStrategy = FieldStrategy.ALWAYS)
     private String positionRemark;
 
 }

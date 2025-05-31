@@ -2,8 +2,12 @@ package com.ohohmiao.modules.workflow.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeAddOrEditDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowNodeGetDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowNode;
+import com.ohohmiao.modules.workflow.model.pojo.FlowTaskMultiAssignWeight;
 import com.ohohmiao.modules.workflow.model.vo.FlowNodeVO;
+
+import java.util.List;
 
 /**
  * 流程环节Service
@@ -27,5 +31,12 @@ public interface FlowNodeService extends IService<FlowNode> {
      * @param addOrEditDTO
      */
     void saveOrUpdate(FlowNodeAddOrEditDTO addOrEditDTO);
+
+    /**
+     * 获取流程某环节多人决策权重配置列表
+     * @param listDTO
+     * @return
+     */
+    List<FlowTaskMultiAssignWeight> listMultiAssignWeight(FlowNodeGetDTO listDTO);
 
 }

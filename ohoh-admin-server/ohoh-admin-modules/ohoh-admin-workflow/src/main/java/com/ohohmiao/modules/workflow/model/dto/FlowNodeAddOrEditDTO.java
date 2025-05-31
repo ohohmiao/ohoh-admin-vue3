@@ -3,6 +3,7 @@ package com.ohohmiao.modules.workflow.model.dto;
 import cn.hutool.core.util.ObjectUtil;
 import com.ohohmiao.modules.workflow.enums.FlowTaskAssignTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowTaskMultiAssignRuleEnum;
+import com.ohohmiao.modules.workflow.model.pojo.FlowTaskMultiAssignWeight;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.hibernate.validator.constraints.ScriptAssert;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * 流程环节属性新增或编辑
@@ -53,7 +55,7 @@ public class FlowNodeAddOrEditDTO {
     private Integer multiassignRatio;
 
     @ApiModelProperty(value = "多人决策权重json")
-    private String multiassignWeightjson;
+    private List<FlowTaskMultiAssignWeight> multiassignWeightjson;
 
     @ApiModelProperty(value = "退回执行方式", required = true)
     @NotNull(message = "退回执行方式不能为空")

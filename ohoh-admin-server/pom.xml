@@ -28,7 +28,7 @@
         <mysql.connector.java.version>8.0.32</mysql.connector.java.version>
         <druid.version>1.2.16</druid.version>
         <mybatis.version>3.5.13</mybatis.version>
-        <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
+        <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <!-- knife4j -->
         <knife4j.version>3.0.3</knife4j.version>
         <!-- sa-token权限认证  -->
@@ -191,14 +191,10 @@
             <!-- mybatis-plus -->
             <dependency>
                 <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-core</artifactId>
+                <artifactId>mybatis-plus-bom</artifactId>
                 <version>${mybatis-plus.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!-- Sa-Token 权限认证，在线文档：https://sa-token.cc -->
