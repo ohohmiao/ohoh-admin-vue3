@@ -22,7 +22,7 @@ export namespace WorkflowNode {
 }
 
 // * 获取流程某环节属性
-export const getWorkflowNodeApi = (params: { defCode: string; defVersion: number; nodeId: string; nodeName: string }) => {
+export const getWorkflowNodeApi = (params: { defCode: string; defVersion: number; nodeId: string }) => {
 	return http.post<WorkflowNode.Form>("/workflowNode/get", params);
 };
 

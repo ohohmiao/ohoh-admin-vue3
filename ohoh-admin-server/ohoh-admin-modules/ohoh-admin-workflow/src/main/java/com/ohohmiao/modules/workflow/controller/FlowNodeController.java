@@ -1,7 +1,5 @@
 package com.ohohmiao.modules.workflow.controller;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ObjectUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
@@ -44,12 +42,8 @@ public class FlowNodeController {
     @SaPcCheckPermission("/workflowNode/get")
     @PostMapping("/workflowNode/get")
     public CommonResp<FlowNodeVO> get(@RequestBody @Validated FlowNodeGetDTO getDTO){
-        FlowNodeVO flowNodeVO = flowNodeService.get(getDTO.getDefCode(), getDTO.getDefVersion(), getDTO.getNodeId());
-        if(ObjectUtil.isNotNull(flowNodeVO)){
-            return CommonResp.data(flowNodeVO);
-        }else{
-            return CommonResp.data(BeanUtil.copyProperties(getDTO, FlowNodeVO.class));
-        }
+        return CommonResp.data(flowNodeService.get(
+                getDTO.getDefCode(), getDTO.getDefVersion(), getDTO.getNodeId()));
     }
 
     /**

@@ -31,8 +31,4 @@ public class FlowNodeGetDTO {
     @NotBlank(message = "环节id不能为空")
     private String nodeId;
 
-    @ApiModelProperty(value = "环节名称", required = true)
-    @NotBlank(message = "环节名称不能为空")
-    private String nodeName;
-
 }

@@ -48,13 +48,17 @@ const acceptParams = async (params: TabProps) => {
 	tabProps.value = params;
 	activeTabName.value = "baseTab";
 
-	const { data } = await getWorkflowNodeApi({
+	const { data: nodeData } = await getWorkflowNodeApi({
+		defCode: params.defCode,
+		defVersion: params.defVersion,
+		nodeId: params.nodeId
+	});
+	formProps.value.rowData = nodeData || {
 		defCode: params.defCode,
 		defVersion: params.defVersion,
 		nodeId: params.nodeId,
 		nodeName: params.nodeName
-	});
-	formProps.value.rowData = data;
+	};
 
 	formVisible.value = true;
 };
