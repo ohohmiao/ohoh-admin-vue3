@@ -80,9 +80,8 @@ public class FlowHandlerAddOrEditDTO {
     public boolean isTargetReferResListRequired(){
         if(ObjectUtil.isNotNull(this.handlerType)){
             if(this.handlerType.equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
-                return CollectionUtil.isNotEmpty(this.targetReferResList);
-            }else{
                 this.setInterfaceCode(null);
+                return CollectionUtil.isNotEmpty(this.targetReferResList);
             }
         }
         return true;

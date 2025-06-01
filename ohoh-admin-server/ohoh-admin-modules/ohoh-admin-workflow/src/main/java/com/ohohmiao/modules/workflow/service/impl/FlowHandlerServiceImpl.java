@@ -100,6 +100,10 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
             flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.HANDLER.ordinal(),
                     flowHandler.getDefCode(), flowHandler.getDefVersion(),
                     flowHandlerAddOrEditDTO.getTargetReferResList(), flowHandler.getHandlerId());
+        }else{
+            // 删除指定人员
+            flowDefBindService.deleteByBindTypeAndBindObjid(
+                    FlowDefBindTypeEnum.HANDLER.ordinal(), flowHandler.getHandlerId());
         }
     }
 
@@ -107,6 +111,8 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
     @Transactional(rollbackFor = Exception.class)
     public void multiDelete(CommonIdListDTO idListDTO){
         this.removeBatchByIds(idListDTO.getId());
+        flowDefBindService.deleteByBindTypeAndBindObjid(
+                FlowDefBindTypeEnum.HANDLER.ordinal(), idListDTO.getId().toArray(new String[]{}));
     }
 
 }

@@ -68,4 +68,16 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
                 BeanUtil.copyProperties(item, CommonReferRes.class)).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByBindTypeAndBindObjid(Integer bindType, String... bindObjid){
+        if(bindObjid.length == 0){
+            return;
+        }
+        LambdaQueryWrapper<FlowDefBind> deleteWrapper = new LambdaQueryWrapper<>();
+        deleteWrapper.eq(FlowDefBind::getBindType, bindType);
+        deleteWrapper.in(FlowDefBind::getBindObjid, bindObjid);
+        this.remove(deleteWrapper);
+    }
+
 }

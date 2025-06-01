@@ -53,7 +53,7 @@
 				</div>
 			</el-form-item>
 			<el-form-item label="指定接口" prop="interfaceCode" v-if="formProps.rowData.handlerType == 1" required>
-				<el-select v-model="formProps.rowData.interfaceCode">
+				<el-select v-model="formProps.rowData.interfaceCode" filterable>
 					<el-option v-for="item in interfaceDicDatas" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 			</el-form-item>
@@ -62,7 +62,7 @@
 				prop="filterRule"
 				v-if="formProps.rowData.handlerType == 0 || formProps.rowData.handlerType == 1"
 			>
-				<el-select v-model="formProps.rowData.filterRule" clearable>
+				<el-select v-model="formProps.rowData.filterRule" filterable clearable>
 					<el-option v-for="item in filterRuleDicDatas" :key="item.value" :label="item.label" :value="item.value"></el-option>
 				</el-select>
 			</el-form-item>

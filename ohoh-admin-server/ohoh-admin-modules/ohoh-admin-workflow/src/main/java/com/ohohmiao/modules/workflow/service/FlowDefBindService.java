@@ -42,4 +42,11 @@ public interface FlowDefBindService extends IService<FlowDefBind> {
      */
     List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion);
 
+    /**
+     * 根据绑定类别和关联主键id删除
+     * @param bindType
+     * @param bindObjid
+     */
+    void deleteByBindTypeAndBindObjid(Integer bindType, String... bindObjid);
+
 }
