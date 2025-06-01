@@ -62,7 +62,7 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
             if(flowDefVO.getInitiatorScope() != null &&
                flowDefVO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
                 flowDefVO.setTargetInitiators(flowDefBindService.list(
-                        FlowDefBindTypeEnum.INITIATOR.ordinal(), defCode, defVersion));
+                        FlowDefBindTypeEnum.INITIATOR.ordinal(), defCode, defVersion, null));
             }
         }
         return flowDefVO;

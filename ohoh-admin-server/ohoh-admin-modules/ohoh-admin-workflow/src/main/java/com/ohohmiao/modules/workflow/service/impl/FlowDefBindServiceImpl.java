@@ -3,6 +3,7 @@ package com.ohohmiao.modules.workflow.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,7 +41,11 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
     @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdate(Integer bindType, String defCode, Integer defVersion,
                              List<CommonReferRes> referResList, String bindObjid){
-        this.delete(bindType, defCode, defVersion);
+        if(StrUtil.isNotBlank(bindObjid)){
+            this.deleteByBindTypeAndBindObjid(bindType, bindObjid);
+        }else{
+            this.delete(bindType, defCode, defVersion);
+        }
 
         if(CollUtil.isNotEmpty(referResList)){
             Set<FlowDefBind> bindList = CollectionUtil.newHashSet();
@@ -58,11 +63,12 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
     }
 
     @Override
-    public List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion){
+    public List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion, String bindObjid){
         LambdaQueryWrapper<FlowDefBind> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(FlowDefBind::getBindType, bindType);
         queryWrapper.eq(FlowDefBind::getDefCode, defCode);
         queryWrapper.eq(FlowDefBind::getDefVersion, defVersion);
+        queryWrapper.eq(StrUtil.isNotBlank(bindObjid), FlowDefBind::getBindObjid, bindObjid);
         queryWrapper.orderByAsc(FlowDefBind::getBindSort);
         return this.list(queryWrapper).stream().map(item ->
                 BeanUtil.copyProperties(item, CommonReferRes.class)).collect(Collectors.toList());

@@ -63,7 +63,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
             if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
                 // 组装指定人员数据
                 List<CommonReferRes> targetReferResList = flowDefBindService.list(FlowDefBindTypeEnum.HANDLER.ordinal(),
-                        flowHandlerVO.getDefCode(), flowHandlerVO.getDefVersion());
+                        flowHandlerVO.getDefCode(), flowHandlerVO.getDefVersion(), handlerId);
                 flowHandlerVO.setTargetReferResList(targetReferResList);
             }
             return flowHandlerVO;

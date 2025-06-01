@@ -38,9 +38,10 @@ public interface FlowDefBindService extends IService<FlowDefBind> {
      * @param bindType
      * @param defCode
      * @param defVersion
+     * @param bindObjid
      * @return
      */
-    List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion);
+    List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion, String bindObjid);
 
     /**
      * 根据绑定类别和关联主键id删除
