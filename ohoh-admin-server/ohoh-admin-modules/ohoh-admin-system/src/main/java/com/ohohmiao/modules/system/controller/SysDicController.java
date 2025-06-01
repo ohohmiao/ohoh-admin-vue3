@@ -3,6 +3,7 @@ package com.ohohmiao.modules.system.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
@@ -11,6 +12,7 @@ import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
 import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
 import com.ohohmiao.modules.system.model.dto.SysDicAddOrEditDTO;
 import com.ohohmiao.modules.system.model.dto.SysDicPageDTO;
+import com.ohohmiao.modules.system.model.dto.SysDicSelectDTO;
 import com.ohohmiao.modules.system.model.vo.SysDicVO;
 import com.ohohmiao.modules.system.service.SysDicService;
 import io.swagger.annotations.Api;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 系统字典controller
@@ -94,6 +97,19 @@ public class SysDicController {
     public CommonResp<String> delete(@RequestBody @Validated CommonIdListDTO idListDTO){
         sysDicService.delete(idListDTO);
         return CommonResp.success("删除成功");
+    }
+
+    /**
+     * 获取某类别字典的下拉框数据
+     * @param selectDTO
+     * @return
+     */
+    @ApiOperation(value = "获取某类别字典的下拉框数据")
+    @ApiOperationSupport(order = 5)
+    @SaPcCheckPermission("/sysDic/select")
+    @PostMapping("/sysDic/select")
+    public CommonResp<List<CommonSelectVO>> select(@RequestBody @Validated SysDicSelectDTO selectDTO){
+        return CommonResp.data(sysDicService.select(selectDTO.getDictypeCode()));
     }
 
 }

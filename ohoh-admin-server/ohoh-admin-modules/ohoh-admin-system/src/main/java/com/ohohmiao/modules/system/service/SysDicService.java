@@ -3,10 +3,13 @@ package com.ohohmiao.modules.system.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.modules.system.model.entity.SysDic;
 import com.ohohmiao.modules.system.model.dto.SysDicAddOrEditDTO;
 import com.ohohmiao.modules.system.model.dto.SysDicPageDTO;
 import com.ohohmiao.modules.system.model.vo.SysDicVO;
+
+import java.util.List;
 
 /**
  * 系统字典Service
@@ -67,5 +70,12 @@ public interface SysDicService extends IService<SysDic> {
      * @param dicTypeId
      */
     void updateDictypeCode(String dicTypeCode, String dicTypeId);
+
+    /**
+     * 获取某类别字典的下拉框数据
+     * @param dictypeCode
+     * @return
+     */
+    List<CommonSelectVO> select(String dictypeCode);
 
 }

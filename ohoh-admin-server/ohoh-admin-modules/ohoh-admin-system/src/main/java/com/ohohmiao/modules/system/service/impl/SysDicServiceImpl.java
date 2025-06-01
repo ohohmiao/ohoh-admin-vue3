@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.common.listener.CommonDataChangeEventCenter;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
 import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.modules.system.enums.SysDataListenerEnum;
@@ -29,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 系统字典Service实现类
@@ -159,6 +162,19 @@ public class SysDicServiceImpl extends ServiceImpl<SysDicMapper, SysDic> impleme
         this.update(updateWrapper);
 
         CommonDataChangeEventCenter.doEditWithData(SysDataListenerEnum.DIC.getName(), null);
+    }
+
+    @Override
+    public List<CommonSelectVO> select(String dictypeCode){
+        LambdaQueryWrapper<SysDic> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysDic::getDictypeCode, dictypeCode);
+        queryWrapper.orderByAsc(SysDic::getDicSort);
+        return this.list(queryWrapper).stream().map(dic -> {
+            CommonSelectVO selectVO = new CommonSelectVO();
+            selectVO.setValue(dic.getDicCode());
+            selectVO.setLabel(dic.getDicName());
+            return selectVO;
+        }).collect(Collectors.toList());
     }
 
     @Override
