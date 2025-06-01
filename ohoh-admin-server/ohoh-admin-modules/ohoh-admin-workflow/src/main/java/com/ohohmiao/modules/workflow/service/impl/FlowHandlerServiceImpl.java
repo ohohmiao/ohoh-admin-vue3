@@ -82,7 +82,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
             // 更新指定人员
             flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.HANDLER.ordinal(),
                     flowHandler.getDefCode(), flowHandler.getDefVersion(),
-                    flowHandlerAddOrEditDTO.getTargetReferResList());
+                    flowHandlerAddOrEditDTO.getTargetReferResList(), flowHandler.getHandlerId());
         }
     }
 
@@ -99,7 +99,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
             // 更新指定人员
             flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.HANDLER.ordinal(),
                     flowHandler.getDefCode(), flowHandler.getDefVersion(),
-                    flowHandlerAddOrEditDTO.getTargetReferResList());
+                    flowHandlerAddOrEditDTO.getTargetReferResList(), flowHandler.getHandlerId());
         }
     }
 

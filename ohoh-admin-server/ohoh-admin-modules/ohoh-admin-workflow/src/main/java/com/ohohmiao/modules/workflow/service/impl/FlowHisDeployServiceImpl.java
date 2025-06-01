@@ -83,7 +83,7 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
             flowDefBindService.delete(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(), hisDTO.getDefVersion());
         }else{
             flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(),
-                    hisDTO.getDefVersion(), hisDTO.getTargetInitiators());
+                    hisDTO.getDefVersion(), hisDTO.getTargetInitiators(), null);
         }
         FlowDef flowDef = flowDefService.getByDefCodeAndDefVersion(hisDTO.getDefCode(), hisDTO.getDefVersion());
         if(ObjectUtil.isNotNull(flowDef)){

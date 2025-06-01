@@ -28,8 +28,10 @@ public interface FlowDefBindService extends IService<FlowDefBind> {
      * @param defCode
      * @param defVersion
      * @param referResList
+     * @param bindObjid
      */
-    void saveOrUpdate(Integer bindType, String defCode, Integer defVersion, List<CommonReferRes> referResList);
+    void saveOrUpdate(Integer bindType, String defCode, Integer defVersion,
+                      List<CommonReferRes> referResList, String bindObjid);
 
     /**
      * 查询绑定信息

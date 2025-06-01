@@ -38,7 +38,8 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveOrUpdate(Integer bindType, String defCode, Integer defVersion, List<CommonReferRes> referResList){
+    public void saveOrUpdate(Integer bindType, String defCode, Integer defVersion,
+                             List<CommonReferRes> referResList, String bindObjid){
         this.delete(bindType, defCode, defVersion);
 
         if(CollUtil.isNotEmpty(referResList)){
@@ -48,6 +49,7 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
                 bind.setBindType(bindType);
                 bind.setDefCode(defCode);
                 bind.setDefVersion(defVersion);
+                bind.setBindObjid(bindObjid);
                 bind.setBindSort(i + 1);
                 bindList.add(bind);
             }
