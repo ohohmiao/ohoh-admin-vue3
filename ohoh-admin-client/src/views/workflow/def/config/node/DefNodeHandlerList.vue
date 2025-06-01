@@ -3,6 +3,7 @@
 		<ProTable
 			ref="proTable"
 			title="下一步办理人列表"
+			rowKey="handlerId"
 			:columns="columns"
 			:request-api="getWorkflowHandlerPageApi"
 			:initParam="{ defCode: props.defCode, defVersion: props.defVersion, nodeId: props.nodeId }"
@@ -10,8 +11,17 @@
 			:searchCol="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
 		>
 			<!-- 表格 header 按钮 -->
-			<template #tableHeader>
+			<template #tableHeader="scope">
 				<el-button type="primary" @click="openHandlerForm('新增')">新增</el-button>
+				<el-button
+					type="danger"
+					:icon="Delete"
+					plain
+					@click="handleBatchDeleteHandler(scope.selectedListIds)"
+					:disabled="!scope.isSelected"
+				>
+					批量删除
+				</el-button>
 			</template>
 			<!-- 表格操作 -->
 			<template #operation="scope">
@@ -44,6 +54,7 @@ import {
 } from "@/api/modules/workflow/handler";
 import DefNodeHandlerForm from "./DefNodeHandlerForm.vue";
 import { useHandleData } from "@/hooks/useHandleData";
+import { Delete } from "@element-plus/icons-vue";
 
 const props = withDefaults(
 	defineProps<{
@@ -60,7 +71,7 @@ const props = withDefaults(
 const proTable = ref();
 // 表格配置项
 const columns: ColumnProps<WorkflowHandler.Form>[] = [
-	{ type: "index", label: "#", width: 50 },
+	{ type: "selection", fixed: "left", width: 50 },
 	{ prop: "nextnodeName", label: "下一环节", width: 300 },
 	{
 		prop: "handlerType",
@@ -100,10 +111,18 @@ const openHandlerForm = async (title: string, rowData: Partial<WorkflowHandler.F
 		getTableList: proTable.value.getTableList
 	});
 };
+
 // 删除办理人配置
 const handleDeleteHandler = async (params: WorkflowHandler.Form) => {
 	if (!params.handlerId) return;
 	await useHandleData(multiDeleteWorkflowHandlerApi, { id: [params.handlerId] }, `删除【${params.nextnodeName}】环节办理人配置`);
+	proTable.value.getTableList();
+};
+
+// 批量删除办理人配置
+const handleBatchDeleteHandler = async (id: string[]) => {
+	await useHandleData(multiDeleteWorkflowHandlerApi, { id }, `删除所选环节办理人配置`);
+	proTable.value.clearSelection();
 	proTable.value.getTableList();
 };
 </script>

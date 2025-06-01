@@ -3,7 +3,7 @@ package com.ohohmiao.modules.workflow.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
-import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
+import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
 import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
@@ -80,17 +80,17 @@ public class FlowEventController {
     }
 
     /**
-     * 删除流程事件
-     * @param idDTO
+     * 批量删除流程事件
+     * @param idListDTO
      * @return
      */
-    @ApiOperation(value = "删除流程事件")
+    @ApiOperation(value = "批量删除流程事件")
     @ApiOperationSupport(order = 4)
-    @CommonLog("删除流程事件")
-    @SaPcCheckPermission("/workflowEvent/delete")
-    @PostMapping("/workflowEvent/delete")
-    public CommonResp<String> delete(@RequestBody @Validated CommonIdDTO idDTO){
-        flowEventService.delete(idDTO);
+    @CommonLog("批量删除流程事件")
+    @SaPcCheckPermission("/workflowEvent/multiDelete")
+    @PostMapping("/workflowEvent/multiDelete")
+    public CommonResp<String> multiDelete(@RequestBody @Validated CommonIdListDTO idListDTO){
+        flowEventService.multiDelete(idListDTO);
         return CommonResp.success("删除成功");
     }
 

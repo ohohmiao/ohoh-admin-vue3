@@ -112,7 +112,8 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
     public void multiDelete(CommonIdListDTO idListDTO){
         this.removeBatchByIds(idListDTO.getId());
         flowDefBindService.deleteByBindTypeAndBindObjid(
-                FlowDefBindTypeEnum.HANDLER.ordinal(), idListDTO.getId().toArray(new String[]{}));
+                FlowDefBindTypeEnum.HANDLER.ordinal(),
+                idListDTO.getId().toArray(new String[0]));
     }
 
 }

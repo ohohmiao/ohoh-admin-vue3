@@ -40,6 +40,6 @@ export const editWorkflowEventApi = (params: WorkflowEvent.Form) => {
 };
 
 // * 删除流程事件
-export const deleteWorkflowEventApi = (params: { id: string }) => {
-	return http.post("/workflowEvent/delete", params);
+export const multiDeleteWorkflowEventApi = (params: { id: string[] }) => {
+	return http.post("/workflowEvent/multiDelete", params);
 };

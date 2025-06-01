@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ohohmiao.framework.common.exception.CommonException;
-import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
+import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
 import com.ohohmiao.modules.workflow.enums.FlowNodeBindTypeEnum;
@@ -59,7 +59,7 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
                 BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.EVENT.ordinal());
         flowNodeBindAddOrEditDTO.setBindObjid(flowEvent.getEventId());
-        flowNodeBindService.addOrEdit(flowNodeBindAddOrEditDTO);
+        flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
     }
 
     @Override
@@ -76,20 +76,17 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
                 BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.EVENT.ordinal());
         flowNodeBindAddOrEditDTO.setBindObjid(flowEvent.getEventId());
-        flowNodeBindService.addOrEdit(flowNodeBindAddOrEditDTO);
+        flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(CommonIdDTO idDTO){
-        FlowEvent flowEvent = this.getById(idDTO.getId());
-        if(ObjectUtil.isNull(flowEvent)){
-            throw new CommonException("流程事件不存在！");
-        }
+    public void multiDelete(CommonIdListDTO idListDTO){
+        this.removeBatchByIds(idListDTO.getId());
         // 删除绑定关系表
-        flowNodeBindService.delete(flowEvent.getDefCode(),
-                flowEvent.getDefVersion(), flowEvent.getEventId());
-        flowEventMapper.deleteById(idDTO.getId());
+        flowNodeBindService.deleteByBindTypeAndBindObjid(
+                FlowNodeBindTypeEnum.EVENT.ordinal(),
+                idListDTO.getId().toArray(new String[0]));
     }
 
 }

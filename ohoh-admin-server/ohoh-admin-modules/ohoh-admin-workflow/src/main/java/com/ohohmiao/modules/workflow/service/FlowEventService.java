@@ -1,7 +1,7 @@
 package com.ohohmiao.modules.workflow.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
+import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.framework.mybatis.service.CommonService;
 import com.ohohmiao.modules.workflow.model.dto.FlowEventAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowEventPageDTO;
@@ -36,9 +36,9 @@ public interface FlowEventService extends CommonService<FlowEvent> {
     void edit(FlowEventAddOrEditDTO flowEventAddOrEditDTO);
 
     /**
-     * 删除流程事件
-     * @param idDTO
+     * 批量删除流程事件
+     * @param idListDTO
      */
-    void delete(CommonIdDTO idDTO);
+    void multiDelete(CommonIdListDTO idListDTO);
 
 }

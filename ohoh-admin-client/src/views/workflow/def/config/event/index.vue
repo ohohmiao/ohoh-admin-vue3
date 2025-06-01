@@ -3,6 +3,7 @@
 		<ProTable
 			ref="proTable"
 			title="流程事件绑定列表"
+			rowKey="eventId"
 			:columns="columns"
 			:requestApi="getWorkflowEventPageApi"
 			:initParam="{ defCode: props.defCode, defVersion: props.defVersion }"
@@ -10,8 +11,11 @@
 			:searchCol="{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3 }"
 		>
 			<!-- 表格 header 按钮 -->
-			<template #tableHeader>
+			<template #tableHeader="scope">
 				<el-button type="primary" @click="openEventForm('新增')">新增</el-button>
+				<el-button type="danger" plain @click="handleMultiDeleteEvent(scope.selectedListIds)" :disabled="!scope.isSelected">
+					批量删除
+				</el-button>
 			</template>
 			<!-- 表格操作 -->
 			<template #operation="scope">
@@ -38,7 +42,7 @@ import {
 	getWorkflowEventPageApi,
 	addWorkflowEventApi,
 	editWorkflowEventApi,
-	deleteWorkflowEventApi
+	multiDeleteWorkflowEventApi
 } from "@/api/modules/workflow/event";
 import DefConfigEventForm from "./form.vue";
 import { useHandleData } from "@/hooks/useHandleData";
@@ -52,7 +56,7 @@ const props = defineProps({
 const proTable = ref();
 // 表格配置项
 const columns: ColumnProps<WorkflowEvent.Form>[] = [
-	{ type: "index", label: "#", width: 50 },
+	{ type: "selection", fixed: "left", width: 50 },
 	{
 		prop: "eventType",
 		label: "事件类别",
@@ -95,7 +99,14 @@ const openEventForm = (title: string, rowData: Partial<WorkflowEvent.Form> = {})
 // 删除事件
 const handleDeleteEvent = async (params: WorkflowEvent.Form) => {
 	if (!params.eventId) return;
-	await useHandleData(deleteWorkflowEventApi, { id: params.eventId }, `删除【${params.eventName}】流程事件`);
+	await useHandleData(multiDeleteWorkflowEventApi, { id: [params.eventId] }, `删除【${params.eventName}】流程事件`);
+	proTable.value.getTableList();
+};
+
+// 批量删除事件
+const handleMultiDeleteEvent = async (id: string[]) => {
+	await useHandleData(multiDeleteWorkflowEventApi, { id }, `删除所选流程事件`);
+	proTable.value.clearSelection();
 	proTable.value.getTableList();
 };
 </script>
