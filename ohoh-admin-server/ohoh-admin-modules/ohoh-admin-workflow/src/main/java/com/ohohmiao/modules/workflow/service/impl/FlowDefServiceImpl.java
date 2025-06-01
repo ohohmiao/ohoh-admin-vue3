@@ -103,9 +103,7 @@ public class FlowDefServiceImpl extends CommonServiceImpl<FlowDefMapper, FlowDef
     public FlowDefVO get(String defId){
         FlowDef flowDef = flowDefMapper.selectById(defId);
         if(ObjectUtil.isNotNull(flowDef)){
-            FlowDefVO flowDefVO = new FlowDefVO();
-            BeanUtil.copyProperties(flowDef, flowDefVO);
-            return flowDefVO;
+            return BeanUtil.copyProperties(flowDef, FlowDefVO.class);
         }else{
             return null;
         }

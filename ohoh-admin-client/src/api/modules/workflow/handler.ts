@@ -19,16 +19,11 @@ export namespace WorkflowHandler {
 		nextnodeId: string;
 		nextnodeName: string;
 		handlerType: number;
-		targetReferResList?: ReferResForm[];
+		targetReferResList?: { [p: string]: any }[];
 		interfaceCode?: string;
 		filterRule?: string;
 		multiHandletype: number;
 		reselectPermit: number;
-	}
-	export interface ReferResForm {
-		referRestype: string;
-		referResid: string;
-		referResname: string;
 	}
 }
 
@@ -37,7 +32,22 @@ export const getWorkflowHandlerPageApi = (params: WorkflowHandler.ReqParams) => 
 	return http.post<WorkflowHandler.Form>("/workflowHandler/page", params);
 };
 
-// * 删除流程环节办理人配置
-export const deleteWorkflowHandlerApi = (params: { id: string }) => {
-	return http.post("/workflowHandler/delete", params);
+// * 获取单个环节办理人配置
+export const getWorkflowHandlerApi = (params: { id: string }) => {
+	return http.post<WorkflowHandler.Form>("/workflowHandler/get", params);
+};
+
+// * 新增环节办理人配置
+export const addWorkflowHandlerApi = (params: WorkflowHandler.Form) => {
+	return http.post<string>("/workflowHandler/add", params);
+};
+
+// * 修改环节办理人配置
+export const editWorkflowHandlerApi = (params: WorkflowHandler.Form) => {
+	return http.post<string>("/workflowHandler/edit", params);
+};
+
+// * 批量删除环节办理人配置
+export const multiDeleteWorkflowHandlerApi = (params: { id: string[] }) => {
+	return http.post("/workflowHandler/multiDelete", params);
 };

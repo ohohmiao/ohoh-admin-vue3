@@ -45,6 +45,6 @@ public class FlowDefBind implements Serializable {
     private String bindObjid;
 
     @TableField(insertStrategy = FieldStrategy.ALWAYS, updateStrategy = FieldStrategy.ALWAYS)
-    private Integer bindSn;
+    private Integer bindSort;
 
 }

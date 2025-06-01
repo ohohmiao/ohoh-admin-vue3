@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * 流程环节办理人配置
  *
@@ -22,7 +24,7 @@ public class FlowHandler {
     private String handlerId;
 
     @TableField
-    private String createTime;
+    private Date createTime;
 
     @TableField
     private String defCode;

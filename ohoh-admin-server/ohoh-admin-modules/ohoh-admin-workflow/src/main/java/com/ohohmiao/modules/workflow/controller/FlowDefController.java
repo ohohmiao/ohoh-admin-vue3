@@ -62,7 +62,7 @@ public class FlowDefController {
     public CommonResp<FlowDefVO> get(@RequestBody @Validated CommonIdDTO idDTO){
         FlowDefVO flowDefVO = flowDefService.get(idDTO.getId());
         if(ObjectUtil.isNotNull(flowDefVO)){
-            return CommonResp.data(flowDefService.get(idDTO.getId()));
+            return CommonResp.data(flowDefVO);
         }else{
             return CommonResp.error("不存在的记录");
         }

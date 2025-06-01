@@ -48,7 +48,7 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
                 bind.setBindType(bindType);
                 bind.setDefCode(defCode);
                 bind.setDefVersion(defVersion);
-                bind.setBindSn(i + 1);
+                bind.setBindSort(i + 1);
                 bindList.add(bind);
             }
             this.saveBatch(bindList);
@@ -61,7 +61,7 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
         queryWrapper.eq(FlowDefBind::getBindType, bindType);
         queryWrapper.eq(FlowDefBind::getDefCode, defCode);
         queryWrapper.eq(FlowDefBind::getDefVersion, defVersion);
-        queryWrapper.orderByAsc(FlowDefBind::getBindSn);
+        queryWrapper.orderByAsc(FlowDefBind::getBindSort);
         return this.list(queryWrapper).stream().map(item ->
                 BeanUtil.copyProperties(item, CommonReferRes.class)).collect(Collectors.toList());
     }

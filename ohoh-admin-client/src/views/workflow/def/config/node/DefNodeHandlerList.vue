@@ -34,7 +34,14 @@
 import { ref, defineProps, withDefaults } from "vue";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
-import { WorkflowHandler, getWorkflowHandlerPageApi, deleteWorkflowHandlerApi } from "@/api/modules/workflow/handler";
+import {
+	WorkflowHandler,
+	getWorkflowHandlerPageApi,
+	multiDeleteWorkflowHandlerApi,
+	getWorkflowHandlerApi,
+	addWorkflowHandlerApi,
+	editWorkflowHandlerApi
+} from "@/api/modules/workflow/handler";
 import DefNodeHandlerForm from "./DefNodeHandlerForm.vue";
 import { useHandleData } from "@/hooks/useHandleData";
 
@@ -80,19 +87,23 @@ const columns: ColumnProps<WorkflowHandler.Form>[] = [
 
 // 打开下一环节办理人配置表单
 const formRef = ref<InstanceType<typeof DefNodeHandlerForm>>();
-const openHandlerForm = (title: string, rowData: Partial<WorkflowHandler.Form> = {}) => {
+const openHandlerForm = async (title: string, rowData: Partial<WorkflowHandler.Form> = {}) => {
+	if (title === "编辑") {
+		const { data } = await getWorkflowHandlerApi({ id: rowData.handlerId! });
+		rowData = data;
+	}
 	formRef.value?.acceptParams({
 		title,
 		rowData: { ...JSON.parse(JSON.stringify(rowData)) },
 		isView: title === "查看",
-		api: undefined,
+		api: title === "新增" ? addWorkflowHandlerApi : title === "编辑" ? editWorkflowHandlerApi : undefined,
 		getTableList: proTable.value.getTableList
 	});
 };
 // 删除办理人配置
 const handleDeleteHandler = async (params: WorkflowHandler.Form) => {
 	if (!params.handlerId) return;
-	await useHandleData(deleteWorkflowHandlerApi, { id: params.handlerId }, `删除【${params.nextnodeName}】环节办理人配置`);
+	await useHandleData(multiDeleteWorkflowHandlerApi, { id: [params.handlerId] }, `删除【${params.nextnodeName}】环节办理人配置`);
 	proTable.value.getTableList();
 };
 </script>

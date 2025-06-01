@@ -2,8 +2,11 @@ package com.ohohmiao.modules.workflow.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowHandlerAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHandlerPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowHandler;
+import com.ohohmiao.modules.workflow.model.vo.FlowHandlerVO;
 
 /**
  * 流程环节办理人配置Service
@@ -19,5 +22,30 @@ public interface FlowHandlerService extends IService<FlowHandler> {
      * @return
      */
     Page<FlowHandler> listByPage(FlowHandlerPageDTO pageDTO);
+
+    /**
+     * 获取单个环节办理人配置
+     * @param handlerId
+     * @return
+     */
+    FlowHandlerVO get(String handlerId);
+
+    /**
+     * 新增环节办理人配置
+     * @param flowHandlerAddOrEditDTO
+     */
+    void add(FlowHandlerAddOrEditDTO flowHandlerAddOrEditDTO);
+
+    /**
+     * 编辑环节办理人配置
+     * @param flowHandlerAddOrEditDTO
+     */
+    void edit(FlowHandlerAddOrEditDTO flowHandlerAddOrEditDTO);
+
+    /**
+     * 批量删除环节办理人配置
+     * @param idListDTO
+     */
+    void multiDelete(CommonIdListDTO idListDTO);
 
 }

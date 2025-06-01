@@ -80,3 +80,8 @@ export const editSysDicApi = (params: SysDic.Form) => {
 export const deleteSysDicApi = (params: { id: string[] }) => {
 	return http.post("/sysDic/delete", params);
 };
+
+// * 获取某类别字典的下拉框数据
+export const getSysDicSelectApi = (params: { dictypeCode: string }) => {
+	return http.post<{ label: string; value: string }[]>("/sysDic/select", params);
+};
