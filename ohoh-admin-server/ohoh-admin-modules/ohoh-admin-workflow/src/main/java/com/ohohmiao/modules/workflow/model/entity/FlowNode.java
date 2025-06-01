@@ -25,16 +25,16 @@ public class FlowNode {
     @TableId
     private String propId;
 
-    @TableField(insertStrategy = FieldStrategy.NOT_EMPTY, updateStrategy = FieldStrategy.NOT_EMPTY)
+    @TableField
     private String defCode;
 
     @TableField
     private Integer defVersion;
 
-    @TableField(insertStrategy = FieldStrategy.NOT_EMPTY, updateStrategy = FieldStrategy.NOT_EMPTY)
+    @TableField
     private String nodeId;
 
-    @TableField(insertStrategy = FieldStrategy.NOT_EMPTY, updateStrategy = FieldStrategy.NOT_EMPTY)
+    @TableField
     private String nodeName;
 
     @TableField

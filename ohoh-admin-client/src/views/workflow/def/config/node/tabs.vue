@@ -11,15 +11,22 @@
 				<DefNodePropTab :row-data="formProps.rowData"></DefNodePropTab>
 			</el-tab-pane>
 			<el-tab-pane label="表单字段权限" name="formTab"></el-tab-pane>
-			<el-tab-pane label="下一步审核人" name="nextHandlerTab"></el-tab-pane>
+			<el-tab-pane label="下一步办理人" name="nextHandlerTab">
+				<DefNodeHandlerList
+					:def-code="tabProps.defCode"
+					:def-version="tabProps.defVersion"
+					:node-id="tabProps.nodeId"
+				></DefNodeHandlerList>
+			</el-tab-pane>
 		</el-tabs>
 	</el-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import DefNodePropTab from "./DefNodePropTab.vue";
 import { getWorkflowNodeApi, WorkflowNode } from "@/api/modules/workflow/node";
+import DefNodePropTab from "./DefNodePropTab.vue";
+import DefNodeHandlerList from "./DefNodeHandlerList.vue";
 
 interface TabProps {
 	nodeId: string;

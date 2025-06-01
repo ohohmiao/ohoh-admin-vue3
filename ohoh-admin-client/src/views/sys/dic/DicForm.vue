@@ -17,7 +17,7 @@
 			</el-form-item>
 			<el-form-item label="字典值" prop="dicCode">
 				<template #label>
-					<el-tooltip content="注：仅限输入字母和数字！" placement="top">
+					<el-tooltip content="注：仅限输入字母、数字或小数点！" placement="top">
 						<el-icon><QuestionFilled /></el-icon>
 					</el-tooltip>
 					字典值：
@@ -79,7 +79,7 @@ const rules = reactive({
 	dicName: [{ required: true, message: "请输入字典名称" }],
 	dicCode: [
 		{ required: true, message: "请输入字典值" },
-		{ validator: eleValidate.checkLetterOrNum, message: "仅限输入字母和数字" }
+		{ validator: eleValidate.checkLetterOrNumOrDot, message: "仅限输入字母、数字或小数点" }
 	],
 	dicSort: [{ required: true, message: "请输入排序" }],
 	dicPropList: [

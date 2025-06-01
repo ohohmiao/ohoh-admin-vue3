@@ -34,6 +34,17 @@ export function checkLetterOrNumOrUnderline(rule: any, value: any) {
 }
 
 /**
+ * 字母、数字或小数点
+ * @param rule
+ * @param value
+ */
+export function checkLetterOrNumOrDot(rule: any, value: any) {
+	if (!value) return true;
+	const regExp = /^[0-9a-zA-Z-.]+$/;
+	return regExp.test(value);
+}
+
+/**
  * 正整数
  * @param rule
  * @param value

@@ -5,7 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
-import com.ohohmiao.modules.workflow.enums.FlowDefPropTypeEnum;
+import com.ohohmiao.modules.workflow.enums.FlowDefBindTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowInitiatorScopeEnum;
 import com.ohohmiao.modules.workflow.mapper.FlowHisDeployMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
@@ -14,7 +14,7 @@ import com.ohohmiao.modules.workflow.model.entity.FlowDef;
 import com.ohohmiao.modules.workflow.model.entity.FlowDefType;
 import com.ohohmiao.modules.workflow.model.entity.FlowHisDeploy;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
-import com.ohohmiao.modules.workflow.service.FlowDefPropService;
+import com.ohohmiao.modules.workflow.service.FlowDefBindService;
 import com.ohohmiao.modules.workflow.service.FlowDefService;
 import com.ohohmiao.modules.workflow.service.FlowDefTypeService;
 import com.ohohmiao.modules.workflow.service.FlowHisDeployService;
@@ -41,7 +41,7 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
     private FlowDefTypeService flowDefTypeService;
 
     @Resource
-    private FlowDefPropService flowDefPropService;
+    private FlowDefBindService flowDefBindService;
 
     @Override
     public FlowDefVO get(String defCode, Integer defVersion){
@@ -61,8 +61,8 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         if(ObjectUtil.isNotNull(flowDefVO)){
             if(flowDefVO.getInitiatorScope() != null &&
                flowDefVO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
-                flowDefVO.setTargetInitiators(flowDefPropService.list(
-                        FlowDefPropTypeEnum.INITIATOR.ordinal(), defCode, defVersion));
+                flowDefVO.setTargetInitiators(flowDefBindService.list(
+                        FlowDefBindTypeEnum.INITIATOR.ordinal(), defCode, defVersion));
             }
         }
         return flowDefVO;
@@ -80,9 +80,9 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         }
         // 更新流程发起范围数据
         if(hisDTO.getInitiatorScope().equals(FlowInitiatorScopeEnum.ALL.ordinal())){
-            flowDefPropService.delete(FlowDefPropTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(), hisDTO.getDefVersion());
+            flowDefBindService.delete(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(), hisDTO.getDefVersion());
         }else{
-            flowDefPropService.saveOrUpdate(FlowDefPropTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(),
+            flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(),
                     hisDTO.getDefVersion(), hisDTO.getTargetInitiators());
         }
         FlowDef flowDef = flowDefService.getByDefCodeAndDefVersion(hisDTO.getDefCode(), hisDTO.getDefVersion());

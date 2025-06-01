@@ -1,14 +1,11 @@
 package com.ohohmiao.modules.workflow.enums;
 
-import lombok.Getter;
-
 /**
  * 流程任务多人决策方式枚举
  *
  * @author ohohmiao
  * @date 2025-05-30 17:33
  */
-@Getter
 public enum FlowTaskMultiAssignRuleEnum {
 
     /**

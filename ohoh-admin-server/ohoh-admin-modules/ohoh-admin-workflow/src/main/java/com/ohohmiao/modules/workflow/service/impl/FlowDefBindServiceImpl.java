@@ -1,0 +1,69 @@
+package com.ohohmiao.modules.workflow.service.impl;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ohohmiao.framework.common.model.pojo.CommonReferRes;
+import com.ohohmiao.modules.workflow.mapper.FlowDefBindMapper;
+import com.ohohmiao.modules.workflow.model.entity.FlowDefBind;
+import com.ohohmiao.modules.workflow.service.FlowDefBindService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * 流程定义绑定信息Service实现
+ *
+ * @author ohohmiao
+ * @date 2025-05-27 17:15
+ */
+@Service
+public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowDefBind> implements FlowDefBindService {
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Integer bindType, String defCode, Integer defVersion){
+        QueryWrapper<FlowDefBind> deleteWrapper = new QueryWrapper<>();
+        deleteWrapper.lambda().eq(FlowDefBind::getBindType, bindType);
+        deleteWrapper.lambda().eq(FlowDefBind::getDefCode, defCode);
+        deleteWrapper.lambda().eq(FlowDefBind::getDefVersion, defVersion);
+        this.remove(deleteWrapper);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrUpdate(Integer bindType, String defCode, Integer defVersion, List<CommonReferRes> referResList){
+        this.delete(bindType, defCode, defVersion);
+
+        if(CollUtil.isNotEmpty(referResList)){
+            Set<FlowDefBind> bindList = CollectionUtil.newHashSet();
+            for(int i = 0; i < referResList.size(); i++){
+                FlowDefBind bind = BeanUtil.copyProperties(referResList.get(i), FlowDefBind.class);
+                bind.setBindType(bindType);
+                bind.setDefCode(defCode);
+                bind.setDefVersion(defVersion);
+                bind.setBindSn(i + 1);
+                bindList.add(bind);
+            }
+            this.saveBatch(bindList);
+        }
+    }
+
+    @Override
+    public List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion){
+        LambdaQueryWrapper<FlowDefBind> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(FlowDefBind::getBindType, bindType);
+        queryWrapper.eq(FlowDefBind::getDefCode, defCode);
+        queryWrapper.eq(FlowDefBind::getDefVersion, defVersion);
+        queryWrapper.orderByAsc(FlowDefBind::getBindSn);
+        return this.list(queryWrapper).stream().map(item ->
+                BeanUtil.copyProperties(item, CommonReferRes.class)).collect(Collectors.toList());
+    }
+
+}

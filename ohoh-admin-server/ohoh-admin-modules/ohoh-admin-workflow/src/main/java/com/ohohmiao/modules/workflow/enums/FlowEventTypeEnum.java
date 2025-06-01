@@ -1,14 +1,11 @@
 package com.ohohmiao.modules.workflow.enums;
 
-import lombok.Getter;
-
 /**
  * 流程事件类别枚举
  *
  * @author ohohmiao
  * @date 2025-01-15 20:32
  */
-@Getter
 public enum FlowEventTypeEnum {
 
     /**
