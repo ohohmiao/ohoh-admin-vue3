@@ -3,6 +3,7 @@ package com.ohohmiao.modules.workflow.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeAddOrEditDTO;
@@ -74,6 +75,19 @@ public class FlowNodeController {
     @PostMapping("/workflowNode/listMultiAssignWeight")
     public CommonResp<List<FlowTaskMultiAssignWeight>> listMultiAssignWeight(@RequestBody @Validated FlowNodeGetDTO listDTO){
         return CommonResp.data(flowNodeService.listMultiAssignWeight(listDTO));
+    }
+
+    /**
+     * 获取流程下一任务环节基本信息
+     * @param getDTO
+     * @return
+     */
+    @ApiOperation(value = "获取流程下一任务环节基本信息")
+    @ApiOperationSupport(order = 4)
+    @SaPcCheckPermission("/workflowNode/listNextTaskNodeInfo")
+    @PostMapping("/workflowNode/listNextTaskNodeInfo")
+    public CommonResp<List<CommonSelectVO>> listNextTaskNodeInfo(@RequestBody @Validated FlowNodeGetDTO getDTO){
+        return CommonResp.data(flowNodeService.listNextTaskNodeInfo(getDTO));
     }
 
 }

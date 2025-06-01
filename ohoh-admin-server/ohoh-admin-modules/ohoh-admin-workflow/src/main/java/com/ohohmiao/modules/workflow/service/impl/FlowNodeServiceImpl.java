@@ -5,17 +5,24 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.modules.workflow.mapper.FlowNodeMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeGetDTO;
+import com.ohohmiao.modules.workflow.model.entity.FlowDef;
 import com.ohohmiao.modules.workflow.model.entity.FlowNode;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskMultiAssignWeight;
 import com.ohohmiao.modules.workflow.model.vo.FlowNodeVO;
+import com.ohohmiao.modules.workflow.service.FlowDefService;
 import com.ohohmiao.modules.workflow.service.FlowNodeService;
+import com.ohohmiao.modules.workflow.util.WorkflowUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 流程环节Service实现
@@ -25,6 +32,9 @@ import java.util.List;
  */
 @Service
 public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> implements FlowNodeService {
+
+    @Resource
+    private FlowDefService flowDefService;
 
     @Override
     public FlowNodeVO get(String defCode, Integer defVersion, String nodeId){
@@ -75,6 +85,21 @@ public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> i
         obj2.setHandlerName("李四");
         list.add(obj2);
         return list;
+    }
+
+    @Override
+    public List<CommonSelectVO> listNextTaskNodeInfo(FlowNodeGetDTO getDTO){
+        FlowDef flowDef = flowDefService.getByDefCodeAndDefVersion(getDTO.getDefCode(), getDTO.getDefVersion());
+        if(ObjectUtil.isNull(flowDef)){
+            return CollectionUtil.newArrayList();
+        }
+        List<Map> nextTaskNodeList = WorkflowUtil.getNextTaskNodes(flowDef.getDefJson(), getDTO.getNodeId());
+        return nextTaskNodeList.stream().map(node -> {
+            CommonSelectVO selectVO = new CommonSelectVO();
+            selectVO.setValue(node.get("id").toString());
+            selectVO.setLabel(node.get("name").toString());
+            return selectVO;
+        }).collect(Collectors.toList());
     }
 
 }

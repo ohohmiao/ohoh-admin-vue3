@@ -1,6 +1,7 @@
 package com.ohohmiao.modules.workflow.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeGetDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowNode;
@@ -38,5 +39,12 @@ public interface FlowNodeService extends IService<FlowNode> {
      * @return
      */
     List<FlowTaskMultiAssignWeight> listMultiAssignWeight(FlowNodeGetDTO listDTO);
+
+    /**
+     * 获取流程下一任务环节基本信息
+     * @param getDTO
+     * @return
+     */
+    List<CommonSelectVO> listNextTaskNodeInfo(FlowNodeGetDTO getDTO);
 
 }

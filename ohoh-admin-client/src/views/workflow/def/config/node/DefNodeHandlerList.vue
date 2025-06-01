@@ -20,21 +20,35 @@
 			</template>
 		</ProTable>
 	</div>
+	<!-- 下一步办理人配置对话框 -->
+	<DefNodeHandlerForm
+		ref="formRef"
+		:def-code="props.defCode"
+		:def-version="props.defVersion"
+		:node-id="props.nodeId"
+		:next-task-node-list="props.nextTaskNodeList"
+	></DefNodeHandlerForm>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from "vue";
+import { ref, defineProps, withDefaults } from "vue";
 import ProTable from "@/components/ProTable/index.vue";
 import { ColumnProps } from "@/components/ProTable/interface";
 import { WorkflowHandler, getWorkflowHandlerPageApi, deleteWorkflowHandlerApi } from "@/api/modules/workflow/handler";
 import DefNodeHandlerForm from "./DefNodeHandlerForm.vue";
 import { useHandleData } from "@/hooks/useHandleData";
 
-const props = defineProps({
-	defCode: String,
-	defVersion: Number,
-	nodeId: String
-});
+const props = withDefaults(
+	defineProps<{
+		defCode: string;
+		defVersion: number;
+		nodeId: string;
+		nextTaskNodeList: { label: string; value: string }[];
+	}>(),
+	{
+		nextTaskNodeList: () => []
+	}
+);
 
 const proTable = ref();
 // 表格配置项

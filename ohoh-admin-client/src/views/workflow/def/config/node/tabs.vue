@@ -11,11 +11,12 @@
 				<DefNodePropTab :row-data="formProps.rowData"></DefNodePropTab>
 			</el-tab-pane>
 			<el-tab-pane label="表单字段权限" name="formTab"></el-tab-pane>
-			<el-tab-pane label="下一步办理人" name="nextHandlerTab">
+			<el-tab-pane label="下一步办理人" name="nextHandlerTab" v-if="computedNextHandlerTab">
 				<DefNodeHandlerList
 					:def-code="tabProps.defCode"
 					:def-version="tabProps.defVersion"
 					:node-id="tabProps.nodeId"
+					:next-task-node-list="nextTaskNodeList"
 				></DefNodeHandlerList>
 			</el-tab-pane>
 		</el-tabs>
@@ -23,8 +24,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { getWorkflowNodeApi, WorkflowNode } from "@/api/modules/workflow/node";
+import { getNextTaskNodeInfoListApi } from "@/api/modules/workflow/node";
 import DefNodePropTab from "./DefNodePropTab.vue";
 import DefNodeHandlerList from "./DefNodeHandlerList.vue";
 
@@ -50,6 +52,11 @@ const formProps = ref<FormProps>({
 	rowData: {}
 });
 
+// 下一步任务环节信息
+const nextTaskNodeList = ref<{ label: string; value: string }[]>([]);
+// 是否渲染下一步办理人tab计算
+const computedNextHandlerTab = computed(() => !!nextTaskNodeList.value.length);
+
 // 接收父组件传过来的参数
 const acceptParams = async (params: TabProps) => {
 	tabProps.value = params;
@@ -66,6 +73,13 @@ const acceptParams = async (params: TabProps) => {
 		nodeId: params.nodeId,
 		nodeName: params.nodeName
 	};
+
+	const { data: nextTaskNodeListData } = await getNextTaskNodeInfoListApi({
+		defCode: params.defCode,
+		defVersion: params.defVersion,
+		nodeId: params.nodeId
+	});
+	nextTaskNodeList.value = nextTaskNodeListData;
 
 	formVisible.value = true;
 };

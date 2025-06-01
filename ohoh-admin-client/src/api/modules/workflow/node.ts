@@ -36,6 +36,12 @@ export const addOrEditWorkflowNodeApi = (params: WorkflowNode.Form) => {
 	return http.post<string>("/workflowNode/addOrEdit", params);
 };
 
+// * 获取多人决策权重配置数据
 export const getMultiAssignWeightListApi = (params: { defCode: string; defVersion: number; nodeId: string }) => {
 	return http.post<WorkflowNode.WeightForm[]>("/workflowNode/listMultiAssignWeight", params);
+};
+
+// * 获取流程下一任务环节基本信息
+export const getNextTaskNodeInfoListApi = (params: { defCode: string; defVersion: number; nodeId: string }) => {
+	return http.post<{ label: string; value: string }[]>("/workflowNode/listNextTaskNodeInfo", params);
 };
