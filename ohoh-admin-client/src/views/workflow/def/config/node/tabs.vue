@@ -12,12 +12,12 @@
 			</el-tab-pane>
 			<el-tab-pane label="表单字段权限" name="formTab"></el-tab-pane>
 			<el-tab-pane label="下一步办理人" name="nextHandlerTab" v-if="computedNextHandlerTab">
-				<DefNodeHandlerList
+				<DefNodeHandlerListTab
 					:def-code="tabProps.defCode"
 					:def-version="tabProps.defVersion"
 					:node-id="tabProps.nodeId"
 					:next-task-node-list="nextTaskNodeList"
-				></DefNodeHandlerList>
+				></DefNodeHandlerListTab>
 			</el-tab-pane>
 		</el-tabs>
 	</el-dialog>
@@ -28,7 +28,7 @@ import { ref, computed } from "vue";
 import { getWorkflowNodeApi, WorkflowNode } from "@/api/modules/workflow/node";
 import { getNextTaskNodeInfoListApi } from "@/api/modules/workflow/node";
 import DefNodePropTab from "./DefNodePropTab.vue";
-import DefNodeHandlerList from "./DefNodeHandlerList.vue";
+import DefNodeHandlerListTab from "./DefNodeHandlerListTab.vue";
 
 interface TabProps {
 	nodeId: string;
