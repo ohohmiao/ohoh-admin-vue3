@@ -3,9 +3,9 @@ package com.ohohmiao.modules.workflow.model.dto;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.ohohmiao.framework.common.model.pojo.CommonReferRes;
 import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
 import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
+import com.ohohmiao.modules.system.model.pojo.SysReferRes;
 import com.ohohmiao.modules.workflow.enums.FlowHandlerTypeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -61,7 +61,7 @@ public class FlowHandlerAddOrEditDTO {
     private Integer handlerType;
 
     @ApiModelProperty(value = "指定人员")
-    private List<CommonReferRes> targetReferResList;
+    private List<SysReferRes> targetReferResList;
 
     @ApiModelProperty(value = "指定接口")
     private String interfaceCode;

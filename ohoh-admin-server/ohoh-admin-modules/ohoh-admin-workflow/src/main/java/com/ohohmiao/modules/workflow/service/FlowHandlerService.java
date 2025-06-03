@@ -6,7 +6,10 @@ import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHandlerAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHandlerPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowHandler;
+import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.FlowHandlerVO;
+
+import java.util.List;
 
 /**
  * 流程环节办理人配置Service
@@ -31,6 +34,15 @@ public interface FlowHandlerService extends IService<FlowHandler> {
     FlowHandlerVO get(String handlerId);
 
     /**
+     * 获取下一环节办理人配置
+     * @param defCode
+     * @param defVersion
+     * @param nextNodeId
+     * @return
+     */
+    FlowHandlerVO getNextNodeFlowHandler(String defCode, Integer defVersion, String nextNodeId);
+
+    /**
      * 新增环节办理人配置
      * @param flowHandlerAddOrEditDTO
      */
@@ -47,5 +59,14 @@ public interface FlowHandlerService extends IService<FlowHandler> {
      * @param idListDTO
      */
     void multiDelete(CommonIdListDTO idListDTO);
+
+    /**
+     * 查询流程环节办理人
+     * @param defCode
+     * @param defVersion
+     * @param nodeId
+     * @return
+     */
+    List<FlowTaskHandler> listFlowNodeHanlder(String defCode, Integer defVersion, String nodeId);
 
 }

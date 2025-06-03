@@ -1,7 +1,7 @@
 package com.ohohmiao.modules.workflow.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ohohmiao.framework.common.model.pojo.CommonReferRes;
+import com.ohohmiao.modules.system.model.pojo.SysReferRes;
 import com.ohohmiao.modules.workflow.model.entity.FlowDefBind;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public interface FlowDefBindService extends IService<FlowDefBind> {
      * @param bindObjid
      */
     void saveOrUpdate(Integer bindType, String defCode, Integer defVersion,
-                      List<CommonReferRes> referResList, String bindObjid);
+                      List<SysReferRes> referResList, String bindObjid);
 
     /**
      * 查询绑定信息
@@ -41,7 +41,7 @@ public interface FlowDefBindService extends IService<FlowDefBind> {
      * @param bindObjid
      * @return
      */
-    List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion, String bindObjid);
+    List<SysReferRes> list(Integer bindType, String defCode, Integer defVersion, String bindObjid);
 
     /**
      * 根据绑定类别和关联主键id删除

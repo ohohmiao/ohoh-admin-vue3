@@ -27,4 +27,36 @@
           and p.DELETE_FLAG = 0
     </select>
 
+    <select id="listByReferRes" resultType="com.ohohmiao.modules.system.model.vo.SysUserVO">
+        select distinct(u.USER_ID), u.USER_ACCOUNT, u.USER_NAME
+        from SYS_USER u
+                 left join SYS_USERPROP p on u.USER_ID = p.USER_ID
+                 left join SYS_ORG o on p.PROP_RECORDID = o.ORG_ID
+        where p.USER_ID is not null
+          and o.ORG_ID is not null
+          and p.PROP_TABLENAME = 'SYS_ORG'
+          and u.DELETE_FLAG = 0
+          and o.DELETE_FLAG = 0
+          and (1 != 1
+              <if test="referUsers != null and referUsers.size() > 0">
+                  or u.USER_ID in
+                  <foreach collection="referUsers" item="referUser" open="(" separator="," close=")">
+                     #{referUser.referResid}
+                  </foreach>
+              </if>
+              <if test="referOrgs != null and referOrgs.size() > 0">
+                  or o.ORG_ID in
+                  <foreach collection="referOrgs" item="referOrg" open="(" separator="," close=")">
+                      #{referOrg.referResid}
+                  </foreach>
+              </if>
+              <if test="referPositions != null and referPositions.size() > 0">
+                  or p.PROP_EXTENDID in
+                  <foreach collection="referPositions" item="referPosition" open="(" separator="," close=")">
+                      #{referPosition.referResid}
+                  </foreach>
+              </if>
+          )
+    </select>
+
 </mapper>

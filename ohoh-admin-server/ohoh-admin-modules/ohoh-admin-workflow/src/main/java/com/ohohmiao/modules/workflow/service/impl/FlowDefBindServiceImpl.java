@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ohohmiao.framework.common.model.pojo.CommonReferRes;
+import com.ohohmiao.modules.system.model.pojo.SysReferRes;
 import com.ohohmiao.modules.workflow.mapper.FlowDefBindMapper;
 import com.ohohmiao.modules.workflow.model.entity.FlowDefBind;
 import com.ohohmiao.modules.workflow.service.FlowDefBindService;
@@ -40,7 +40,7 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdate(Integer bindType, String defCode, Integer defVersion,
-                             List<CommonReferRes> referResList, String bindObjid){
+                             List<SysReferRes> referResList, String bindObjid){
         if(StrUtil.isNotBlank(bindObjid)){
             this.deleteByBindTypeAndBindObjid(bindType, bindObjid);
         }else{
@@ -63,7 +63,7 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
     }
 
     @Override
-    public List<CommonReferRes> list(Integer bindType, String defCode, Integer defVersion, String bindObjid){
+    public List<SysReferRes> list(Integer bindType, String defCode, Integer defVersion, String bindObjid){
         LambdaQueryWrapper<FlowDefBind> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(FlowDefBind::getBindType, bindType);
         queryWrapper.eq(FlowDefBind::getDefCode, defCode);
@@ -71,7 +71,7 @@ public class FlowDefBindServiceImpl extends ServiceImpl<FlowDefBindMapper, FlowD
         queryWrapper.eq(StrUtil.isNotBlank(bindObjid), FlowDefBind::getBindObjid, bindObjid);
         queryWrapper.orderByAsc(FlowDefBind::getBindSort);
         return this.list(queryWrapper).stream().map(item ->
-                BeanUtil.copyProperties(item, CommonReferRes.class)).collect(Collectors.toList());
+                BeanUtil.copyProperties(item, SysReferRes.class)).collect(Collectors.toList());
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.ohohmiao.modules.workflow.model.dto;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.ohohmiao.framework.common.model.pojo.CommonReferRes;
+import com.ohohmiao.modules.system.model.pojo.SysReferRes;
 import com.ohohmiao.modules.workflow.enums.FlowInitiatorScopeEnum;
 import com.ohohmiao.modules.workflow.enums.ProcessLimitTypeEnum;
 import io.swagger.annotations.ApiModel;
@@ -53,7 +53,7 @@ public class FlowHisDeployDTO {
     private Integer initiatorScope;
 
     @ApiModelProperty(value = "指定人员")
-    private List<CommonReferRes> targetInitiators;
+    private List<SysReferRes> targetInitiators;
 
     @ApiModelProperty(value = "时限限制类别", required = true)
     @NotNull(message = "时限限制类别不能为空")

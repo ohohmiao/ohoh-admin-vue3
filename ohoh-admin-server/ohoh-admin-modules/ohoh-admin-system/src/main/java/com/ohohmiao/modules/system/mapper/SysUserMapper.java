@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ohohmiao.modules.system.model.vo.SysUserVO;
 import com.ohohmiao.modules.system.model.entity.SysUser;
+import com.ohohmiao.modules.system.model.pojo.SysReferRes;
+import com.ohohmiao.modules.system.model.vo.SysUserVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,5 +42,18 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @return
      */
     Integer getMaxSortByOrgId(@Param("orgId") String orgId);
+
+    /**
+     * 查询出关联资源的系统用户列表
+     * @param referUsers
+     * @param referOrgs
+     * @param referPositions
+     * @param referContacts
+     * @return
+     */
+    List<SysUserVO> listByReferRes(@Param("referUsers") List<SysReferRes> referUsers,
+                        @Param("referOrgs")List<SysReferRes> referOrgs,
+                        @Param("referPositions")List<SysReferRes> referPositions,
+                        @Param("referContacts")List<SysReferRes> referContacts);
 
 }

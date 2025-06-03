@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.modules.workflow.mapper.FlowNodeMapper;
@@ -12,8 +13,11 @@ import com.ohohmiao.modules.workflow.model.dto.FlowNodeGetDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowDef;
 import com.ohohmiao.modules.workflow.model.entity.FlowNode;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskMultiAssignWeight;
+import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowNodeVO;
 import com.ohohmiao.modules.workflow.service.FlowDefService;
+import com.ohohmiao.modules.workflow.service.FlowHandlerService;
+import com.ohohmiao.modules.workflow.service.FlowHisDeployService;
 import com.ohohmiao.modules.workflow.service.FlowNodeService;
 import com.ohohmiao.modules.workflow.util.WorkflowUtil;
 import org.springframework.stereotype.Service;
@@ -35,6 +39,12 @@ public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> i
 
     @Resource
     private FlowDefService flowDefService;
+
+    @Resource
+    private FlowHisDeployService flowHisDeployService;
+
+    @Resource
+    private FlowHandlerService flowHandlerService;
 
     @Override
     public FlowNodeVO get(String defCode, Integer defVersion, String nodeId){
@@ -68,23 +78,43 @@ public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> i
 
     @Override
     public List<FlowTaskMultiAssignWeight> listMultiAssignWeight(FlowNodeGetDTO listDTO){
-        // TODO
+        List<FlowTaskMultiAssignWeight> resultList = CollectionUtil.newArrayList();
         // 判断是否第一个节点，如果是，无当前环节办理人，则返回空
-
-        // 查询环节属性表，返回权重字段
-
+        FlowDefVO flowDefVO = flowHisDeployService.get(listDTO.getDefCode(), listDTO.getDefVersion());
+        Map firstTaskNode = WorkflowUtil.getFirstTaskNode(flowDefVO.getDefJson());
+        if(listDTO.getNodeId().equals(firstTaskNode.get("id").toString())){
+            return resultList;
+        }
+        FlowNodeVO flowNodeVO = get(listDTO.getDefCode(), listDTO.getDefVersion(), listDTO.getNodeId());
+        if(ObjectUtil.isNotNull(flowNodeVO)){
+            // 查询环节属性表，返回权重字段
+            resultList = flowNodeVO.getMultiassignWeightjson();
+        }
         // 查询出当前环节办理人员，构造空配置
-        //return CollectionUtil.newArrayList();
-        List list = CollectionUtil.newArrayList();
-        FlowTaskMultiAssignWeight obj1 = new FlowTaskMultiAssignWeight();
-        obj1.setHandlerId("1");
-        obj1.setHandlerName("张三");
-        list.add(obj1);
-        FlowTaskMultiAssignWeight obj2 = new FlowTaskMultiAssignWeight();
-        obj2.setHandlerId("2");
-        obj2.setHandlerName("李四");
-        list.add(obj2);
-        return list;
+        if(CollectionUtil.isEmpty(resultList)){
+            resultList = flowHandlerService.listFlowNodeHanlder(
+                    listDTO.getDefCode(), listDTO.getDefVersion(), listDTO.getNodeId())
+                    .stream().map(m -> BeanUtil.copyProperties(m, FlowTaskMultiAssignWeight.class))
+                    .collect(Collectors.toList());
+        }
+        return resultList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<FlowTaskMultiAssignWeight> resetMultiAssignWeight(FlowNodeGetDTO getDTO){
+        // 清空配置
+        LambdaUpdateWrapper<FlowNode> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(FlowNode::getDefCode, getDTO.getDefCode());
+        updateWrapper.eq(FlowNode::getDefVersion, getDTO.getDefVersion());
+        updateWrapper.eq(FlowNode::getNodeId, getDTO.getNodeId());
+        updateWrapper.set(FlowNode::getMultiassignWeightjson, null);
+        this.update(updateWrapper);
+        // 查询出当前环节办理人员，构造空配置
+        return flowHandlerService.listFlowNodeHanlder(
+                        getDTO.getDefCode(), getDTO.getDefVersion(), getDTO.getNodeId())
+                .stream().map(m -> BeanUtil.copyProperties(m, FlowTaskMultiAssignWeight.class))
+                .collect(Collectors.toList());
     }
 
     @Override

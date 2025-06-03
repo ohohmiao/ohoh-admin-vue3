@@ -34,7 +34,7 @@
 						</el-radio-group>
 					</el-form-item>
 				</el-col>
-				<el-col :span="12" v-if="formProps.rowData.multiassignRule == 2">
+				<el-col :span="12" v-if="formProps.rowData.taskAssigntype == 1 && formProps.rowData.multiassignRule == 2">
 					<el-form-item label="决策比例" prop="multiassignRatio" required>
 						<el-input-number v-model="formProps.rowData.multiassignRatio" :min="1" :max="100" style="width: 100%">
 							<template #suffix>
@@ -44,10 +44,10 @@
 					</el-form-item>
 				</el-col>
 			</el-row>
-			<el-row :gutter="16" v-if="formProps.rowData.multiassignRule == 3">
+			<el-row :gutter="16" v-if="formProps.rowData.taskAssigntype == 1 && formProps.rowData.multiassignRule == 3">
 				<el-col :span="24">
 					<el-form-item label="办理人权重配置" prop="multiassignWeightjson" class="addchild-table" required>
-						<el-button type="primary" plain class="addchild-btn">重置</el-button>
+						<el-button type="primary" plain class="addchild-btn" @click="handleResetMultiAssignWeight">重置</el-button>
 						<el-row :gutter="10" class="addchild-table-header">
 							<el-col :span="12" class="addchild-table-header-col">办理人</el-col>
 							<el-col :span="12" class="addchild-table-header-col">权重分</el-col>
@@ -97,7 +97,12 @@
 
 <script setup lang="ts">
 import { defineProps, ref, reactive, onMounted } from "vue";
-import { WorkflowNode, addOrEditWorkflowNodeApi, getMultiAssignWeightListApi } from "@/api/modules/workflow/node";
+import {
+	WorkflowNode,
+	addOrEditWorkflowNodeApi,
+	getMultiAssignWeightListApi,
+	resetMultiAssignWeightApi
+} from "@/api/modules/workflow/node";
 import { FormInstance, ElMessage } from "element-plus";
 
 const props = defineProps<{ rowData: Partial<WorkflowNode.Form> }>();
@@ -173,7 +178,6 @@ const rules = reactive({
 });
 
 // 权重配置表格
-
 const handleMultiAssignRuleChange = async (val: number) => {
 	if (val == 3) {
 		const { data } = await getMultiAssignWeightListApi({
@@ -185,6 +189,15 @@ const handleMultiAssignRuleChange = async (val: number) => {
 	} else {
 		formProps.value.rowData.multiassignWeightjson = undefined;
 	}
+};
+// 重置权重配置
+const handleResetMultiAssignWeight = async () => {
+	const { data } = await resetMultiAssignWeightApi({
+		defCode: formProps.value.rowData.defCode || "-1",
+		defVersion: formProps.value.rowData.defVersion || -1,
+		nodeId: formProps.value.rowData.nodeId || "-1"
+	});
+	formProps.value.rowData.multiassignWeightjson = data;
 };
 
 onMounted(async () => {

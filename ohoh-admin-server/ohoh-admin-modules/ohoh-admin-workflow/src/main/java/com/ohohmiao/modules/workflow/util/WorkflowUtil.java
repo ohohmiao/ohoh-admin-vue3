@@ -138,4 +138,17 @@ public class WorkflowUtil {
         return getNextTaskNodes(defJson, outgoings, null);
     }
 
+    /**
+     * 获取第一个任务节点
+     * @param defJson
+     * @return
+     */
+    public static Map getFirstTaskNode(String defJson){
+        Object startEventNode = getStartEventNode(defJson);
+        JSONObject startEventNodeJson = JSON.parseObject(startEventNode.toString());
+        String startEventNodeId = startEventNodeJson.getString("id");
+        List<Map> nextTaskNodeList = getNextTaskNodes(defJson, startEventNodeId);
+        return CollectionUtil.isNotEmpty(nextTaskNodeList)? nextTaskNodeList.get(0): null;
+    }
+
 }

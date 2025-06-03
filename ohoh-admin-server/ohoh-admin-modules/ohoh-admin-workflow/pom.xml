@@ -28,6 +28,11 @@
             <groupId>com.ohohmiao</groupId>
             <artifactId>ohoh-admin-framework-log</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.ohohmiao</groupId>
+            <artifactId>ohoh-admin-system</artifactId>
+        </dependency>
         
     </dependencies>
 

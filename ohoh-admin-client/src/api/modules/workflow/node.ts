@@ -41,6 +41,11 @@ export const getMultiAssignWeightListApi = (params: { defCode: string; defVersio
 	return http.post<WorkflowNode.WeightForm[]>("/workflowNode/listMultiAssignWeight", params);
 };
 
+// * 重置多人决策权重配置数据
+export const resetMultiAssignWeightApi = (params: { defCode: string; defVersion: number; nodeId: string }) => {
+	return http.post<WorkflowNode.WeightForm[]>("/workflowNode/resetMultiAssignWeight", params);
+};
+
 // * 获取流程下一任务环节基本信息
 export const getNextTaskNodeInfoListApi = (params: { defCode: string; defVersion: number; nodeId: string }) => {
 	return http.post<{ label: string; value: string }[]>("/workflowNode/listNextTaskNodeInfo", params);

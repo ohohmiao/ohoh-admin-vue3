@@ -1,7 +1,7 @@
 package com.ohohmiao.modules.workflow.model.vo;
 
-import com.ohohmiao.framework.common.model.pojo.CommonReferRes;
 import com.ohohmiao.framework.common.model.vo.CommonVO;
+import com.ohohmiao.modules.system.model.pojo.SysReferRes;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class FlowDefVO extends CommonVO {
     private Integer initiatorScope;
 
     @ApiModelProperty(value = "指定人员")
-    private List<CommonReferRes> targetInitiators;
+    private List<SysReferRes> targetInitiators;
 
     @ApiModelProperty(value = "时限限制类别")
     private Integer processLimittype;

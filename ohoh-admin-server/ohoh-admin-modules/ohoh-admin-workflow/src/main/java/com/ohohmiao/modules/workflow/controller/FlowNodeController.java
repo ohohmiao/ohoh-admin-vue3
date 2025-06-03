@@ -78,12 +78,25 @@ public class FlowNodeController {
     }
 
     /**
+     * 重置某环节多人决策权重配置列表
+     * @param getDTO
+     * @return
+     */
+    @ApiOperation(value = "重置某环节多人决策权重配置列表")
+    @ApiOperationSupport(order = 4)
+    @SaPcCheckPermission("/workflowNode/resetMultiAssignWeight")
+    @PostMapping("/workflowNode/resetMultiAssignWeight")
+    public CommonResp<List<FlowTaskMultiAssignWeight>> resetMultiAssignWeight(@RequestBody @Validated FlowNodeGetDTO getDTO){
+        return CommonResp.data(flowNodeService.resetMultiAssignWeight(getDTO));
+    }
+
+    /**
      * 获取流程下一任务环节基本信息
      * @param getDTO
      * @return
      */
     @ApiOperation(value = "获取流程下一任务环节基本信息")
-    @ApiOperationSupport(order = 4)
+    @ApiOperationSupport(order = 5)
     @SaPcCheckPermission("/workflowNode/listNextTaskNodeInfo")
     @PostMapping("/workflowNode/listNextTaskNodeInfo")
     public CommonResp<List<CommonSelectVO>> listNextTaskNodeInfo(@RequestBody @Validated FlowNodeGetDTO getDTO){

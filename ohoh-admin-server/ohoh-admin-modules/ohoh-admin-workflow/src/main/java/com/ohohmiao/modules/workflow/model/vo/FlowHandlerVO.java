@@ -1,6 +1,6 @@
 package com.ohohmiao.modules.workflow.model.vo;
 
-import com.ohohmiao.framework.common.model.pojo.CommonReferRes;
+import com.ohohmiao.modules.system.model.pojo.SysReferRes;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class FlowHandlerVO {
     private Integer handlerType;
 
     @ApiModelProperty(value = "指定人员集合")
-    private List<CommonReferRes> targetReferResList;
+    private List<SysReferRes> targetReferResList;
 
     @ApiModelProperty(value = "指定接口编码")
     private String interfaceCode;

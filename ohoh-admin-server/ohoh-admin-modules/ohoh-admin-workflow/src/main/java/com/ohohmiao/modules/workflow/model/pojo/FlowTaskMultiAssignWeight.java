@@ -14,13 +14,7 @@ import lombok.Setter;
 @ApiModel("流程环节多人决策权重")
 @Getter
 @Setter
-public class FlowTaskMultiAssignWeight {
-
-    @ApiModelProperty(value = "办理人id")
-    private String handlerId;
-
-    @ApiModelProperty(value = "办理人名称")
-    private String handlerName;
+public class FlowTaskMultiAssignWeight extends FlowTaskHandler {
 
     @ApiModelProperty(value = "权重分")
     private Integer weight;
