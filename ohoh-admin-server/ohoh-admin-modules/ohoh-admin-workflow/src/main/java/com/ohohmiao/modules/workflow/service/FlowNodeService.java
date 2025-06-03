@@ -42,7 +42,7 @@ public interface FlowNodeService extends IService<FlowNode> {
 
     /**
      * 重置流程某环节多人决策权重配置列表
-     * @param listDTO
+     * @param getDTO
      * @return
      */
     List<FlowTaskMultiAssignWeight> resetMultiAssignWeight(FlowNodeGetDTO getDTO);
