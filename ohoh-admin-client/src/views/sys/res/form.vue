@@ -283,7 +283,7 @@ const acceptParams = async (params: FormProps) => {
 	// 获取上级资源树形选择数据
 	const { data: resTreeResultData } = await getSysResTreeApi({});
 	// 默认展开一级的树节点
-	resTreeResultData.forEach((item: { [key: string]: any }) => {
+	resTreeResultData?.forEach((item: { [key: string]: any }) => {
 		if (item.parentId === "0") {
 			resTreeDefaultExpandKeys.value.push(item.resId);
 		}

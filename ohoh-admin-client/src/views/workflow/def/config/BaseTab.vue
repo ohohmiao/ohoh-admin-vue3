@@ -253,7 +253,7 @@ onMounted(async () => {
 	const { data } = await getWorkflowDefTypeTreeApi();
 	handleDefTypeTreeCheckDisable(data);
 	// 默认展开一级的树节点
-	data.forEach((item: { [key: string]: any }) => {
+	data?.forEach((item: { [key: string]: any }) => {
 		if (item.parentId === "0") {
 			defTypeTreeSelectDefaultExpandKeys.value.push(item.deftypeId);
 		}
