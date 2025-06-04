@@ -160,6 +160,7 @@ const rules = reactive({
 		{ validator: eleValidate.checkLetterOrNumOrUnderline, message: "仅限输入字母/数字/下划线" }
 	],
 	userGender: [{ required: true, message: "请选择性别" }],
+	userStatus: [{ required: true, message: "请选择状态" }],
 	userMobile: [{ validator: eleValidate.checkMobileNum, message: "手机号码格式有误" }],
 	userEmail: [{ validator: eleValidate.checkEmail, message: "电子邮箱格式有误" }],
 	orgList: [
