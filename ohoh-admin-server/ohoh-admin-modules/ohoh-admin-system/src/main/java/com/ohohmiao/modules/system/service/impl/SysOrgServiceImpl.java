@@ -75,7 +75,7 @@ public class SysOrgServiceImpl extends CommonTreeServiceImpl<SysOrgMapper, SysOr
     public List<SysOrgVO> listCachedAllOrgs(){
         // 尝试从缓存获取
         Object cachedAllOrgs = platRedisUtil.getCacheObject(SysCacheKeyEnum.ORG_ALL.getKey());
-        if(ObjectUtil.isNull(cachedAllOrgs)){
+        if(ObjectUtil.isNotNull(cachedAllOrgs)){
             List cachedList = (List) cachedAllOrgs;
             if(CollectionUtil.isNotEmpty(cachedList)){
                 return (List<SysOrgVO>) cachedList.stream().map(
