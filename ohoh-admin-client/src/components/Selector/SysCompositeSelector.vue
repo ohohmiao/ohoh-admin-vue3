@@ -630,6 +630,8 @@ watch(selectDataFilterText, val => {
 	if (val) {
 		orgUserTreeRef.value?.filter(val);
 		orgTreeRef.value?.filter(val);
+		positionUserTreeRef.value?.filter(val);
+		positionTreeRef.value?.filter(val);
 	} else {
 		refreshTreeState();
 	}
