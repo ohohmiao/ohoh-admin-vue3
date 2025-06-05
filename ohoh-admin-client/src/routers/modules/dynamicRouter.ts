@@ -28,7 +28,7 @@ export const initDynamicRouter = async () => {
 				duration: 3000
 			});
 			globalStore.setToken("");
-			router.replace(LOGIN_URL);
+			await router.replace(LOGIN_URL);
 			return Promise.reject("No permission");
 		}
 
