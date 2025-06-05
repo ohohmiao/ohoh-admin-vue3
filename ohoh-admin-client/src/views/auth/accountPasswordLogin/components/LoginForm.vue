@@ -102,12 +102,13 @@ const login = (formEl: FormInstance | undefined) => {
 					await keepAlive.setKeepAliveName();
 
 					// 4.跳转到首页
-					await router.push(HOME_URL);
-					ElNotification({
-						title: getTimeState(),
-						message: "欢迎登录",
-						type: "success",
-						duration: 3000
+					router.push(HOME_URL).then(() => {
+						ElNotification({
+							title: getTimeState(),
+							message: "欢迎登录",
+							type: "success",
+							duration: 3000
+						});
 					});
 				})
 				.catch(() => {
