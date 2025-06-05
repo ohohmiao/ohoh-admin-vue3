@@ -47,7 +47,7 @@ export const initDynamicRouter = async () => {
 	} catch (error) {
 		// 💢 当按钮 || 菜单请求出错时，重定向到登录页
 		globalStore.setToken("");
-		router.replace(LOGIN_URL);
+		await router.replace(LOGIN_URL);
 		return Promise.reject(error);
 	}
 };
