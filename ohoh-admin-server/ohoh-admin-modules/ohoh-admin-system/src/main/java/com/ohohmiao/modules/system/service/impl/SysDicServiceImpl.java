@@ -60,7 +60,7 @@ public class SysDicServiceImpl extends ServiceImpl<SysDicMapper, SysDic> impleme
         queryWrapper.like(StrUtil.isNotEmpty(sysDicPageDTO.getDicName()),
                 "d.DIC_NAME", sysDicPageDTO.getDicName());
         //排序
-        queryWrapper.orderByAsc(CollectionUtil.newArrayList("p.TREE_LEVEL", "p.TREE_SORT", "d.DIC_SORT"));
+        queryWrapper.orderByDesc(CollectionUtil.newArrayList("p.CREATE_TIME", "d.CREATE_TIME"));
         return sysDicMapper.pageByWrapper(CommonPageRequest.constructPage(
                 sysDicPageDTO.getCurrent(), sysDicPageDTO.getSize()), queryWrapper);
     }
