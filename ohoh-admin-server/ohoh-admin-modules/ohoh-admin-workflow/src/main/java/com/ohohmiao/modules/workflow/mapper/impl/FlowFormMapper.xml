@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ohohmiao.modules.workflow.mapper.FlowFormMapper">
+
+    <select id="pageByWrapper" resultType="com.ohohmiao.modules.workflow.model.vo.FlowFormVO">
+        select f.*, p.DEFTYPE_NAME
+            from WORKFLOW_FORM f
+            left join WORKFLOW_DEFTYPE p on f.DEFTYPE_ID = p.DEFTYPE_ID
+            ${ew.customSqlSegment }
+    </select>
+
+</mapper>
