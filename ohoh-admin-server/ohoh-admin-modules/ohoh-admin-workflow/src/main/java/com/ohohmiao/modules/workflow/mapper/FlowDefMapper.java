@@ -9,6 +9,8 @@ import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * 流程定义mapper
  *
@@ -32,5 +34,14 @@ public interface FlowDefMapper extends BaseMapper<FlowDef> {
      * @return
      */
     Integer getMaxSortByDeftypeId(@Param("deftypeId") String deftypeId);
+
+    /**
+     * 获取可发起的流程列表
+     * @param deftypeId
+     * @param userId
+     * @return
+     */
+    List<FlowDefVO> listInitiable(@Param("deftypeId") String deftypeId,
+                        @Param("userId") String userId, @Param("isSuperAdmin") Boolean isSuperAdmin);
 
 }

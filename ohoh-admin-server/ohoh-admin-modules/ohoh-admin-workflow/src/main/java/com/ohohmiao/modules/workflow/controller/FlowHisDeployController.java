@@ -6,6 +6,7 @@ import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
+import com.ohohmiao.modules.workflow.model.dto.FlowDefListByTypeDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployGetDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployListDTO;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 流程历史部署controller
@@ -80,6 +82,19 @@ public class FlowHisDeployController {
     @PostMapping("/workflowHisDeploy/list")
     public CommonResp<List<FlowDefVO>> list(@RequestBody @Validated FlowHisDeployListDTO listDTO){
         return CommonResp.data(flowHisDeployService.list(listDTO));
+    }
+
+    /**
+     * 根据流程类别，获取可发起的流程列表
+     * @param dto
+     * @return
+     */
+    @ApiOperation(value = "根据流程类别，获取可发起的流程列表")
+    @ApiOperationSupport(order = 4)
+    @SaPcCheckPermission("/workflowHisDeploy/listInitiableByDeftype")
+    @PostMapping("/workflowHisDeploy/listInitiableByDeftype")
+    public CommonResp<Map<String, List<FlowDefVO>>> listInitiableByDeftype(@RequestBody @Validated FlowDefListByTypeDTO dto){
+        return CommonResp.data(flowHisDeployService.listInitiableByDeftype(dto.getDeftypeId()));
     }
 
 }

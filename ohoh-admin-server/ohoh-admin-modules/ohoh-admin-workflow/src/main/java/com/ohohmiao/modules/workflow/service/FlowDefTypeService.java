@@ -54,4 +54,10 @@ public interface FlowDefTypeService extends CommonTreeService<FlowDefType> {
      */
     void delete(CommonIdDTO idDTO);
 
+    /**
+     * 查询流程类别的第一层树节点
+     * @return
+     */
+    List<FlowDefTypeVO> listFirstLevelNodes();
+
 }

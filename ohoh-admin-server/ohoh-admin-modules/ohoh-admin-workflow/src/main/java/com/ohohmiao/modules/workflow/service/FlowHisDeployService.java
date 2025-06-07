@@ -7,6 +7,7 @@ import com.ohohmiao.modules.workflow.model.entity.FlowHisDeploy;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 流程历史部署Service
@@ -44,5 +45,12 @@ public interface FlowHisDeployService extends CommonService<FlowHisDeploy> {
      * @return
      */
     FlowHisDeploy getByDefCodeAndDefVersion(String defCode, Integer defVersion);
+
+    /**
+     * 根据流程类别，获取可发起的流程列表
+     * @param deftypeId
+     * @return
+     */
+    Map<String, List<FlowDefVO>> listInitiableByDeftype(String deftypeId);
 
 }

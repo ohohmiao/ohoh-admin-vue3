@@ -107,3 +107,13 @@ export const editWorkflowHisDeployApi = (params: Partial<WorkflowDef.Form>) => {
 export const getWorkflowHisDeployListApi = (params: { defCode: string; defVersion: number }) => {
 	return http.post<WorkflowDef.Form[]>("/workflowHisDeploy/list", params);
 };
+
+// * 查询流程类别的第一层树节点
+export const getWorkflowTypeFirstLevelNodeListApi = () => {
+	return http.post<WorkflowDefType.Form[]>("/workflowDefType/listFirstLevelNodes");
+};
+
+// * 根据流程类别，获取可发起的流程列表
+export const getWorkflowIntitiableListApi = (params: { deftypeId: string }) => {
+	return http.post<Map<string, WorkflowDef.Form[]>>("/workflowHisDeploy/listInitiableByDeftype", params);
+};

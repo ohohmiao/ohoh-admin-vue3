@@ -10,6 +10,7 @@ import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowDefTypeAddOrEditDTO;
+import com.ohohmiao.modules.workflow.model.vo.FlowDefTypeVO;
 import com.ohohmiao.modules.workflow.service.FlowDefTypeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -92,6 +93,18 @@ public class FlowDefTypeController {
     public CommonResp<String> delete(@RequestBody @Validated CommonIdDTO idDTO){
         flowDefTypeService.delete(idDTO);
         return CommonResp.success("删除成功");
+    }
+
+    /**
+     * 查询流程类别的第一层树节点
+     * @return
+     */
+    @ApiOperation(value = "查询流程类别的第一层树节点")
+    @ApiOperationSupport(order = 5)
+    @SaPcCheckPermission("/workflowDefType/listFirstLevelNodes")
+    @PostMapping("/workflowDefType/listFirstLevelNodes")
+    public CommonResp<List<FlowDefTypeVO>> listFirstLevelNodes(){
+        return CommonResp.data(flowDefTypeService.listFirstLevelNodes());
     }
 
 }

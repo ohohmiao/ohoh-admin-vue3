@@ -155,5 +155,13 @@ public class FlowDefTypeServiceImpl extends CommonTreeServiceImpl<FlowDefTypeMap
 
         CommonDataChangeEventCenter.doDeleteWithId(FlowDataListenerEnum.DEFTYPE.getName(), toDeleteId);
     }
+    @Override
+    public List<FlowDefTypeVO> listFirstLevelNodes(){
+        LambdaQueryWrapper<FlowDefType> listWrapper = new LambdaQueryWrapper<>();
+        listWrapper.eq(FlowDefType::getParentId, "0");
+        listWrapper.orderByAsc(FlowDefType::getTreeSort);
+        return this.list(listWrapper).stream().map(type ->
+                BeanUtil.copyProperties(type, FlowDefTypeVO.class)).collect(Collectors.toList());
+    }
 
 }

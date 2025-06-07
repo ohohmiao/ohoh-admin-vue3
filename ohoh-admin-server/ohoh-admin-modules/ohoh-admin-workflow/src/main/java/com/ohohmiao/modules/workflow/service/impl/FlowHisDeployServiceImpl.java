@@ -5,8 +5,11 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
+import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
+import com.ohohmiao.framework.security.util.StpPCUtil;
 import com.ohohmiao.modules.workflow.enums.FlowDefBindTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowInitiatorScopeEnum;
+import com.ohohmiao.modules.workflow.mapper.FlowDefMapper;
 import com.ohohmiao.modules.workflow.mapper.FlowHisDeployMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowHisDeployListDTO;
@@ -23,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +46,9 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
 
     @Resource
     private FlowDefBindService flowDefBindService;
+
+    @Resource
+    private FlowDefMapper flowDefMapper;
 
     @Override
     public FlowDefVO get(String defCode, Integer defVersion){
@@ -119,6 +126,14 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         getWrapper.eq(FlowHisDeploy::getDefCode, defCode);
         getWrapper.eq(FlowHisDeploy::getDefVersion, defVersion);
         return this.getOne(getWrapper);
+    }
+
+    @Override
+    public Map<String, List<FlowDefVO>> listInitiableByDeftype(String deftypeId){
+        StpLoginUser loginUser = StpPCUtil.getLoginUser();
+        List<FlowDefVO> flowDefVOList = flowDefMapper.listInitiable(
+                deftypeId, loginUser.getUserId(), loginUser.isSuperAdmin());
+        return flowDefVOList.stream().collect(Collectors.groupingBy(FlowDefVO::getDeftypeName));
     }
 
 }

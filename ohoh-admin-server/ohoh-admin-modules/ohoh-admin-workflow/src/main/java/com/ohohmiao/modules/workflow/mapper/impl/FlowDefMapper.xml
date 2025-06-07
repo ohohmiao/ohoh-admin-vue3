@@ -16,4 +16,108 @@
           and t.DELETE_FLAG = 0
     </select>
 
+    <select id="listInitiable" resultType="com.ohohmiao.modules.workflow.model.vo.FlowDefVO">
+        SELECT
+            d.DEFTYPE_ID,
+            p.DEFTYPE_NAME,
+            d.DEF_ID,
+            d.DEF_NAME,
+            d.DEF_CODE,
+            d.DEF_VERSION,
+            d.DEF_SORT
+        FROM
+            WORKFLOW_DEF d
+                LEFT JOIN WORKFLOW_DEFTYPE p ON d.DEFTYPE_ID = p.DEFTYPE_ID
+        WHERE
+            p.DEFTYPE_ID IS NOT NULL
+          AND d.DELETE_FLAG = 0
+          AND p.DELETE_FLAG = 0
+          AND p.PARENT_ID = #{deftypeId}
+    <if test="!isSuperAdmin">
+          AND d.INITIATOR_SCOPE = 0
+    UNION
+        SELECT
+            d.DEFTYPE_ID,
+            p.DEFTYPE_NAME,
+            d.DEF_ID,
+            d.DEF_NAME,
+            d.DEF_CODE,
+            d.DEF_VERSION,
+            d.DEF_SORT
+        FROM
+            WORKFLOW_DEF d
+                LEFT JOIN WORKFLOW_DEFTYPE p ON d.DEFTYPE_ID = p.DEFTYPE_ID
+                LEFT JOIN WORKFLOW_DEFBIND b ON d.DEF_CODE = b.DEF_CODE
+        WHERE
+            p.DEFTYPE_ID IS NOT NULL
+          AND b.DEF_CODE IS NOT NULL
+          AND d.DELETE_FLAG = 0
+          AND p.DELETE_FLAG = 0
+          AND d.INITIATOR_SCOPE = 1
+          AND p.PARENT_ID = #{deftypeId}
+          AND d.DEF_VERSION = b.DEF_VERSION
+          AND b.BIND_TYPE = 0
+          AND b.BIND_TYPE = 'user'
+          AND b.REFER_RESID = #{userId}
+    UNION
+        SELECT
+            d.DEFTYPE_ID,
+            p.DEFTYPE_NAME,
+            d.DEF_ID,
+            d.DEF_NAME,
+            d.DEF_CODE,
+            d.DEF_VERSION,
+            d.DEF_SORT
+        FROM
+            WORKFLOW_DEF d
+                LEFT JOIN WORKFLOW_DEFTYPE p ON d.DEFTYPE_ID = p.DEFTYPE_ID
+                LEFT JOIN WORKFLOW_DEFBIND b ON d.DEF_CODE = b.DEF_CODE
+        WHERE
+            p.DEFTYPE_ID IS NOT NULL
+          AND b.DEF_CODE IS NOT NULL
+          AND d.DELETE_FLAG = 0
+          AND p.DELETE_FLAG = 0
+          AND d.INITIATOR_SCOPE = 1
+          AND p.PARENT_ID = #{deftypeId}
+          AND d.DEF_VERSION = b.DEF_VERSION
+          AND b.BIND_TYPE = 0
+          AND b.BIND_TYPE = 'org'
+          AND b.REFER_RESID IN ( SELECT up.PROP_RECORDID
+                      FROM SYS_USERPROP up
+                      WHERE up.PROP_TABLENAME = 'SYS_ORG' AND up.USER_ID = #{userId} )
+    UNION
+        SELECT
+            d.DEFTYPE_ID,
+            p.DEFTYPE_NAME,
+            d.DEF_ID,
+            d.DEF_NAME,
+            d.DEF_CODE,
+            d.DEF_VERSION,
+            d.DEF_SORT
+        FROM
+            WORKFLOW_DEF d
+                LEFT JOIN WORKFLOW_DEFTYPE p ON d.DEFTYPE_ID = p.DEFTYPE_ID
+                LEFT JOIN WORKFLOW_DEFBIND b ON d.DEF_CODE = b.DEF_CODE
+        WHERE
+            p.DEFTYPE_ID IS NOT NULL
+          AND b.DEF_CODE IS NOT NULL
+          AND d.DELETE_FLAG = 0
+          AND p.DELETE_FLAG = 0
+          AND d.INITIATOR_SCOPE = 1
+          AND p.PARENT_ID = #{deftypeId}
+          AND d.DEF_VERSION = b.DEF_VERSION
+          AND b.BIND_TYPE = 0
+          AND b.BIND_TYPE = 'position'
+          AND b.REFER_RESID IN (
+            SELECT
+                up.PROP_EXTENDID
+            FROM
+                SYS_USERPROP up
+            WHERE
+                up.PROP_TABLENAME = 'SYS_ORG'
+              AND up.USER_ID = #{userId}
+        )
+    </if>
+    </select>
+
 </mapper>
