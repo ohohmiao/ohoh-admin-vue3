@@ -10,7 +10,7 @@
 								:class="curFirstLevelDefTypeId == item.deftypeId ? ['classify_list_item', 'on'] : ['classify_list_item']"
 								v-for="item in firstLevelDefTypes"
 								:key="item.deftypeId"
-								@click="curFirstLevelDefTypeId = item.deftypeId"
+								@click="curFirstLevelDefTypeId = item.deftypeId!"
 							>
 								<el-text>{{ item.deftypeName }}</el-text>
 							</div>
@@ -21,7 +21,9 @@
 						<div v-for="[key, list] in curFlowDefMapEntries" :key="key" class="section">
 							<div class="section-title">{{ key }}</div>
 							<div class="button-grid">
-								<div v-for="item in list" :key="item.defId" class="card-button">{{ item.defName }}</div>
+								<div v-for="item in list" :key="item.defId" class="card-button" @click="handleClick(item)">
+									{{ item.defName }}
+								</div>
 							</div>
 						</div>
 						<el-empty v-if="!curFlowDefMapEntries.length"></el-empty>
@@ -38,17 +40,26 @@
 			<el-icon v-if="!switchOpen" style="background-color: #ddd"><ArrowLeft /></el-icon>
 			<el-icon v-else style="background-color: #ddd"><ArrowRight /></el-icon>
 		</div>
+		<!-- 动态流程表单 -->
+		<component :is="DynamicFlowForm" v-if="DynamicFlowForm" ref="dynamicFlowFormRef"></component>
 	</div>
 </template>
 
 <script setup lang="ts" name="MyFlowManage">
-import { ref, onMounted, watch, computed } from "vue";
-import { getWorkflowTypeFirstLevelNodeListApi, getWorkflowIntitiableListApi, WorkflowDef } from "@/api/modules/workflow/def";
+import { ref, onMounted, watch, computed, defineAsyncComponent, shallowRef } from "vue";
+import type { DefineComponent } from "vue";
+import {
+	getWorkflowTypeFirstLevelNodeListApi,
+	getWorkflowIntitiableListApi,
+	WorkflowDef,
+	WorkflowDefType
+} from "@/api/modules/workflow/def";
+import { getWorkflowFlowInfoApi } from "@/api/modules/workflow/core";
 
 const switchOpen = ref(false);
 
 // 第一层级流程类别
-const firstLevelDefTypes = ref([]);
+const firstLevelDefTypes = ref<WorkflowDefType.Form[]>([]);
 // 当前选中的流程类别
 const curFirstLevelDefTypeId = ref("");
 const curFlowDefMap = ref<Map<string, WorkflowDef.Form[]>>(new Map());
@@ -67,6 +78,28 @@ watch(
 		curFlowDefMap.value = data;
 	}
 );
+
+// 点击流程
+const DynamicFlowForm = shallowRef();
+const dynamicFlowFormRef = shallowRef();
+// Vite自动扫描指定目录下的Vue文件
+const dynamicFlowFormViews = import.meta.glob("@/views/workflow/workspace/**/*.vue");
+
+const handleClick = async (item: any) => {
+	const { data } = await getWorkflowFlowInfoApi({ defCode: item.defCode, defVersion: item.defVersion });
+	const dynamicFlowFormPath = `/src/views/workflow/workspace${data.formPath}.vue`;
+	const thizLoader = dynamicFlowFormViews[dynamicFlowFormPath];
+	if (!thizLoader) {
+		console.warn("表单组件未找到：", dynamicFlowFormPath);
+		return;
+	}
+	DynamicFlowForm.value = defineAsyncComponent(thizLoader as () => Promise<DefineComponent>);
+
+	// nextTick、Promise.resolve().then(() => {})等均fail...
+	setTimeout(() => {
+		dynamicFlowFormRef.value?.acceptParams();
+	}, 100);
+};
 </script>
 
 <style scoped lang="scss">

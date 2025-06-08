@@ -21,9 +21,10 @@ public interface FlowHisDeployService extends CommonService<FlowHisDeploy> {
      * 根据流程编码和版本号获取流程定义
      * @param defCode
      * @param defVersion
+     * @param includeExtraInfo 是否包含附加信息
      * @return
      */
-    FlowDefVO get(String defCode, Integer defVersion);
+    FlowDefVO get(String defCode, Integer defVersion, boolean includeExtraInfo);
 
     /**
      * 修改流程历史定义

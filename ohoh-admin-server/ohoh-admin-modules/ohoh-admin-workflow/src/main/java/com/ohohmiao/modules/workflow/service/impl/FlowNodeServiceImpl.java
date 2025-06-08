@@ -80,7 +80,7 @@ public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> i
     public List<FlowTaskMultiAssignWeight> listMultiAssignWeight(FlowNodeGetDTO listDTO){
         List<FlowTaskMultiAssignWeight> resultList = CollectionUtil.newArrayList();
         // 判断是否第一个节点，如果是，无当前环节办理人，则返回空
-        FlowDefVO flowDefVO = flowHisDeployService.get(listDTO.getDefCode(), listDTO.getDefVersion());
+        FlowDefVO flowDefVO = flowHisDeployService.get(listDTO.getDefCode(), listDTO.getDefVersion(), false);
         Map firstTaskNode = WorkflowUtil.getFirstTaskNode(flowDefVO.getDefJson());
         if(listDTO.getNodeId().equals(firstTaskNode.get("id").toString())){
             return resultList;

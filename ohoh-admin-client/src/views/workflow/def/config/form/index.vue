@@ -56,7 +56,7 @@ const props = defineProps({
 
 const proTable = ref();
 // 表格配置项
-const columns: ColumnProps<WorkflowForm.BindForm>[] = [
+const columns: ColumnProps<WorkflowForm.Form>[] = [
 	{ type: "selection", fixed: "left", width: 50 },
 	{ prop: "formName", label: "表单名称", width: 200 },
 	{ prop: "formPath", label: "表单路径", width: 200 },

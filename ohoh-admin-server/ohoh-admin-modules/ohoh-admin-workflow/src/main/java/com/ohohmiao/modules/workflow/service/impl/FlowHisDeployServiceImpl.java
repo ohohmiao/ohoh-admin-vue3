@@ -51,7 +51,7 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
     private FlowDefMapper flowDefMapper;
 
     @Override
-    public FlowDefVO get(String defCode, Integer defVersion){
+    public FlowDefVO get(String defCode, Integer defVersion, boolean includeExtraInfo){
         FlowDefVO flowDefVO = null;
         // 先查找流程定义表
         FlowDef flowDef = flowDefService.getByDefCodeAndDefVersion(defCode, defVersion);
@@ -65,7 +65,7 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
             }
         }
         // 组装流程属性
-        if(ObjectUtil.isNotNull(flowDefVO)){
+        if(includeExtraInfo && ObjectUtil.isNotNull(flowDefVO)){
             if(flowDefVO.getInitiatorScope() != null &&
                flowDefVO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
                 flowDefVO.setTargetInitiators(flowDefBindService.list(

@@ -7,6 +7,7 @@ import com.ohohmiao.modules.workflow.model.dto.FlowFormBindAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowFormBindPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowForm;
 import com.ohohmiao.modules.workflow.model.vo.FlowFormBindVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
 
 /**
  * 流程表单Service
@@ -40,5 +41,14 @@ public interface FlowFormService extends CommonService<FlowForm> {
      * @param idListDTO
      */
     void multiDeleteBind(CommonIdListDTO idListDTO);
+
+    /**
+     * 查询流程某环节绑定的表单
+     * @param defCode
+     * @param defVersion
+     * @param nodeId
+     * @return
+     */
+    FlowFormVO getBindForm(String defCode, Integer defVersion, String nodeId);
 
 }

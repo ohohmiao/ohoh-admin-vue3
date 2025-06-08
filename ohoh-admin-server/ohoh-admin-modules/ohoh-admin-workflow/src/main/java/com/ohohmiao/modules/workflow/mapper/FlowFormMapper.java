@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeBindQueryDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowForm;
 import com.ohohmiao.modules.workflow.model.vo.FlowFormBindVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,5 +25,15 @@ public interface FlowFormMapper extends BaseMapper<FlowForm> {
      * @return
      */
     Page<FlowFormBindVO> listBindByPage(Page<FlowFormBindVO> page, @Param("bind") FlowNodeBindQueryDTO queryDTO);
+
+    /**
+     * 查询流程某环节绑定的表单
+     * @param defCode
+     * @param defVersion
+     * @param nodeId
+     * @return
+     */
+    FlowFormVO getBindForm(@Param("defCode") String defCode,
+                  @Param("defVersion") Integer defVersion, @Param("nodeId") String nodeId);
 
 }

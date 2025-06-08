@@ -15,6 +15,7 @@ import com.ohohmiao.modules.workflow.model.dto.FlowNodeBindAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNodeBindQueryDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowForm;
 import com.ohohmiao.modules.workflow.model.vo.FlowFormBindVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
 import com.ohohmiao.modules.workflow.service.FlowFormService;
 import com.ohohmiao.modules.workflow.service.FlowNodeBindService;
 import org.springframework.stereotype.Service;
@@ -88,6 +89,11 @@ public class FlowFormServiceImpl extends CommonServiceImpl<FlowFormMapper, FlowF
         flowNodeBindService.deleteByBindTypeAndBindObjid(
                 FlowNodeBindTypeEnum.FORM.ordinal(),
                 idListDTO.getId().toArray(new String[0]));
+    }
+
+    @Override
+    public FlowFormVO getBindForm(String defCode, Integer defVersion, String nodeId){
+        return flowFormMapper.getBindForm(defCode, defVersion, nodeId);
     }
 
 }

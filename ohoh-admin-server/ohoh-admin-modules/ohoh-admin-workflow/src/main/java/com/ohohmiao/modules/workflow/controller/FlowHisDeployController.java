@@ -48,7 +48,7 @@ public class FlowHisDeployController {
     @PostMapping("/workflowHisDeploy/get")
     public CommonResp<FlowDefVO> targetVersion(@RequestBody @Validated FlowHisDeployGetDTO flowHisDeployGetDTO){
         FlowDefVO flowDefVO = flowHisDeployService.get(
-                flowHisDeployGetDTO.getDefCode(), flowHisDeployGetDTO.getDefVersion());
+                flowHisDeployGetDTO.getDefCode(), flowHisDeployGetDTO.getDefVersion(), true);
         if(ObjectUtil.isNotNull(flowDefVO)){
             return CommonResp.data(flowDefVO);
         }else{

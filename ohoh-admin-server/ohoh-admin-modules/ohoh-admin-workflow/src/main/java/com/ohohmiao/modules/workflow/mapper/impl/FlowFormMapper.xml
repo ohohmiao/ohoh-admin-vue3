@@ -26,4 +26,14 @@
         ORDER BY f.create_time DESC
     </select>
 
+    <select id="getBindForm" resultType="com.ohohmiao.modules.workflow.model.vo.FlowFormVO">
+        select f.FORM_ID, f.CREATE_TIME, f.FORM_NAME, f.FORM_PATH
+        from WORKFLOW_FORM f
+             left join WORKFLOW_NODEBIND b on f.FORM_ID = b.BIND_OBJID
+        where b.BIND_OBJID is not null
+          and f.DEF_CODE = #{defCode}
+          and f.DEF_VERSION = #{defVersion}
+          and b.NODE_ID = #{nodeId}
+    </select>
+
 </mapper>
