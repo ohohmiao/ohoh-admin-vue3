@@ -10,8 +10,9 @@
 								:class="curFirstLevelDefTypeId == item.deftypeId ? ['classify_list_item', 'on'] : ['classify_list_item']"
 								v-for="item in firstLevelDefTypes"
 								:key="item.deftypeId"
+								@click="curFirstLevelDefTypeId = item.deftypeId"
 							>
-								<el-text @click="curFirstLevelDefTypeId = item.deftypeId">{{ item.deftypeName }}</el-text>
+								<el-text>{{ item.deftypeName }}</el-text>
 							</div>
 						</div>
 					</td>
