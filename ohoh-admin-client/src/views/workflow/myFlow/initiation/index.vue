@@ -40,7 +40,7 @@
 	</div>
 </template>
 
-<script setup lang="tsx" name="MyFlowManage">
+<script setup lang="ts" name="MyFlowManage">
 import { ref, onMounted, watch, computed } from "vue";
 import { getWorkflowTypeFirstLevelNodeListApi, getWorkflowIntitiableListApi, WorkflowDef } from "@/api/modules/workflow/def";
 
