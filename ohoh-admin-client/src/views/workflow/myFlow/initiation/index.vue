@@ -103,7 +103,7 @@ table {
 .section-box {
 	vertical-align: top;
 	background-color: #fff;
-	padding: 15px 25px;
+	padding: 25px 35px;
 }
 .section {
 	margin-bottom: 40px;
