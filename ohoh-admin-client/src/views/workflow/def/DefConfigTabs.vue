@@ -12,7 +12,14 @@
 				<el-tab-pane label="基本信息" name="baseTab">
 					<DefConfigBaseTab :row-data="formProps.rowData"></DefConfigBaseTab>
 				</el-tab-pane>
-				<el-tab-pane label="表单绑定" name="formTab">绑定表单内容</el-tab-pane>
+				<el-tab-pane label="表单绑定" name="formTab">
+					<DefConfigFormTab
+						:def-code="formProps.rowData.defCode"
+						:def-version="formProps.rowData.defVersion"
+						:def-xml="formProps.rowData.defXml"
+					>
+					</DefConfigFormTab>
+				</el-tab-pane>
 				<el-tab-pane label="事件绑定" name="eventTab"
 					><DefConfigEventTab
 						:def-code="formProps.rowData.defCode"
@@ -39,6 +46,7 @@ import { getWorkflowHisDeployApi, WorkflowDef } from "@/api/modules/workflow/def
 import DefConfigBaseTab from "./config/BaseTab.vue";
 import DefConfigEventTab from "./config/event/index.vue";
 import DefConfigNodeTab from "./config/node/index.vue";
+import DefConfigFormTab from "./config/form/index.vue";
 
 interface FormProps {
 	rowData: Partial<WorkflowDef.Form>;

@@ -2,11 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohohmiao.modules.workflow.mapper.FlowFormMapper">
 
-    <select id="pageByWrapper" resultType="com.ohohmiao.modules.workflow.model.vo.FlowFormVO">
-        select f.*, p.DEFTYPE_NAME
-            from WORKFLOW_FORM f
-            left join WORKFLOW_DEFTYPE p on f.DEFTYPE_ID = p.DEFTYPE_ID
-            ${ew.customSqlSegment }
+    <resultMap id="FlowFormBindVO" type="com.ohohmiao.modules.workflow.model.vo.FlowFormBindVO">
+        <result column="bind_node_ids"
+                property="bindNodeIds"
+                typeHandler="com.ohohmiao.framework.mybatis.handler.ConvertCommaSeparatedStrToListTypeHandler"/>
+        <result column="bind_node_names"
+                property="bindNodeNames"
+                typeHandler="com.ohohmiao.framework.mybatis.handler.ConvertCommaSeparatedStrToListTypeHandler"/>
+    </resultMap>
+
+    <select id="listBindByPage" resultMap="FlowFormBindVO">
+        SELECT
+            f.form_id, f.create_time, f.form_name, f.form_path,
+            d.bind_node_ids, d.bind_node_names
+        FROM workflow_form f
+             LEFT JOIN (SELECT b.bind_objid, GROUP_CONCAT(b.node_id) AS bind_node_ids,
+             GROUP_CONCAT(b.node_name) AS bind_node_names
+            FROM workflow_nodebind b
+            WHERE b.def_code = #{bind.defCode} and b.def_version = #{bind.defVersion} and b.bind_type = #{bind.bindType}
+            GROUP BY b.bind_objid) d
+           ON f.form_id = d.bind_objid
+        WHERE d.bind_objid IS NOT NULL
+        ORDER BY f.create_time DESC
     </select>
 
 </mapper>

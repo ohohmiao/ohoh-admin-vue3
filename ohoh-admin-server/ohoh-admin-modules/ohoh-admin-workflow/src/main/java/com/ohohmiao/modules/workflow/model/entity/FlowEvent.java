@@ -20,7 +20,7 @@ public class FlowEvent {
     @TableId
     private String eventId;
 
-    @TableField
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     @TableField

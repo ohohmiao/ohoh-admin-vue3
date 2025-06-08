@@ -1,11 +1,13 @@
 package com.ohohmiao.modules.workflow.model.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.ohohmiao.framework.mybatis.model.entity.CommonEntity;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Date;
 
 /**
  * 流程表单
@@ -16,13 +18,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName(value = "workflow_form")
-public class FlowForm extends CommonEntity {
+public class FlowForm {
 
     @TableId
     private String formId;
 
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
+
     @TableField
-    private String deftypeId;
+    private String defCode;
+
+    @TableField
+    private Integer defVersion;
 
     @TableField
     private String formName;

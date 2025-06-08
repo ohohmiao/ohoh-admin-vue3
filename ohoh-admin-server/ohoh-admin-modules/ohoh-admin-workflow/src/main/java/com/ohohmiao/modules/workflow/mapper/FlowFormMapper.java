@@ -1,11 +1,10 @@
 package com.ohohmiao.modules.workflow.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ohohmiao.modules.workflow.model.dto.FlowNodeBindQueryDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowForm;
-import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowFormBindVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,11 +18,11 @@ import org.apache.ibatis.annotations.Param;
 public interface FlowFormMapper extends BaseMapper<FlowForm> {
 
     /**
-     * 根据Wrapper，分页查询
+     * 绑定关系分页查询
      * @param page
-     * @param queryWrapper
+     * @param queryDTO
      * @return
      */
-    Page<FlowFormVO> pageByWrapper(Page<FlowFormVO> page, @Param(Constants.WRAPPER)Wrapper<FlowFormVO> queryWrapper);
+    Page<FlowFormBindVO> listBindByPage(Page<FlowFormBindVO> page, @Param("bind") FlowNodeBindQueryDTO queryDTO);
 
 }

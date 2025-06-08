@@ -75,13 +75,14 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
         FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO =
                 BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.EVENT.ordinal());
-        flowNodeBindAddOrEditDTO.setBindObjid(flowEvent.getEventId());
+        flowNodeBindAddOrEditDTO.setBindObjid(flowEventAddOrEditDTO.getEventId());
         flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void multiDelete(CommonIdListDTO idListDTO){
+        // 删除流程事件
         this.removeBatchByIds(idListDTO.getId());
         // 删除绑定关系表
         flowNodeBindService.deleteByBindTypeAndBindObjid(

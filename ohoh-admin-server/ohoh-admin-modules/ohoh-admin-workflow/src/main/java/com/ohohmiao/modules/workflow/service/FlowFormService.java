@@ -1,12 +1,12 @@
 package com.ohohmiao.modules.workflow.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
+import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.framework.mybatis.service.CommonService;
-import com.ohohmiao.modules.workflow.model.dto.FlowFormAddOrEditDTO;
-import com.ohohmiao.modules.workflow.model.dto.FlowFormPageDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowFormBindAddOrEditDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowFormBindPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowForm;
-import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowFormBindVO;
 
 /**
  * 流程表单Service
@@ -17,35 +17,28 @@ import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
 public interface FlowFormService extends CommonService<FlowForm> {
 
     /**
-     * 获取流程表单分页列表
+     * 获取流程表单绑定分页列表
      * @param pageDTO
      * @return
      */
-    Page<FlowFormVO> listByPage(FlowFormPageDTO pageDTO);
+    Page<FlowFormBindVO> listBindByPage(FlowFormBindPageDTO pageDTO);
 
     /**
-     * 获取单个流程表单
-     * @param formId
-     * @return
-     */
-    FlowFormVO get(String formId);
-
-    /**
-     * 新增流程表单
+     * 新增流程表单绑定
      * @param addOrEditDTO
      */
-    void add(FlowFormAddOrEditDTO addOrEditDTO);
+    void addBind(FlowFormBindAddOrEditDTO addOrEditDTO);
 
     /**
-     * 编辑流程表单
+     * 修改流程表单绑定
      * @param addOrEditDTO
      */
-    void edit(FlowFormAddOrEditDTO addOrEditDTO);
+    void editBind(FlowFormBindAddOrEditDTO addOrEditDTO);
 
     /**
-     * 删除流程表单
-     * @param idDTO
+     * 批量删除流程表单绑定
+     * @param idListDTO
      */
-    void delete(CommonIdDTO idDTO);
+    void multiDeleteBind(CommonIdListDTO idListDTO);
 
 }
