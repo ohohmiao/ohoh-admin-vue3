@@ -27,7 +27,14 @@
 						:def-xml="formProps.rowData.defXml"
 					></DefConfigEventTab
 				></el-tab-pane>
-				<el-tab-pane label="按钮绑定" name="buttonTab">绑定按钮内容</el-tab-pane>
+				<el-tab-pane label="按钮绑定" name="buttonTab">
+					<DefConfigBtnTab
+						:def-xml="formProps.rowData.defXml"
+						:def-code="formProps.rowData.defCode"
+						:def-version="formProps.rowData.defVersion"
+					>
+					</DefConfigBtnTab>
+				</el-tab-pane>
 				<el-tab-pane label="环节配置" name="nodeTab">
 					<DefConfigNodeTab
 						:def-xml="formProps.rowData.defXml"
@@ -47,6 +54,7 @@ import DefConfigBaseTab from "./config/BaseTab.vue";
 import DefConfigEventTab from "./config/event/index.vue";
 import DefConfigNodeTab from "./config/node/index.vue";
 import DefConfigFormTab from "./config/form/index.vue";
+import DefConfigBtnTab from "./config/btn/index.vue";
 
 interface FormProps {
 	rowData: Partial<WorkflowDef.Form>;

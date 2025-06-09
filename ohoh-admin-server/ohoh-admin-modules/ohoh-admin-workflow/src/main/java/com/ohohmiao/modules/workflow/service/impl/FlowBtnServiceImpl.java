@@ -7,13 +7,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
+import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
 import com.ohohmiao.modules.workflow.enums.FlowNodeBindTypeEnum;
 import com.ohohmiao.modules.workflow.mapper.FlowBtnMapper;
-import com.ohohmiao.modules.workflow.model.dto.FlowBtnAddOrEditDTO;
-import com.ohohmiao.modules.workflow.model.dto.FlowBtnPageDTO;
+import com.ohohmiao.modules.workflow.model.dto.*;
 import com.ohohmiao.modules.workflow.model.entity.FlowBtn;
+import com.ohohmiao.modules.workflow.model.vo.FlowBtnBindVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowBtnVO;
 import com.ohohmiao.modules.workflow.service.FlowBtnService;
 import com.ohohmiao.modules.workflow.service.FlowNodeBindService;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 流程按钮Service实现
@@ -81,6 +85,46 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
         this.removeById(idDTO.getId());
         // 删除环节绑定关系
         flowNodeBindService.deleteByBindTypeAndBindObjid(FlowNodeBindTypeEnum.BTN.ordinal(), idDTO.getId());
+    }
+
+    @Override
+    public Page<FlowBtnBindVO> listBindByPage(FlowBtnBindPageDTO pageDTO){
+        FlowNodeBindQueryDTO queryDTO = new FlowNodeBindQueryDTO();
+        queryDTO.setDefCode(pageDTO.getDefCode());
+        queryDTO.setDefVersion(pageDTO.getDefVersion());
+        queryDTO.setBindType(FlowNodeBindTypeEnum.BTN.ordinal());
+        return flowBtnMapper.listBindByPage(CommonPageRequest.constructPage(
+                   pageDTO.getCurrent(), pageDTO.getSize()), queryDTO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveOrUpdateBind(FlowBtnBindAddOrEditDTO addOrEditDTO){
+        FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO =
+                BeanUtil.copyProperties(addOrEditDTO, FlowNodeBindAddOrEditDTO.class);
+        flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.BTN.ordinal());
+        flowNodeBindAddOrEditDTO.setBindObjid(addOrEditDTO.getBtnId());
+        flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void multiDeleteBind(CommonIdListDTO idListDTO){
+        flowNodeBindService.deleteByBindTypeAndBindObjid(
+                FlowNodeBindTypeEnum.BTN.ordinal(),
+                idListDTO.getId().toArray(new String[0]));
+    }
+
+    @Override
+    public List<CommonSelectVO> select(){
+        LambdaQueryWrapper<FlowBtn> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.orderByAsc(FlowBtn::getCreateTime);
+        return this.list(queryWrapper).stream().map(btn -> {
+            CommonSelectVO selectVO = new CommonSelectVO();
+            selectVO.setLabel(btn.getBtnText());
+            selectVO.setValue(btn.getBtnId());
+            return selectVO;
+        }).collect(Collectors.toList());
     }
 
 }

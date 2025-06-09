@@ -5,14 +5,19 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
+import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
+import com.ohohmiao.framework.common.model.vo.CommonSelectVO;
 import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
 import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowBtnAddOrEditDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowBtnBindAddOrEditDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowBtnBindPageDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowBtnPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowBtn;
+import com.ohohmiao.modules.workflow.model.vo.FlowBtnBindVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowBtnVO;
 import com.ohohmiao.modules.workflow.service.FlowBtnService;
 import io.swagger.annotations.Api;
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 流程按钮controller
@@ -112,6 +118,61 @@ public class FlowBtnController {
     public CommonResp<String> delete(@RequestBody @Validated CommonIdDTO idDTO){
         flowBtnService.delete(idDTO);
         return CommonResp.success("删除成功");
+    }
+
+    /**
+     * 获取流程按钮绑定分页列表
+     * @param pageDTO
+     * @return
+     */
+    @ApiOperation(value = "获取流程按钮绑定分页列表")
+    @ApiOperationSupport(order = 6)
+    @SaPcCheckPermission("/workflowBtn/listBindByPage")
+    @PostMapping("/workflowBtn/listBindByPage")
+    public CommonResp<Page<FlowBtnBindVO>> listBindByPage(@RequestBody @Validated FlowBtnBindPageDTO pageDTO){
+        return CommonResp.data(flowBtnService.listBindByPage(pageDTO));
+    }
+
+    /**
+     * 新增或修改流程按钮绑定
+     * @param addOrEditDTO
+     * @return
+     */
+    @ApiOperation(value = "新增或修改流程按钮绑定")
+    @ApiOperationSupport(order = 7)
+    @CommonLog("新增或修改流程按钮绑定")
+    @SaPcCheckPermission("/workflowBtn/addOrEditBind")
+    @PostMapping("/workflowBtn/addOrEditBind")
+    public CommonResp<String> addOrEditBind(@RequestBody @Validated FlowBtnBindAddOrEditDTO addOrEditDTO){
+        flowBtnService.saveOrUpdateBind(addOrEditDTO);
+        return CommonResp.success("操作成功");
+    }
+
+    /**
+     * 批量删除流程按钮绑定
+     * @param idListDTO
+     * @return
+     */
+    @ApiOperation(value = "批量删除流程按钮绑定")
+    @ApiOperationSupport(order = 8)
+    @CommonLog("批量删除流程按钮绑定")
+    @SaPcCheckPermission("/workflowBtn/multiDeleteBind")
+    @PostMapping("/workflowBtn/multiDeleteBind")
+    public CommonResp<String> multiDeleteBind(@RequestBody @Validated CommonIdListDTO idListDTO){
+        flowBtnService.multiDeleteBind(idListDTO);
+        return CommonResp.success("删除成功");
+    }
+
+    /**
+     * 获取流程按钮下拉框结构数据
+     * @return
+     */
+    @ApiOperation(value = "获取流程按钮下拉框结构数据")
+    @ApiOperationSupport(order = 9)
+    @SaPcCheckPermission("/workflowBtn/select")
+    @PostMapping("/workflowBtn/select")
+    public CommonResp<List<CommonSelectVO>> select(){
+        return CommonResp.data(flowBtnService.select());
     }
 
 }

@@ -2,4 +2,28 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohohmiao.modules.workflow.mapper.FlowBtnMapper">
 
+    <resultMap id="FlowBtnBindVO" type="com.ohohmiao.modules.workflow.model.vo.FlowBtnBindVO">
+        <result column="bind_node_ids"
+                property="bindNodeIds"
+                typeHandler="com.ohohmiao.framework.mybatis.handler.ConvertCommaSeparatedStrToListTypeHandler"/>
+        <result column="bind_node_names"
+                property="bindNodeNames"
+                typeHandler="com.ohohmiao.framework.mybatis.handler.ConvertCommaSeparatedStrToListTypeHandler"/>
+    </resultMap>
+
+    <select id="listBindByPage" resultMap="FlowBtnBindVO">
+        SELECT
+            b.btn_id, b.btn_text, b.btn_color, b.btn_fun,
+            d.bind_node_ids, d.bind_node_names
+        FROM workflow_btn b
+             LEFT JOIN (SELECT b.bind_objid, GROUP_CONCAT(b.node_id) AS bind_node_ids,
+                   GROUP_CONCAT(b.node_name) AS bind_node_names
+            FROM workflow_nodebind b
+            WHERE b.def_code = #{bind.defCode} and b.def_version = #{bind.defVersion} and b.bind_type = #{bind.bindType}
+            GROUP BY b.bind_objid) d
+           ON b.btn_id = d.bind_objid
+        WHERE d.bind_objid IS NOT NULL
+        ORDER BY b.create_time ASC
+    </select>
+
 </mapper>
