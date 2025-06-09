@@ -80,4 +80,13 @@ public interface FlowBtnService extends CommonService<FlowBtn> {
      */
     List<CommonSelectVO> select();
 
+    /**
+     * 查询流程某环节绑定的按钮
+     * @param defCode
+     * @param defVersion
+     * @param nodeId
+     * @return
+     */
+    List<FlowBtnVO> listBindBtns(String defCode, Integer defVersion, String nodeId);
+
 }

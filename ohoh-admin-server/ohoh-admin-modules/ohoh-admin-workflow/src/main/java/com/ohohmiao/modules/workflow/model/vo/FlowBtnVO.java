@@ -15,7 +15,7 @@ import lombok.Setter;
 @ApiModel("流程按钮")
 @Getter
 @Setter
-public class FlowBtnVO extends CommonVO {
+public class FlowBtnVO {
 
     @ApiModelProperty(value = "流程按钮id")
     private String btnId;

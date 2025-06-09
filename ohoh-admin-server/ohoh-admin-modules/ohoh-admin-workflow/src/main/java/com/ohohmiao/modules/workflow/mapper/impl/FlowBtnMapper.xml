@@ -26,4 +26,15 @@
         ORDER BY b.create_time ASC
     </select>
 
+    <select id="listBindBtns" resultType="com.ohohmiao.modules.workflow.model.vo.FlowBtnVO">
+        select b.BTN_ID, b.BTN_TEXT, b.BTN_COLOR, b.BTN_FUN
+        from WORKFLOW_BTN b
+            left join WORKFLOW_NODEBIND d on b.BTN_ID = d.BIND_OBJID
+        where d.BIND_OBJID is not null
+          and d.DEF_CODE = #{defCode}
+          and d.DEF_VERSION = #{defVersion}
+          and d.NODE_ID = #{nodeId}
+        order by b.CREATE_TIME asc
+    </select>
+
 </mapper>

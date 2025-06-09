@@ -40,7 +40,7 @@ const initBpmnDesigner = async (defXml: string) => {
 	modeler = initModeler4Viewer(designerRef, modelerModules);
 	await createNewDiagram4Viewer(modeler, defXml, editorSettings);
 	emit("modeler-init", modeler);
-	modeler.on("element.click", event => {
+	modeler.on("element.click", (event: any) => {
 		const { element } = event;
 		if (!event || !element.parent || element.type === "bpmn:Process") {
 			return false;
@@ -58,7 +58,11 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	modeler.destroy();
+	modeler?.destroy();
+});
+
+defineExpose({
+	initBpmnDesigner
 });
 </script>
 

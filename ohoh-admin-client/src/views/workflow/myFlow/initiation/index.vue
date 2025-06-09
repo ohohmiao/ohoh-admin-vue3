@@ -41,7 +41,12 @@
 			<el-icon v-else style="background-color: #ddd"><ArrowRight /></el-icon>
 		</div>
 		<!-- 动态流程表单 -->
-		<component :is="DynamicFlowForm" v-if="DynamicFlowForm" ref="dynamicFlowFormRef"></component>
+		<component
+			:is="DynamicFlowForm"
+			v-if="DynamicFlowForm"
+			ref="dynamicFlowFormRef"
+			@dynamic-form-init="handleDynamicFlowFormInit"
+		></component>
 	</div>
 </template>
 
@@ -54,7 +59,7 @@ import {
 	WorkflowDef,
 	WorkflowDefType
 } from "@/api/modules/workflow/def";
-import { getWorkflowFlowInfoApi } from "@/api/modules/workflow/core";
+import { getWorkflowFlowInfoApi, Workflow } from "@/api/modules/workflow/core";
 
 const switchOpen = ref(false);
 
@@ -79,26 +84,32 @@ watch(
 	}
 );
 
-// 点击流程
+// 动态表单异步组件
 const DynamicFlowForm = shallowRef();
 const dynamicFlowFormRef = shallowRef();
 // Vite自动扫描指定目录下的Vue文件
 const dynamicFlowFormViews = import.meta.glob("@/views/workflow/workspace/**/*.vue");
+// 流程核心信息
+let thizFlowInfo: Workflow.FlowInfo;
 
+// 发起流程
 const handleClick = async (item: any) => {
 	const { data } = await getWorkflowFlowInfoApi({ defCode: item.defCode, defVersion: item.defVersion });
 	const dynamicFlowFormPath = `/src/views/workflow/workspace${data.formPath}.vue`;
 	const thizLoader = dynamicFlowFormViews[dynamicFlowFormPath];
+	thizFlowInfo = data;
 	if (!thizLoader) {
 		console.warn("表单组件未找到：", dynamicFlowFormPath);
 		return;
 	}
 	DynamicFlowForm.value = defineAsyncComponent(thizLoader as () => Promise<DefineComponent>);
+};
 
-	// nextTick、Promise.resolve().then(() => {})等均didn't work...
-	setTimeout(() => {
-		dynamicFlowFormRef.value?.acceptParams();
-	}, 100);
+// 动态表单加载完成回调
+const handleDynamicFlowFormInit = () => {
+	dynamicFlowFormRef.value?.acceptParams({
+		flowInfo: thizFlowInfo
+	});
 };
 </script>
 

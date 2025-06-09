@@ -127,4 +127,9 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public List<FlowBtnVO> listBindBtns(String defCode, Integer defVersion, String nodeId){
+        return flowBtnMapper.listBindBtns(defCode, defVersion, nodeId);
+    }
+
 }

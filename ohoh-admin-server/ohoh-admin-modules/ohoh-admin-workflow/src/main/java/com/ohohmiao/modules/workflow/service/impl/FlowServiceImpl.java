@@ -4,9 +4,11 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
+import com.ohohmiao.modules.workflow.model.vo.FlowBtnVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
+import com.ohohmiao.modules.workflow.service.FlowBtnService;
 import com.ohohmiao.modules.workflow.service.FlowFormService;
 import com.ohohmiao.modules.workflow.service.FlowHisDeployService;
 import com.ohohmiao.modules.workflow.service.FlowService;
@@ -14,6 +16,7 @@ import com.ohohmiao.modules.workflow.util.WorkflowUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +33,9 @@ public class FlowServiceImpl implements FlowService {
 
     @Resource
     private FlowFormService flowFormService;
+
+    @Resource
+    private FlowBtnService flowBtnService;
 
     @Override
     public FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO){
@@ -49,14 +55,16 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setDefJson(flowDefVO.getDefJson());
             flowInfoVO.setDefXml(flowDefVO.getDefXml());
             // 查询第一个任务节点
-            Map firstTaskNode = WorkflowUtil.getFirstTaskNode(flowInfoVO.getDefJson());
+            Map firstTaskNode = WorkflowUtil.getFirstTaskNode(flowDefVO.getDefJson());
             String curNodeId = (String)firstTaskNode.get("id");
-            Map curNode = WorkflowUtil.getFlowNode(flowInfoVO.getDefJson(), curNodeId);
+            Map curNode = WorkflowUtil.getFlowNode(flowDefVO.getDefJson(), curNodeId);
             String curNodeName = (String)curNode.get("name");
             flowInfoVO.setCurNodeId(curNodeId);
             flowInfoVO.setCurNodeName(curNodeName);
             flowInfoVO.setCurRunningNodeIds(curNodeId);
-
+            // 查询环节绑定的按钮
+            List<FlowBtnVO> flowBtnVOList = flowBtnService.listBindBtns(queryDTO.getDefCode(), queryDTO.getDefVersion(), curNodeId);
+            flowInfoVO.setFlowBtns(flowBtnVOList);
         }
         // 查询绑定的流程表单
         FlowFormVO flowFormVO = flowFormService.getBindForm(flowInfoVO.getDefCode(),

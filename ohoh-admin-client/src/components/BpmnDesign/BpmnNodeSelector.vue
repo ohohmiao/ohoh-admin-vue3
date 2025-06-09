@@ -92,7 +92,7 @@ const setNodeColor = (nodeIds: string[], colors: { [key: string]: any }) => {
 	const elementRegistry = modeler.get<ElementRegistry>("elementRegistry");
 	const nodeList = elementRegistry.getAll().filter(node => nodeIds.indexOf(node.id) != -1);
 	const modeling = modeler.get<Modeling>("modeling");
-	nodeList.forEach(node => {
+	nodeList.forEach((node: any) => {
 		modeling.setColor(node, colors);
 	});
 };
