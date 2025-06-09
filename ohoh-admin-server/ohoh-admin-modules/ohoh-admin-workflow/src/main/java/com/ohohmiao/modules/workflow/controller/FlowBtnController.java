@@ -12,6 +12,7 @@ import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowBtnAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowBtnPageDTO;
+import com.ohohmiao.modules.workflow.model.entity.FlowBtn;
 import com.ohohmiao.modules.workflow.model.vo.FlowBtnVO;
 import com.ohohmiao.modules.workflow.service.FlowBtnService;
 import io.swagger.annotations.Api;
@@ -46,7 +47,7 @@ public class FlowBtnController {
     @ApiOperationSupport(order = 1)
     @SaPcCheckPermission("/workflowBtn/page")
     @PostMapping("/workflowBtn/page")
-    public CommonResp<Page<FlowBtnVO>> page(@RequestBody FlowBtnPageDTO pageDTO){
+    public CommonResp<Page<FlowBtn>> page(@RequestBody FlowBtnPageDTO pageDTO){
         return CommonResp.data(flowBtnService.listByPage(pageDTO));
     }
 

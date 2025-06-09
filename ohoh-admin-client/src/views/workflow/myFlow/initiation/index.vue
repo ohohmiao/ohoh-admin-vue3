@@ -95,7 +95,7 @@ const handleClick = async (item: any) => {
 	}
 	DynamicFlowForm.value = defineAsyncComponent(thizLoader as () => Promise<DefineComponent>);
 
-	// nextTick、Promise.resolve().then(() => {})等均fail...
+	// nextTick、Promise.resolve().then(() => {})等均didn't work...
 	setTimeout(() => {
 		dynamicFlowFormRef.value?.acceptParams();
 	}, 100);

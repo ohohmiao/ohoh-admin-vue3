@@ -16,6 +16,11 @@ public enum FlowNodeBindTypeEnum {
     /**
      * 事件
      */
-    EVENT;
+    EVENT,
+
+    /**
+     * 按钮
+     */
+    BTN;
 
 }

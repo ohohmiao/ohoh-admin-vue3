@@ -2,15 +2,21 @@ package com.ohohmiao.modules.workflow.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
+import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
+import com.ohohmiao.modules.workflow.enums.FlowNodeBindTypeEnum;
 import com.ohohmiao.modules.workflow.mapper.FlowBtnMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowBtnAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowBtnPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowBtn;
 import com.ohohmiao.modules.workflow.model.vo.FlowBtnVO;
 import com.ohohmiao.modules.workflow.service.FlowBtnService;
+import com.ohohmiao.modules.workflow.service.FlowNodeBindService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +34,16 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
     @Resource
     private FlowBtnMapper flowBtnMapper;
 
+    @Resource
+    private FlowNodeBindService flowNodeBindService;
+
     @Override
-    public Page<FlowBtnVO> listByPage(FlowBtnPageDTO pageDTO){
-        return null;
+    public Page<FlowBtn> listByPage(FlowBtnPageDTO pageDTO){
+        LambdaQueryWrapper<FlowBtn> pageWrapper = new LambdaQueryWrapper<>();
+        pageWrapper.like(StrUtil.isNotBlank(pageDTO.getBtnText()), FlowBtn::getBtnText, pageDTO.getBtnText());
+        pageWrapper.like(StrUtil.isNotBlank(pageDTO.getBtnFun()), FlowBtn::getBtnFun, pageDTO.getBtnFun());
+        pageWrapper.orderByDesc(FlowBtn::getCreateTime);
+        return this.page(CommonPageRequest.constructPage(pageDTO.getCurrent(), pageDTO.getSize()), pageWrapper);
     }
 
     @Override
@@ -48,28 +61,26 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
     public void add(FlowBtnAddOrEditDTO addOrEditDTO){
         FlowBtn flowBtn = BeanUtil.copyProperties(addOrEditDTO, FlowBtn.class);
         this.save(flowBtn);
-
-
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void edit(FlowBtnAddOrEditDTO addOrEditDTO){
-        /*FlowBtn flowBtn = this.getById(addOrEditDTO.getBtnId());
+        FlowBtn flowBtn = this.getById(addOrEditDTO.getBtnId());
         if(ObjectUtil.isNull(flowBtn)){
             throw new CommonException("流程按钮不存在！");
         }
         BeanUtil.copyProperties(addOrEditDTO, flowBtn);
         this.updateById(flowBtn);
-*/
-
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void delete(CommonIdDTO idDTO){
-        //TODO 处理定义绑定相关
+        // 删除主表
         this.removeById(idDTO.getId());
+        // 删除环节绑定关系
+        flowNodeBindService.deleteByBindTypeAndBindObjid(FlowNodeBindTypeEnum.BTN.ordinal(), idDTO.getId());
     }
 
 }

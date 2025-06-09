@@ -21,7 +21,7 @@ public interface FlowBtnService extends CommonService<FlowBtn> {
      * @param pageDTO
      * @return
      */
-    Page<FlowBtnVO> listByPage(FlowBtnPageDTO pageDTO);
+    Page<FlowBtn> listByPage(FlowBtnPageDTO pageDTO);
 
     /**
      * 获取单个流程按钮

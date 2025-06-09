@@ -26,12 +26,12 @@ export const getWorkflowFormBindPageApi = (params: WorkflowForm.ReqParams) => {
 	return http.post<WorkflowForm.Form>("/workflowForm/listBindByPage", params);
 };
 
-// * 修改流程表单绑定
+// * 新增流程表单绑定
 export const addWorkflowFormBindApi = (params: WorkflowForm.Form) => {
 	return http.post<string>("/workflowForm/addBind", params);
 };
 
-// * 新增流程表单绑定
+// * 修改流程表单绑定
 export const editWorkflowFormBindApi = (params: WorkflowForm.Form) => {
 	return http.post<string>("/workflowForm/editBind", params);
 };
