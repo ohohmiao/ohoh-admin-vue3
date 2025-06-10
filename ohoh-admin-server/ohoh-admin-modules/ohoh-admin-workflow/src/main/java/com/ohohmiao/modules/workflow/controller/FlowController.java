@@ -5,7 +5,9 @@ import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowNextNodeVO;
 import com.ohohmiao.modules.workflow.service.FlowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,7 +42,20 @@ public class FlowController {
     @SaPcCheckPermission("/workflow/getFlowInfo")
     @PostMapping("/workflow/getFlowInfo")
     public CommonResp<FlowInfoVO> getFlowInfo(@RequestBody @Validated FlowInfoQueryDTO queryDTO){
-        return CommonResp.data(flowService.getFlowInfo(queryDTO));
+        return CommonResp.data(flowService.getFlowInfo(queryDTO, true));
+    }
+
+    /**
+     * 查询流程下一环节信息
+     * @param queryDTO
+     * @return
+     */
+    @ApiOperation(value = "查询流程下一环节信息")
+    @ApiOperationSupport(order = 2)
+    @SaPcCheckPermission("/workflow/getNextNodeList")
+    @PostMapping("/workflow/getNextNodeList")
+    public CommonResp<FlowNextNodeVO> getNextNodeList(@RequestBody @Validated FlowNextNodeQueryDTO queryDTO){
+        return CommonResp.data(flowService.getNextNodeList(queryDTO));
     }
 
 }

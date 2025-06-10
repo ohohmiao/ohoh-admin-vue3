@@ -1,7 +1,9 @@
 package com.ohohmiao.modules.workflow.service;
 
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowNextNodeVO;
 
 /**
  * 流程核心Service
@@ -14,8 +16,16 @@ public interface FlowService {
     /**
      * 获取流程核心信息
      * @param queryDTO
+     * @param includeExtraInfo
      * @return
      */
-    FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO);
+    FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO, boolean includeExtraInfo);
+
+    /**
+     * 查询流程下一环节信息
+     * @param queryDTO
+     * @return
+     */
+    FlowNextNodeVO getNextNodeList(FlowNextNodeQueryDTO queryDTO);
 
 }

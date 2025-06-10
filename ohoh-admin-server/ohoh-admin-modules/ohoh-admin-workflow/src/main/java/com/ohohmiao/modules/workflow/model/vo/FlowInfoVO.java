@@ -42,7 +42,6 @@ public class FlowInfoVO {
     @ApiModelProperty(value = "绑定的表单路径")
     private String formPath;
 
-    @ApiModelProperty(value = "流程标题")
     private String flowSubject;
 
     @ApiModelProperty(value = "当前操作环节名称")
@@ -56,6 +55,8 @@ public class FlowInfoVO {
 
     @ApiModelProperty(value = "当前环节绑定的流程按钮")
     private List<FlowBtnVO> flowBtns;
+
+    private String curTaskId;
 
     @ApiModelProperty(value = "是否处于查阅状态")
     private Boolean doQueryFlag;

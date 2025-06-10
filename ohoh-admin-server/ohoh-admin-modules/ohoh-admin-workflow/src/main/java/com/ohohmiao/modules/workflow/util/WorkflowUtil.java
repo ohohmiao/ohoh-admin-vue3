@@ -151,4 +151,20 @@ public class WorkflowUtil {
         return CollectionUtil.isNotEmpty(nextTaskNodeList)? nextTaskNodeList.get(0): null;
     }
 
+    /**
+     * 获取下一步节点
+     * @param defJson
+     * @param nodeId
+     * @return
+     */
+    public static List<Map> getNextNodes(String defJson, String nodeId){
+        Map curNode = getFlowNode(defJson, nodeId);
+        List<String> outgoings = getOutGoings(curNode);
+        List<Map> nextNodeList = CollectionUtil.newArrayList();
+        for(String outging: outgoings){
+            nextNodeList.add(getInComingNode(defJson, outging));
+        }
+        return nextNodeList;
+    }
+
 }

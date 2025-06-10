@@ -1,23 +1,30 @@
 package com.ohohmiao.modules.workflow.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.common.exception.CommonException;
+import com.ohohmiao.modules.system.api.SysUserApi;
+import com.ohohmiao.modules.system.model.vo.SysUserVO;
+import com.ohohmiao.modules.workflow.enums.FlowActTypeEnum;
+import com.ohohmiao.modules.workflow.enums.FlowHandlerTypeEnum;
+import com.ohohmiao.modules.workflow.enums.FlowNodeTypeEnum;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
-import com.ohohmiao.modules.workflow.model.vo.FlowBtnVO;
-import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
-import com.ohohmiao.modules.workflow.model.vo.FlowFormVO;
-import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
-import com.ohohmiao.modules.workflow.service.FlowBtnService;
-import com.ohohmiao.modules.workflow.service.FlowFormService;
-import com.ohohmiao.modules.workflow.service.FlowHisDeployService;
-import com.ohohmiao.modules.workflow.service.FlowService;
+import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
+import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
+import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
+import com.ohohmiao.modules.workflow.model.vo.*;
+import com.ohohmiao.modules.workflow.service.*;
 import com.ohohmiao.modules.workflow.util.WorkflowUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 流程核心Service实现
@@ -37,8 +44,17 @@ public class FlowServiceImpl implements FlowService {
     @Resource
     private FlowBtnService flowBtnService;
 
+    @Resource
+    private FlowNodeService flowNodeService;
+
+    @Resource
+    private FlowHandlerService flowHandlerService;
+
+    @Resource(name = "sysUserApi")
+    private SysUserApi sysUserApi;
+
     @Override
-    public FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO){
+    public FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO, boolean includeExtraInfo){
         FlowInfoVO flowInfoVO = new FlowInfoVO();
         FlowDefVO flowDefVO = null;
         if(StrUtil.isNotBlank(queryDTO.getExeId())){
@@ -62,20 +78,154 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setCurNodeId(curNodeId);
             flowInfoVO.setCurNodeName(curNodeName);
             flowInfoVO.setCurRunningNodeIds(curNodeId);
-            // 查询环节绑定的按钮
-            List<FlowBtnVO> flowBtnVOList = flowBtnService.listBindBtns(queryDTO.getDefCode(), queryDTO.getDefVersion(), curNodeId);
-            flowInfoVO.setFlowBtns(flowBtnVOList);
+            if(includeExtraInfo){
+                // 查询环节绑定的按钮
+                List<FlowBtnVO> flowBtnVOList = flowBtnService.listBindBtns(queryDTO.getDefCode(), queryDTO.getDefVersion(), curNodeId);
+                flowInfoVO.setFlowBtns(flowBtnVOList);
+            }
         }
-        // 查询绑定的流程表单
-        FlowFormVO flowFormVO = flowFormService.getBindForm(flowInfoVO.getDefCode(),
-                flowInfoVO.getDefVersion(), flowInfoVO.getCurNodeId());
-        if(ObjectUtil.isNull(flowFormVO)){
-            throw new CommonException("操作出错，流程表单未绑定！");
+        if(includeExtraInfo){
+            // 查询绑定的流程表单
+            FlowFormVO flowFormVO = flowFormService.getBindForm(flowInfoVO.getDefCode(),
+                    flowInfoVO.getDefVersion(), flowInfoVO.getCurNodeId());
+            if(ObjectUtil.isNull(flowFormVO)){
+                throw new CommonException("操作出错，流程表单未绑定！");
+            }
+            flowInfoVO.setFormId(flowFormVO.getFormId());
+            flowInfoVO.setFormPath(flowFormVO.getFormPath());
         }
-        flowInfoVO.setFormId(flowFormVO.getFormId());
-        flowInfoVO.setFormPath(flowFormVO.getFormPath());
 
         return flowInfoVO;
+    }
+
+    @Override
+    public FlowNextNodeVO getNextNodeList(FlowNextNodeQueryDTO queryDTO){
+        FlowInfoVO flowInfoVO = this.getFlowInfo(queryDTO, false);
+        // 查询当前环节基本配置
+        FlowNodeVO flowNodeVO = flowNodeService.get(flowInfoVO.getDefCode(),
+                         flowInfoVO.getDefVersion(), flowInfoVO.getCurNodeId());
+        List<FlowNextHandlerVO> nextHandlerList = CollectionUtil.newArrayList();
+        if(queryDTO.getActType().equals(FlowActTypeEnum.SUBMIT.ordinal())){
+            // 流程提交情形
+            nextHandlerList = this.getSubmitNextHandlerList(flowInfoVO);
+        }else if(queryDTO.getActType().equals(FlowActTypeEnum.RETURN.ordinal())){
+            // TODO 流程退回情形
+
+        }
+        FlowNextNodeVO nextNodeVO = new FlowNextNodeVO();
+        nextNodeVO.setCurNodeInfo(flowNodeVO);
+        nextNodeVO.setNextHandlerList(nextHandlerList);
+        return nextNodeVO;
+    }
+
+    private List<FlowNextHandlerVO> getSubmitNextHandlerList(FlowInfoVO flowInfoVO){
+        List<FlowNextHandlerVO> nextHandlerList = CollectionUtil.newArrayList();
+        if(StrUtil.isNotEmpty(flowInfoVO.getCurTaskId())){
+            // TODO 从流程任务表查询去往任务信息，组装返回
+        }
+        // 从流程定义查询下一节点信息
+        List<Map> nextNodeList = WorkflowUtil.getNextNodes(flowInfoVO.getDefJson(), flowInfoVO.getCurNodeId());
+        if(nextNodeList.size() == 1){
+            // 下一步是单个节点
+            Map nextNode = nextNodeList.get(0);
+            nextHandlerList = this.getNextFlowHandlerList(flowInfoVO, nextNode, flowInfoVO.getCurNodeId());
+        }else if(nextNodeList.size() > 1){
+            // 下一步是多个节点
+            List<FlowTaskNodeVO> thizNodes = new ArrayList<>();
+            for(int i = 0; i < nextNodeList.size(); i++){
+                Map nextNode = nextNodeList.get(i);
+                FlowTaskNodeVO thizNode = new FlowTaskNodeVO();
+                thizNode.setNodeType((String)nextNode.get("nodetype"));
+                thizNode.setNodeId((String)nextNode.get("id"));
+                thizNode.setNodeName((String)nextNode.get("name"));
+                List<FlowNextHandlerVO> thizNextHandlerList = this.getNextFlowHandlerList(
+                        flowInfoVO, nextNode, flowInfoVO.getCurNodeId());
+                thizNode.setHandlers(thizNextHandlerList);
+                thizNodes.add(thizNode);
+            }
+            FlowNextHandlerVO nextHandler = new FlowNextHandlerVO();
+            nextHandler.setReselectPermit(CommonWhetherEnum.NO.getCode());
+            nextHandler.setNodes(thizNodes);
+            nextHandler.setDisplayType("select");
+            nextHandlerList.add(nextHandler);
+        }
+        return nextHandlerList;
+    }
+
+    private List<FlowNextHandlerVO> getNextFlowHandlerList(FlowInfoVO flowInfoVO, Map nextNode, String curNodeId){
+        List<FlowNextHandlerVO> nextHandlerList = CollectionUtil.newArrayList();
+        String nodeId = (String)nextNode.get("id");
+        String nodeName = (String)nextNode.get("name");
+        String nodeType = (String)nextNode.get("nodetype");
+        if(nodeType.equals(FlowNodeTypeEnum.TASK.getCode())){
+            // 任务节点情形
+            FlowNextHandlerVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName);
+            nextHandlerList.add(nextHandler);
+        }else if(nodeType.equals(FlowNodeTypeEnum.END.getCode())){
+            // 办结节点情形
+            FlowNextHandlerVO nextHandler = new FlowNextHandlerVO();
+            nextHandler.setNodeType(FlowNodeTypeEnum.END.getCode());
+            nextHandler.setReselectPermit(CommonWhetherEnum.NO.getCode());
+            nextHandler.setDisplayType("label");
+            nextHandler.setNodeId(nodeId);
+            nextHandler.setNodeName(StrUtil.isNotBlank(nodeName)? nodeName: "办结");
+            nextHandlerList.add(nextHandler);
+        }else if(nodeType.equals(FlowNodeTypeEnum.DECISION.getCode())){
+            // TODO 分支节点情形
+
+        }else if(nodeType.equals(FlowNodeTypeEnum.PARALLEL.getCode())){
+            // 并行节点情形
+            List<Map> nextTaskNodeList = WorkflowUtil.getNextTaskNodes(flowInfoVO.getDefJson(), nodeId);
+            for(Map nextTaskNode: nextTaskNodeList){
+                nodeId = (String)nextTaskNode.get("id");
+                nodeName = (String)nextTaskNode.get("name");
+                FlowNextHandlerVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName);
+                nextHandlerList.add(nextHandler);
+            }
+        }else if(nodeType.equals(FlowNodeTypeEnum.INCLUSIVE.getCode())){
+            // 合并节点情形
+            List<Map> nextTaskNodeList = WorkflowUtil.getNextTaskNodes(flowInfoVO.getDefJson(), nodeId);
+            for(Map nextTaskNode: nextTaskNodeList){
+                nodeId = (String)nextTaskNode.get("id");
+                nodeName = (String)nextTaskNode.get("name");
+                FlowNextHandlerVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName);
+                nextHandler.setInclusiveGateWayId(nodeId);
+                nextHandlerList.add(nextHandler);
+            }
+        }
+        return nextHandlerList;
+    }
+
+    private FlowNextHandlerVO getNextTaskFLowHandler(FlowInfoVO flowInfoVO, String nextNodeId, String nextNodeName){
+        FlowNextHandlerVO nextHandlerVO = new FlowNextHandlerVO();
+        nextHandlerVO.setNodeType(FlowNodeTypeEnum.TASK.getCode());
+        nextHandlerVO.setNodeId(nextNodeId);
+        nextHandlerVO.setNodeName(nextNodeName);
+        nextHandlerVO.setDisplayType("label");
+        FlowHandlerVO flowHandlerVO = flowHandlerService.getNextNodeFlowHandler(
+                          flowInfoVO.getDefCode(), flowInfoVO.getDefVersion(), nextNodeId);
+        nextHandlerVO.setMultiHandletype(flowHandlerVO.getMultiHandletype());
+        nextHandlerVO.setReselectPermit(flowHandlerVO.getReselectPermit());
+        if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+            // 指定人员情形
+            List<SysUserVO> sysUserVOS = sysUserApi.listByReferRes(flowHandlerVO.getTargetReferResList());
+            List<FlowTaskHandler> thizHandlers = sysUserVOS.stream().map(u -> {
+                FlowTaskHandler thizHandler = new FlowTaskHandler();
+                thizHandler.setHandlerId(u.getUserId());
+                thizHandler.setHandlerName(u.getUserName());
+                return thizHandler;
+            }).collect(Collectors.toList());
+            nextHandlerVO.setHandlers(thizHandlers);
+        }else if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
+            // 指定接口情形
+
+        }else{
+            // 自行选择情形
+            nextHandlerVO.setReselectPermit(CommonWhetherEnum.YES.getCode());
+        }
+        // TODO 人员过滤规则
+
+        return nextHandlerVO;
     }
 
 }
