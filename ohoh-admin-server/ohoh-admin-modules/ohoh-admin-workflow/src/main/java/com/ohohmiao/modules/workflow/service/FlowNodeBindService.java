@@ -23,8 +23,9 @@ public interface FlowNodeBindService extends CommonService<FlowNodeBind> {
      * @param bindType
      * @param defCode
      * @param defVersion
+     * @param bindObjid
      */
-    void delete(Integer bindType, String defCode, Integer defVersion);
+    void delete(Integer bindType, String defCode, Integer defVersion, String bindObjid);
 
     /**
      * 删除环节绑定信息

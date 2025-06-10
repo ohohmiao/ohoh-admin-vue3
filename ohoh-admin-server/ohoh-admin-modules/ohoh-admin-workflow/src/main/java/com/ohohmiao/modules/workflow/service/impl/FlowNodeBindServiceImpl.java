@@ -2,6 +2,7 @@ package com.ohohmiao.modules.workflow.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
@@ -38,11 +39,12 @@ public class FlowNodeBindServiceImpl extends CommonServiceImpl<FlowNodeBindMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void delete(Integer bindType, String defCode, Integer defVersion){
+    public void delete(Integer bindType, String defCode, Integer defVersion, String bindObjid){
         LambdaQueryWrapper<FlowNodeBind> deleteWrapper = new LambdaQueryWrapper<>();
         deleteWrapper.eq(FlowNodeBind::getBindType, bindType);
         deleteWrapper.eq(FlowNodeBind::getDefCode, defCode);
         deleteWrapper.eq(FlowNodeBind::getDefVersion, defVersion);
+        deleteWrapper.eq(StrUtil.isNotBlank(bindObjid), FlowNodeBind::getBindObjid, bindObjid);
         this.remove(deleteWrapper);
     }
 

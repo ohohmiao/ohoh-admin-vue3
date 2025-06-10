@@ -137,7 +137,7 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
     @Transactional(rollbackFor = Exception.class)
     public void saveOrUpdateBind(FlowBtnBindAddOrEditDTO addOrEditDTO){
         flowNodeBindService.delete(FlowNodeBindTypeEnum.BTN.ordinal(),
-                addOrEditDTO.getDefCode(), addOrEditDTO.getDefVersion());
+                addOrEditDTO.getDefCode(), addOrEditDTO.getDefVersion(), addOrEditDTO.getBtnId());
         FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO =
                 BeanUtil.copyProperties(addOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.BTN.ordinal());
