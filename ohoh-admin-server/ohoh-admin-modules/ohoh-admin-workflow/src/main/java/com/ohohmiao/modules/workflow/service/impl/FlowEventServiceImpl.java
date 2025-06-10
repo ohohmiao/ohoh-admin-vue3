@@ -59,7 +59,7 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
                 BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.EVENT.ordinal());
         flowNodeBindAddOrEditDTO.setBindObjid(flowEvent.getEventId());
-        flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
+        flowNodeBindService.save(flowNodeBindAddOrEditDTO);
     }
 
     @Override
@@ -72,11 +72,13 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
         BeanUtil.copyProperties(flowEventAddOrEditDTO, flowEvent);
         flowEventMapper.updateById(flowEvent);
         // 绑定关系表
+        flowNodeBindService.deleteByBindTypeAndBindObjid(
+                FlowNodeBindTypeEnum.EVENT.ordinal(), flowEventAddOrEditDTO.getEventId());
         FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO =
                 BeanUtil.copyProperties(flowEventAddOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.EVENT.ordinal());
         flowNodeBindAddOrEditDTO.setBindObjid(flowEventAddOrEditDTO.getEventId());
-        flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
+        flowNodeBindService.save(flowNodeBindAddOrEditDTO);
     }
 
     @Override

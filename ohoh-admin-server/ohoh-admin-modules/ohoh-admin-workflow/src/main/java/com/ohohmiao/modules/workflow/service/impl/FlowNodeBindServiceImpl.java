@@ -2,6 +2,7 @@ package com.ohohmiao.modules.workflow.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
 import com.ohohmiao.modules.workflow.mapper.FlowNodeBindMapper;
@@ -24,19 +25,25 @@ public class FlowNodeBindServiceImpl extends CommonServiceImpl<FlowNodeBindMappe
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveOrUpdate(FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO){
-        //先删除
-        deleteByBindTypeAndBindObjid(flowNodeBindAddOrEditDTO.getBindType(),
-                flowNodeBindAddOrEditDTO.getBindObjid());
-        //再新增
+    public void save(FlowNodeBindAddOrEditDTO addOrEditDTO){
         List<FlowNodeBind> flowNodeBinds = CollectionUtil.newArrayList();
-        for(int index = 0; index < flowNodeBindAddOrEditDTO.getBindNodeIds().size(); index++){
-            FlowNodeBind flowNodeBind = BeanUtil.copyProperties(flowNodeBindAddOrEditDTO, FlowNodeBind.class);
-            flowNodeBind.setNodeId(flowNodeBindAddOrEditDTO.getBindNodeIds().get(index));
-            flowNodeBind.setNodeName(flowNodeBindAddOrEditDTO.getBindNodeNames().get(index));
+        for(int index = 0; index < addOrEditDTO.getBindNodeIds().size(); index++){
+            FlowNodeBind flowNodeBind = BeanUtil.copyProperties(addOrEditDTO, FlowNodeBind.class);
+            flowNodeBind.setNodeId(addOrEditDTO.getBindNodeIds().get(index));
+            flowNodeBind.setNodeName(addOrEditDTO.getBindNodeNames().get(index));
             flowNodeBinds.add(flowNodeBind);
         }
         this.saveBatch(flowNodeBinds);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Integer bindType, String defCode, Integer defVersion){
+        LambdaQueryWrapper<FlowNodeBind> deleteWrapper = new LambdaQueryWrapper<>();
+        deleteWrapper.eq(FlowNodeBind::getBindType, bindType);
+        deleteWrapper.eq(FlowNodeBind::getDefCode, defCode);
+        deleteWrapper.eq(FlowNodeBind::getDefVersion, defVersion);
+        this.remove(deleteWrapper);
     }
 
     @Override

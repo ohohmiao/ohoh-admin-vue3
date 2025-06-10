@@ -13,10 +13,18 @@ import com.ohohmiao.modules.workflow.model.entity.FlowNodeBind;
 public interface FlowNodeBindService extends CommonService<FlowNodeBind> {
 
     /**
-     * 新增或编辑环节绑定信息
-     * @param flowNodeBindAddOrEditDTO
+     * 新增环节绑定信息
+     * @param addOrEditDTO
      */
-    void saveOrUpdate(FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO);
+    void save(FlowNodeBindAddOrEditDTO addOrEditDTO);
+
+    /**
+     * 删除环节绑定信息
+     * @param bindType
+     * @param defCode
+     * @param defVersion
+     */
+    void delete(Integer bindType, String defCode, Integer defVersion);
 
     /**
      * 删除环节绑定信息

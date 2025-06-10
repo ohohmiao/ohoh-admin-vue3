@@ -60,7 +60,7 @@ public class FlowFormServiceImpl extends CommonServiceImpl<FlowFormMapper, FlowF
                 BeanUtil.copyProperties(addOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.FORM.ordinal());
         flowNodeBindAddOrEditDTO.setBindObjid(flowForm.getFormId());
-        flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
+        flowNodeBindService.save(flowNodeBindAddOrEditDTO);
     }
 
     @Override
@@ -73,11 +73,13 @@ public class FlowFormServiceImpl extends CommonServiceImpl<FlowFormMapper, FlowF
         BeanUtil.copyProperties(addOrEditDTO, flowForm);
         flowFormMapper.updateById(flowForm);
         // 绑定关系表
+        flowNodeBindService.deleteByBindTypeAndBindObjid(
+                FlowNodeBindTypeEnum.FORM.ordinal(), addOrEditDTO.getFormId());
         FlowNodeBindAddOrEditDTO flowNodeBindAddOrEditDTO =
                 BeanUtil.copyProperties(addOrEditDTO, FlowNodeBindAddOrEditDTO.class);
         flowNodeBindAddOrEditDTO.setBindType(FlowNodeBindTypeEnum.FORM.ordinal());
         flowNodeBindAddOrEditDTO.setBindObjid(addOrEditDTO.getFormId());
-        flowNodeBindService.saveOrUpdate(flowNodeBindAddOrEditDTO);
+        flowNodeBindService.save(flowNodeBindAddOrEditDTO);
     }
 
     @Override
