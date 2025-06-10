@@ -57,8 +57,10 @@ const preDefinedMethods: Record<string, Function> = {
 			defVersion: props.defVersion,
 			actType: Workflow.ActTypeEnum.SUBMIT
 		});
-		console.info(data);
-		submitFlowFormRef.value.acceptParams();
+		submitFlowFormRef.value.acceptParams({
+			nodeProp: props.nodeProp,
+			taskNodeList: data
+		});
 	},
 	/**
 	 * 关闭窗口

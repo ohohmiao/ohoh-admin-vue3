@@ -43,12 +43,21 @@ export namespace Workflow {
 		multiHandletype: number;
 		reselectPermit: number;
 		inclusiveGateWayId: string;
-		nodeList: FlowTaskNode[];
+		displayType: string;
+		subFlowHandlers?: Map<string, FlowTaskHandler[]>;
+		nodeList?: FlowTaskNode[];
 	}
 	export enum ActTypeEnum {
 		TEMPSAVE = 0,
 		SUBMIT = 1,
 		RETURN = 2
+	}
+	export enum NodeTypeEnum {
+		TASK = "task",
+		END = "end",
+		DECISION = "exclusiveGateway",
+		PARALLEL = "parallelGateway",
+		INCLUSIVE = "inclusiveGateway"
 	}
 }
 

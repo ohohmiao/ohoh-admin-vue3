@@ -19,7 +19,7 @@ import com.ohohmiao.modules.workflow.util.WorkflowUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -129,20 +129,19 @@ public class FlowServiceImpl implements FlowService {
                     flowInfoVO, nextNode, flowInfoVO.getCurNodeInfo().getNodeId());
         }else if(nextNodeList.size() > 1){
             // 下一步是多个节点
-            List<FlowTaskNodeVO> thizNodes = new ArrayList<>();
+            Map<String, List<FlowTaskNodeVO>> subFlowHandlers = new HashMap<>();
             for(int i = 0; i < nextNodeList.size(); i++){
                 Map nextNode = nextNodeList.get(i);
-                FlowTaskNodeVO thizNode = new FlowTaskNodeVO();
-                thizNode.setNodeType((String)nextNode.get("nodetype"));
-                thizNode.setNodeId((String)nextNode.get("id"));
-                thizNode.setNodeName((String)nextNode.get("name"));
                 List<FlowTaskNodeVO> thizNextHandlerList = this.getNextFlowHandlerList(
                         flowInfoVO, nextNode, flowInfoVO.getCurNodeInfo().getNodeId());
-                thizNode.setNodeList(thizNextHandlerList);
-                thizNodes.add(thizNode);
+                subFlowHandlers.put((String)nextNode.get("id"), thizNextHandlerList);
             }
             FlowTaskNodeVO nextHandler = new FlowTaskNodeVO();
-            nextHandler.setNodeList(thizNodes);
+            List<FlowTaskNodeVO> nodeList = CollectionUtil.newArrayList();
+            for(Map.Entry<String, List<FlowTaskNodeVO>> entry: subFlowHandlers.entrySet()){
+                nodeList.addAll(entry.getValue());
+            }
+            nextHandler.setNodeList(nodeList);
             nextHandlerList.add(nextHandler);
         }
         return nextHandlerList;
