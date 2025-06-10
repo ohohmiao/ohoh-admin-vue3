@@ -43,8 +43,6 @@ export namespace Workflow {
 		multiHandletype: number;
 		reselectPermit: number;
 		inclusiveGateWayId: string;
-		displayType: string;
-		subFlowHandlers?: Map<string, FlowTaskHandler[]>;
 		nodeList?: FlowTaskNode[];
 	}
 	export enum ActTypeEnum {
