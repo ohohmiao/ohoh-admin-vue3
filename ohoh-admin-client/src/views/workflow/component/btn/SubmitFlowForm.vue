@@ -94,16 +94,11 @@ const getNextHandlerNames = (index: number) => {
 };
 
 const handleMultiNodeNextHandlerSelChange = (nodeId: string, index: number) => {
-	const selectedNode = formProps.value?.taskNodeList[index].nodeList?.find(node => node.nodeId == nodeId);
+	const thizNodeList = formProps.value?.taskNodeList[index].nodeList;
+	const selectedNode = thizNodeList?.find(node => node.nodeId == nodeId);
 	if (selectedNode) {
-		console.info(selectedNode);
-		formProps.value!.taskNodeList[index].nodeId = selectedNode.nodeId;
-		formProps.value!.taskNodeList[index].nodeName = selectedNode.nodeName;
-		formProps.value!.taskNodeList[index].nodeType = selectedNode.nodeType;
-		formProps.value!.taskNodeList[index].handlers = selectedNode.handlers;
-		formProps.value!.taskNodeList[index].multiHandletype = selectedNode.multiHandletype;
-		formProps.value!.taskNodeList[index].reselectPermit = selectedNode.reselectPermit;
-		formProps.value!.taskNodeList[index].inclusiveGateWayId = selectedNode.inclusiveGateWayId;
+		formProps.value!.taskNodeList[index] = { ...selectedNode };
+		formProps.value!.taskNodeList[index].nodeList = thizNodeList;
 	}
 };
 
