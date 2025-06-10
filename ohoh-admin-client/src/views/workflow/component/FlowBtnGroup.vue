@@ -8,9 +8,23 @@
 <script setup lang="ts">
 import { ref, defineProps, PropType } from "vue";
 import { WorkflowBtn } from "@/api/modules/workflow/btn";
+import { Workflow, getWorkflowNextNodeListApi } from "@/api/modules/workflow/core";
 import SubmitFlowForm from "./btn/SubmitFlowForm.vue";
+import { WorkflowNode } from "@/api/modules/workflow/node";
 
 const props = defineProps({
+	defCode: {
+		type: String,
+		required: true
+	},
+	defVersion: {
+		type: Number,
+		required: true
+	},
+	nodeProp: {
+		type: Object as PropType<WorkflowNode.Form>,
+		required: true
+	},
 	flowBtns: {
 		type: Array as PropType<WorkflowBtn.Form[]>,
 		required: true
@@ -27,7 +41,7 @@ const preDefinedMethods: Record<string, Function> = {
 	/**
 	 * 执行流程
 	 */
-	doWorkflowSubmit: () => {
+	doWorkflowSubmit: async () => {
 		let thizValid = true;
 		let thizBusParams = null;
 		emit("doWorkflowSubmit", (valid: boolean, busParams: Object) => {
@@ -38,6 +52,12 @@ const preDefinedMethods: Record<string, Function> = {
 			return;
 		}
 		console.info(thizBusParams);
+		const { data } = await getWorkflowNextNodeListApi({
+			defCode: props.defCode,
+			defVersion: props.defVersion,
+			actType: Workflow.ActTypeEnum.SUBMIT
+		});
+		console.info(data);
 		submitFlowFormRef.value.acceptParams();
 	},
 	/**

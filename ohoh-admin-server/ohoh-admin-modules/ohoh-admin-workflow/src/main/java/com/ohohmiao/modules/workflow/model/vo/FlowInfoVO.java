@@ -44,11 +44,8 @@ public class FlowInfoVO {
 
     private String flowSubject;
 
-    @ApiModelProperty(value = "当前操作环节名称")
-    private String curNodeName;
-
-    @ApiModelProperty(value = "当前操作环节id")
-    private String curNodeId;
+    @ApiModelProperty(value = "当前操作环节")
+    private FlowNodeVO curNodeInfo;
 
     @ApiModelProperty(value = "当前流程正在运行环节id")
     private String curRunningNodeIds;

@@ -12,6 +12,9 @@
 					<el-card>
 						<template #header v-if="formProps.flowInfo.flowBtns?.length">
 							<FlowBtnGroup
+								:def-code="formProps.flowInfo.defCode!"
+								:def-version="formProps.flowInfo.defVersion!"
+								:node-prop="formProps.flowInfo.curNodeInfo!"
 								:flow-btns="formProps.flowInfo.flowBtns"
 								@do-workflow-submit="doWorkflowSubmit"
 								@do-workflow-close="doWorkflowClose"

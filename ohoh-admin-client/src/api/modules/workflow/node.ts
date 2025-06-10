@@ -1,4 +1,5 @@
 import http from "@/api";
+import { Workflow } from "./core";
 
 /**
  * @name 流程环节模块
@@ -19,9 +20,7 @@ export namespace WorkflowNode {
 		processlimitPermit?: number;
 		approvalPermit?: number;
 	}
-	export interface WeightForm {
-		handlerId: string;
-		handlerName: string;
+	export interface WeightForm extends Workflow.FlowTaskHandler {
 		weight: number;
 	}
 }

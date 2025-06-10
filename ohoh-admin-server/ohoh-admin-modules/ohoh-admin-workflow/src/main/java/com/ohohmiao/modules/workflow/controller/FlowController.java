@@ -7,7 +7,7 @@ import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
-import com.ohohmiao.modules.workflow.model.vo.FlowNextNodeVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
 import com.ohohmiao.modules.workflow.service.FlowService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 流程核心controller
@@ -54,7 +55,7 @@ public class FlowController {
     @ApiOperationSupport(order = 2)
     @SaPcCheckPermission("/workflow/getNextNodeList")
     @PostMapping("/workflow/getNextNodeList")
-    public CommonResp<FlowNextNodeVO> getNextNodeList(@RequestBody @Validated FlowNextNodeQueryDTO queryDTO){
+    public CommonResp<List<FlowTaskNodeVO>> getNextNodeList(@RequestBody @Validated FlowNextNodeQueryDTO queryDTO){
         return CommonResp.data(flowService.getNextNodeList(queryDTO));
     }
 

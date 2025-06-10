@@ -3,7 +3,9 @@ package com.ohohmiao.modules.workflow.service;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
-import com.ohohmiao.modules.workflow.model.vo.FlowNextNodeVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
+
+import java.util.List;
 
 /**
  * 流程核心Service
@@ -26,6 +28,6 @@ public interface FlowService {
      * @param queryDTO
      * @return
      */
-    FlowNextNodeVO getNextNodeList(FlowNextNodeQueryDTO queryDTO);
+    List<FlowTaskNodeVO> getNextNodeList(FlowNextNodeQueryDTO queryDTO);
 
 }
