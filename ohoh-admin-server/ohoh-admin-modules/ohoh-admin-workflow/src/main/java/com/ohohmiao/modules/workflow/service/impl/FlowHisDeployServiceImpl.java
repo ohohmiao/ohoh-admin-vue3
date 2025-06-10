@@ -86,10 +86,9 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
             throw new CommonException("仅限挂在二级类别下！");
         }
         // 更新流程发起范围数据
-        if(hisDTO.getInitiatorScope().equals(FlowInitiatorScopeEnum.ALL.ordinal())){
-            flowDefBindService.delete(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(), hisDTO.getDefVersion());
-        }else{
-            flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(),
+        flowDefBindService.delete(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(), hisDTO.getDefVersion());
+        if(hisDTO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
+            flowDefBindService.save(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(),
                     hisDTO.getDefVersion(), hisDTO.getTargetInitiators(), null);
         }
         FlowDef flowDef = flowDefService.getByDefCodeAndDefVersion(hisDTO.getDefCode(), hisDTO.getDefVersion());

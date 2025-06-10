@@ -110,7 +110,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
         this.save(flowHandler);
         if(flowHandler.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
             // 更新指定人员
-            flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.HANDLER.ordinal(),
+            flowDefBindService.save(FlowDefBindTypeEnum.HANDLER.ordinal(),
                     flowHandler.getDefCode(), flowHandler.getDefVersion(),
                     flowHandlerAddOrEditDTO.getTargetReferResList(), flowHandler.getHandlerId());
         }
@@ -125,15 +125,14 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
         }
         BeanUtil.copyProperties(flowHandlerAddOrEditDTO, flowHandler);
         this.updateById(flowHandler);
+        // 删除指定人员
+        flowDefBindService.deleteByBindTypeAndBindObjid(
+                FlowDefBindTypeEnum.HANDLER.ordinal(), flowHandler.getHandlerId());
         if(flowHandler.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
             // 更新指定人员
-            flowDefBindService.saveOrUpdate(FlowDefBindTypeEnum.HANDLER.ordinal(),
+            flowDefBindService.save(FlowDefBindTypeEnum.HANDLER.ordinal(),
                     flowHandler.getDefCode(), flowHandler.getDefVersion(),
                     flowHandlerAddOrEditDTO.getTargetReferResList(), flowHandler.getHandlerId());
-        }else{
-            // 删除指定人员
-            flowDefBindService.deleteByBindTypeAndBindObjid(
-                    FlowDefBindTypeEnum.HANDLER.ordinal(), flowHandler.getHandlerId());
         }
     }
 

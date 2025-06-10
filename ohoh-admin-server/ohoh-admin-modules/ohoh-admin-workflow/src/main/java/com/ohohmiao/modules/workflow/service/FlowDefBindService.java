@@ -23,14 +23,14 @@ public interface FlowDefBindService extends IService<FlowDefBind> {
     void delete(Integer bindType, String defCode, Integer defVersion);
 
     /**
-     * 更新绑定信息
+     * 新增绑定信息
      * @param bindType
      * @param defCode
      * @param defVersion
      * @param referResList
      * @param bindObjid
      */
-    void saveOrUpdate(Integer bindType, String defCode, Integer defVersion,
+    void save(Integer bindType, String defCode, Integer defVersion,
                       List<SysReferRes> referResList, String bindObjid);
 
     /**
