@@ -1,6 +1,5 @@
 package com.ohohmiao.modules.workflow.model.vo;
 
-import com.ohohmiao.framework.common.model.vo.CommonVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -28,5 +27,8 @@ public class FlowBtnVO {
 
     @ApiModelProperty(value = "执行方法")
     private String btnFun;
+
+    @ApiModelProperty(value = "排序")
+    private Integer btnSort;
 
 }

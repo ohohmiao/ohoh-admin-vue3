@@ -24,6 +24,16 @@
 				</template>
 				<el-input v-model="formProps.rowData.btnFun" placeholder="请输入执行方法" maxlength="30" clearable></el-input>
 			</el-form-item>
+			<el-form-item label="排序" prop="btnSort" v-if="formProps.rowData.btnId">
+				<el-input-number
+					v-model="formProps.rowData.btnSort"
+					:min="1"
+					:max="99999"
+					placeholder="请输入排序"
+					controls-position="right"
+					style="width: 100%"
+				></el-input-number>
+			</el-form-item>
 		</el-form>
 		<template #footer>
 			<el-button @click="formVisible = false">取消</el-button>
@@ -60,7 +70,8 @@ const rules = reactive({
 	btnFun: [
 		{ required: true, message: "请输入执行方法" },
 		{ validator: eleValidate.checkLetter, message: "仅限输入字母" }
-	]
+	],
+	btnSort: [{ required: true, message: "请输入排序" }]
 });
 
 // 接收父组件传过来的参数

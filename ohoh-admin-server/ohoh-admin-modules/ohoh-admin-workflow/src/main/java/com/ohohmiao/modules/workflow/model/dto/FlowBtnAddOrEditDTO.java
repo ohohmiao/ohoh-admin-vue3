@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 /**
@@ -37,5 +38,9 @@ public class FlowBtnAddOrEditDTO {
     @ApiModelProperty(value = "执行方法", required = true)
     @NotBlank(message = "执行方法不能为空")
     private String btnFun;
+
+    @ApiModelProperty(value = "排序，编辑时必传")
+    @NotNull(message = "排序不能为空", groups = {CommonEditGroup.class})
+    private Integer btnSort;
 
 }

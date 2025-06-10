@@ -15,6 +15,7 @@ export namespace WorkflowBtn {
 		btnText: string;
 		btnColor: string;
 		btnFun: string;
+		btnSort?: number;
 	}
 	export interface ReqBindParams extends ReqPage {
 		defCode: string;

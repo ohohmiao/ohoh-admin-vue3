@@ -30,6 +30,9 @@ public class FlowBtnBindVO {
     @ApiModelProperty("执行方法")
     private String btnFun;
 
+    @ApiModelProperty("排序")
+    private Integer btnSort;
+
     @ApiModelProperty(value = "绑定环节id")
     private List<String> bindNodeIds;
 

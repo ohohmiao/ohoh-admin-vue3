@@ -38,4 +38,10 @@ public interface FlowBtnMapper extends BaseMapper<FlowBtn> {
     List<FlowBtnVO> listBindBtns(@Param("defCode") String defCode,
                                  @Param("defVersion") Integer defVersion, @Param("nodeId") String nodeId);
 
+    /**
+     * 查询最大排序
+     * @return
+     */
+    Integer getMaxBtnSort();
+
 }

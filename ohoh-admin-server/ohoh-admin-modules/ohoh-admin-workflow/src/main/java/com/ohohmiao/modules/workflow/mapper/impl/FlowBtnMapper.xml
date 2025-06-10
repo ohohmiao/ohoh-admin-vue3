@@ -13,7 +13,7 @@
 
     <select id="listBindByPage" resultMap="FlowBtnBindVO">
         SELECT
-            b.btn_id, b.btn_text, b.btn_color, b.btn_fun,
+            b.btn_id, b.btn_text, b.btn_color, b.btn_fun, b.btn_sort,
             d.bind_node_ids, d.bind_node_names
         FROM workflow_btn b
              LEFT JOIN (SELECT b.bind_objid, GROUP_CONCAT(b.node_id) AS bind_node_ids,
@@ -23,18 +23,24 @@
             GROUP BY b.bind_objid) d
            ON b.btn_id = d.bind_objid
         WHERE d.bind_objid IS NOT NULL
-        ORDER BY b.create_time ASC
+        ORDER BY b.btn_sort ASC
     </select>
 
     <select id="listBindBtns" resultType="com.ohohmiao.modules.workflow.model.vo.FlowBtnVO">
-        select b.BTN_ID, b.BTN_TEXT, b.BTN_COLOR, b.BTN_FUN
+        select b.BTN_ID, b.BTN_TEXT, b.BTN_COLOR, b.BTN_FUN, b.BTN_SORT
         from WORKFLOW_BTN b
             left join WORKFLOW_NODEBIND d on b.BTN_ID = d.BIND_OBJID
         where d.BIND_OBJID is not null
           and d.DEF_CODE = #{defCode}
           and d.DEF_VERSION = #{defVersion}
           and d.NODE_ID = #{nodeId}
-        order by b.CREATE_TIME asc
+        order by b.BTN_SORT asc
+    </select>
+
+    <select id="getMaxBtnSort" resultType="Integer">
+        select MAX(b.BTN_SORT)
+        from WORKFLOW_BTN b
+        where b.DELETE_FLAG = 0
     </select>
 
 </mapper>

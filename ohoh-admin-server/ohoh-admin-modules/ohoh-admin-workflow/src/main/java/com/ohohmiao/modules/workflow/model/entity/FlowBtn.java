@@ -30,4 +30,7 @@ public class FlowBtn extends CommonEntity {
     @TableField
     private String btnFun;
 
+    @TableField
+    private Integer btnSort;
+
 }

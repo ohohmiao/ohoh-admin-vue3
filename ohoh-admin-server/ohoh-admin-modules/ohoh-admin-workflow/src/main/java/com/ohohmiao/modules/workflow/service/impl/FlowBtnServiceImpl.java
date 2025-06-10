@@ -46,7 +46,7 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
         LambdaQueryWrapper<FlowBtn> pageWrapper = new LambdaQueryWrapper<>();
         pageWrapper.like(StrUtil.isNotBlank(pageDTO.getBtnText()), FlowBtn::getBtnText, pageDTO.getBtnText());
         pageWrapper.like(StrUtil.isNotBlank(pageDTO.getBtnFun()), FlowBtn::getBtnFun, pageDTO.getBtnFun());
-        pageWrapper.orderByDesc(FlowBtn::getCreateTime);
+        pageWrapper.orderByDesc(FlowBtn::getBtnSort);
         return this.page(CommonPageRequest.constructPage(pageDTO.getCurrent(), pageDTO.getSize()), pageWrapper);
     }
 
@@ -61,9 +61,37 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
     }
 
     @Override
+    public boolean isExistBtnText(FlowBtnAddOrEditDTO addOrEditDTO){
+        LambdaQueryWrapper<FlowBtn> countWrapper = new LambdaQueryWrapper<>();
+        countWrapper.eq(FlowBtn::getBtnText, addOrEditDTO.getBtnText());
+        countWrapper.ne(StrUtil.isNotEmpty(addOrEditDTO.getBtnId()),
+                FlowBtn::getBtnId, addOrEditDTO.getBtnId());
+        return this.count(countWrapper) > 0;
+    }
+
+    @Override
+    public boolean isExistBtnFun(FlowBtnAddOrEditDTO addOrEditDTO){
+        LambdaQueryWrapper<FlowBtn> countWrapper = new LambdaQueryWrapper<>();
+        countWrapper.eq(FlowBtn::getBtnFun, addOrEditDTO.getBtnFun());
+        countWrapper.ne(StrUtil.isNotEmpty(addOrEditDTO.getBtnId()),
+                FlowBtn::getBtnId, addOrEditDTO.getBtnId());
+        return this.count(countWrapper) > 0;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(FlowBtnAddOrEditDTO addOrEditDTO){
+        boolean isExistBtnText = this.isExistBtnText(addOrEditDTO);
+        if(isExistBtnText){
+            throw new CommonException("按钮文本重复，请重新输入！");
+        }
+        boolean isExistBtnFun = this.isExistBtnFun(addOrEditDTO);
+        if(isExistBtnFun){
+            throw new CommonException("执行方法，请重新输入！");
+        }
         FlowBtn flowBtn = BeanUtil.copyProperties(addOrEditDTO, FlowBtn.class);
+        Integer maxSort = flowBtnMapper.getMaxBtnSort();
+        flowBtn.setBtnSort(ObjectUtil.isNotNull(maxSort)? maxSort+1: 1);
         this.save(flowBtn);
     }
 
@@ -73,6 +101,14 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
         FlowBtn flowBtn = this.getById(addOrEditDTO.getBtnId());
         if(ObjectUtil.isNull(flowBtn)){
             throw new CommonException("流程按钮不存在！");
+        }
+        boolean isExistBtnText = this.isExistBtnText(addOrEditDTO);
+        if(isExistBtnText){
+            throw new CommonException("按钮文本重复，请重新输入！");
+        }
+        boolean isExistBtnFun = this.isExistBtnFun(addOrEditDTO);
+        if(isExistBtnFun){
+            throw new CommonException("执行方法，请重新输入！");
         }
         BeanUtil.copyProperties(addOrEditDTO, flowBtn);
         this.updateById(flowBtn);
@@ -118,7 +154,7 @@ public class FlowBtnServiceImpl extends CommonServiceImpl<FlowBtnMapper, FlowBtn
     @Override
     public List<CommonSelectVO> select(){
         LambdaQueryWrapper<FlowBtn> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.orderByAsc(FlowBtn::getCreateTime);
+        queryWrapper.orderByAsc(FlowBtn::getBtnSort);
         return this.list(queryWrapper).stream().map(btn -> {
             CommonSelectVO selectVO = new CommonSelectVO();
             selectVO.setLabel(btn.getBtnText());

@@ -47,7 +47,8 @@ const formColumns: ColumnProps<WorkflowBtn.Form>[] = [
 	{ type: "index", label: "#", width: 80 },
 	{ prop: "btnText", label: "按钮文本", width: 150, search: { el: "input" } },
 	{ prop: "btnColor", label: "按钮颜色", width: 150 },
-	{ prop: "btnFun", label: "执行方法", search: { el: "input" } }
+	{ prop: "btnFun", label: "执行方法", search: { el: "input" } },
+	{ prop: "btnSort", label: "排序", width: 80 }
 ];
 if (authButtons.includes("edit") || authButtons.includes("delete")) {
 	formColumns.push({ prop: "operation", label: "操作", width: 200, fixed: "right" });

@@ -38,6 +38,20 @@ public interface FlowBtnService extends CommonService<FlowBtn> {
     FlowBtnVO get(String btnId);
 
     /**
+     * 判断是否重复的按钮文本
+     * @param addOrEditDTO
+     * @return
+     */
+    boolean isExistBtnText(FlowBtnAddOrEditDTO addOrEditDTO);
+
+    /**
+     * 判断是否重复的执行方法
+     * @param addOrEditDTO
+     * @return
+     */
+    boolean isExistBtnFun(FlowBtnAddOrEditDTO addOrEditDTO);
+
+    /**
      * 新增流程按钮
      * @param addOrEditDTO
      */

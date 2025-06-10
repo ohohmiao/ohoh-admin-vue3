@@ -24,6 +24,9 @@ const emit = defineEmits<{
 const submitFlowFormRef = ref();
 
 const preDefinedMethods: Record<string, Function> = {
+	/**
+	 * 执行流程
+	 */
 	doWorkflowSubmit: () => {
 		let thizValid = true;
 		let thizBusParams = null;
@@ -37,6 +40,9 @@ const preDefinedMethods: Record<string, Function> = {
 		console.info(thizBusParams);
 		submitFlowFormRef.value.acceptParams();
 	},
+	/**
+	 * 关闭窗口
+	 */
 	doWorkflowClose: () => {
 		emit("doWorkflowClose");
 	}
