@@ -45,6 +45,16 @@ export namespace Workflow {
 		inclusiveGateWayId: string;
 		nodeList?: FlowTaskNode[];
 	}
+	export interface ProcessForm {
+		approvalResult?: number;
+		handleDeadline?: string;
+		handleOpition: string;
+	}
+	export interface FlowSubmitForm {
+		nextHandlerList: FlowTaskNode[];
+		processForm: ProcessForm;
+		businessForm: Object;
+	}
 	export enum ActTypeEnum {
 		TEMPSAVE = 0,
 		SUBMIT = 1,

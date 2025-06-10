@@ -1,14 +1,14 @@
 <template>
-	<el-dialog v-model="formVisible" destroy-on-close :close-on-click-modal="false" :size="450" title="提交流程">
-		<el-form ref="formRef">
+	<el-dialog v-model="formVisible" destroy-on-close :close-on-click-modal="false" :size="650" title="提交流程">
+		<el-form ref="formRef" :model="formProps?.rowData" label-width="110px">
 			<!-- 下一步环节 -->
-			<el-row v-for="(nextHandler, nextHandlerIndex) in formProps?.taskNodeList" :key="nextHandlerIndex">
+			<el-row v-for="(nextHandler, nextHandlerIndex) in formProps?.rowData.nextHandlerList" :key="nextHandlerIndex">
 				<!-- 一般/并行 -->
 				<template v-if="nextHandler.nodeList == undefined">
 					<el-col :span="12">
 						<el-form-item
 							label="下一步环节"
-							:prop="'formProps?.taskNodeList.' + nextHandlerIndex + '.nodeName'"
+							:prop="'nextHandlerList.' + nextHandlerIndex + '.nodeName'"
 							:rules="[{ required: true, trigger: 'blur', message: '下一步环节不能为空' }]"
 						>
 							<el-tag size="large" :title="nextHandler.nodeName">
@@ -19,7 +19,7 @@
 					<el-col :span="12" v-if="nextHandler.nodeType == Workflow.NodeTypeEnum.TASK">
 						<el-form-item
 							label="环节审核人"
-							:prop="'formProps?.taskNodeList.' + nextHandlerIndex + '.handlers'"
+							:prop="'nextHandlerList.' + nextHandlerIndex + '.handlers'"
 							:rules="[{ required: true, type: 'array', trigger: 'blur,change', message: '请选择环节审核人' }]"
 						>
 							<el-input placeholder="请选择" :value="getNextHandlerNames(nextHandlerIndex)" autocomplete="off" readonly>
@@ -35,7 +35,7 @@
 					<el-col :span="12">
 						<el-form-item
 							label="下一步环节"
-							:prop="'formProps?.taskNodeList.' + nextHandlerIndex + '.nodeId'"
+							:prop="'nextHandlerList.' + nextHandlerIndex + '.nodeId'"
 							:rules="[{ required: true, trigger: 'change', message: '请选择下一步环节' }]"
 						>
 							<el-select
@@ -55,7 +55,7 @@
 					<el-col :span="12" v-if="nextHandler.nodeType == Workflow.NodeTypeEnum.TASK">
 						<el-form-item
 							label="环节审核人"
-							:prop="'formProps?.taskNodeList.' + nextHandlerIndex + '.handlers'"
+							:prop="'nextHandlerList.' + nextHandlerIndex + '.handlers'"
 							:rules="[{ required: true, type: 'array', trigger: 'blur,change', message: '请选择环节审核人' }]"
 						>
 							<el-input placeholder="请选择" :value="getNextHandlerNames(nextHandlerIndex)" autocomplete="off" readonly>
@@ -66,6 +66,49 @@
 						</el-form-item>
 					</el-col>
 				</template>
+			</el-row>
+			<el-row v-if="formProps?.nodeProp.approvalPermit == 1 || formProps?.nodeProp.processlimitPermit == 1">
+				<!-- 审批结果控件 -->
+				<el-col :span="12" v-if="formProps?.nodeProp.approvalPermit == 1">
+					<el-form-item
+						label="审核结果"
+						prop="processForm.approvalResult"
+						:rules="[{ required: true, message: '请选择审核结果' }]"
+					>
+						<el-radio-group v-model="formProps.rowData.processForm.approvalResult">
+							<el-radio-button label="通过" :value="1"></el-radio-button>
+							<el-radio-button label="不通过" :value="0"></el-radio-button>
+						</el-radio-group>
+					</el-form-item>
+				</el-col>
+				<!-- 指定办理期限 -->
+				<el-col :span="12" v-if="formProps?.nodeProp.processlimitPermit == 1">
+					<el-form-item
+						label="指定办理期限"
+						prop="processForm.handleDeadline"
+						:rules="[{ required: true, message: '请选择指定办理期限' }]"
+					>
+						<el-date-picker
+							v-model="formProps.rowData.processForm.handleDeadline"
+							type="datetime"
+							value-format="YYYY-MM-DD HH:mm:ss"
+							placeholder="请选择"
+						></el-date-picker>
+					</el-form-item>
+				</el-col>
+			</el-row>
+			<el-row>
+				<el-col :span="24">
+					<el-form-item label="审核意见" prop="processForm.handleOpition">
+						<el-input
+							type="textarea"
+							v-model.trim="formProps!.rowData.processForm.handleOpition"
+							:maxlength="300"
+							:rows="8"
+							show-word-limit
+						></el-input>
+					</el-form-item>
+				</el-col>
 			</el-row>
 		</el-form>
 		<template #footer>
@@ -83,22 +126,22 @@ import { FormInstance } from "element-plus";
 
 interface FormProps {
 	nodeProp: WorkflowNode.Form;
-	taskNodeList: Workflow.FlowTaskNode[];
+	rowData: Workflow.FlowSubmitForm;
 }
 
 const formVisible = ref(false);
 const formProps = ref<FormProps>();
 
 const getNextHandlerNames = (index: number) => {
-	return formProps.value?.taskNodeList[index].handlers.map(handler => handler.handlerName).join(",");
+	return formProps.value?.rowData.nextHandlerList[index].handlers.map(handler => handler.handlerName).join(",");
 };
 
 const handleMultiNodeNextHandlerSelChange = (nodeId: string, index: number) => {
-	const thizNodeList = formProps.value?.taskNodeList[index].nodeList;
+	const thizNodeList = formProps.value?.rowData.nextHandlerList[index].nodeList;
 	const selectedNode = thizNodeList?.find(node => node.nodeId == nodeId);
 	if (selectedNode) {
-		formProps.value!.taskNodeList[index] = { ...selectedNode };
-		formProps.value!.taskNodeList[index].nodeList = thizNodeList;
+		formProps.value!.rowData.nextHandlerList[index] = { ...selectedNode };
+		formProps.value!.rowData.nextHandlerList[index].nodeList = thizNodeList;
 	}
 };
 
@@ -111,7 +154,11 @@ const acceptParams = (params: FormProps) => {
 
 // 提交表单
 const formRef = ref<FormInstance>();
-const handleSubmit = () => {};
+const handleSubmit = () => {
+	formRef.value!.validate(async valid => {
+		if (!valid) return;
+	});
+};
 
 defineExpose({
 	acceptParams

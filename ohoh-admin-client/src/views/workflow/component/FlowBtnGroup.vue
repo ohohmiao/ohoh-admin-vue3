@@ -51,7 +51,6 @@ const preDefinedMethods: Record<string, Function> = {
 		if (!thizValid) {
 			return;
 		}
-		console.info(thizBusParams);
 		const { data } = await getWorkflowNextNodeListApi({
 			defCode: props.defCode,
 			defVersion: props.defVersion,
@@ -59,7 +58,11 @@ const preDefinedMethods: Record<string, Function> = {
 		});
 		submitFlowFormRef.value.acceptParams({
 			nodeProp: props.nodeProp,
-			taskNodeList: data
+			rowData: {
+				nextHandlerList: data,
+				processForm: {},
+				businessForm: thizBusParams
+			}
 		});
 	},
 	/**
