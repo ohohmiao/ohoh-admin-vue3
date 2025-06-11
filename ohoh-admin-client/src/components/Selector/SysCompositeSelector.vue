@@ -781,6 +781,9 @@ defineExpose({
 .selector-dialog :deep(.el-dialog) {
 	padding: 0;
 }
+.selector-dialog :deep(.el-dialog__header) {
+	border-bottom: none;
+}
 .selector-dialog :deep(.el-dialog__body) {
 	padding: 0 20px;
 	.selector-tab-divider {
