@@ -10,6 +10,7 @@ import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.modules.system.api.SysUserApi;
 import com.ohohmiao.modules.system.model.vo.SysUserVO;
 import com.ohohmiao.modules.workflow.enums.FlowActTypeEnum;
+import com.ohohmiao.modules.workflow.enums.FlowEventTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowHandlerTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowNodeTypeEnum;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
@@ -25,6 +26,7 @@ import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +53,9 @@ public class FlowServiceImpl implements FlowService {
 
     @Resource
     private FlowHandlerService flowHandlerService;
+
+    @Resource
+    private FlowEventService flowEventService;
 
     @Resource(name = "sysUserApi")
     private SysUserApi sysUserApi;
@@ -164,7 +169,7 @@ public class FlowServiceImpl implements FlowService {
         String nodeType = (String)nextNode.get("nodetype");
         if(nodeType.equals(FlowNodeTypeEnum.TASK.getCode())){
             // 任务节点情形
-            FlowTaskNodeVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName);
+            FlowTaskNodeVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName, nodeType);
             nextHandlerList.add(nextHandler);
         }else if(nodeType.equals(FlowNodeTypeEnum.END.getCode())){
             // 办结节点情形
@@ -175,15 +180,30 @@ public class FlowServiceImpl implements FlowService {
             nextHandler.setNodeName(StrUtil.isNotBlank(nodeName)? nodeName: "办结");
             nextHandlerList.add(nextHandler);
         }else if(nodeType.equals(FlowNodeTypeEnum.DECISION.getCode())){
-            // TODO 分支节点情形
-
+            // 分支节点情形
+            flowInfoVO.getCurNodeInfo().setNodeId(nodeId);
+            flowInfoVO = flowEventService.executeBindEvent(flowInfoVO, FlowEventTypeEnum.DECIDE.ordinal());
+            if(ObjectUtil.isNull(flowInfoVO) || CollectionUtil.isEmpty(flowInfoVO.getNextTaskNodeIds())){
+                throw new CommonException("操作失败，未给分支判断节点配置流程事件！");
+            }
+            flowInfoVO.getCurNodeInfo().setNodeId(curNodeId);
+            Set<String> decideNextNodeIds = flowInfoVO.getNextTaskNodeIds();
+            for(String decideNextNodeId: decideNextNodeIds){
+                Map decideNextNode = WorkflowUtil.getFlowNode(flowInfoVO.getDefJson(), decideNextNodeId);
+                nodeId = (String)decideNextNode.get("id");
+                nodeName = (String)decideNextNode.get("name");
+                nodeType = (String)decideNextNode.get("nodetype");
+                FlowTaskNodeVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName, nodeType);
+                nextHandlerList.add(nextHandler);
+            }
         }else if(nodeType.equals(FlowNodeTypeEnum.PARALLEL.getCode())){
             // 并行节点情形
             List<Map> nextTaskNodeList = WorkflowUtil.getNextTaskNodes(flowInfoVO.getDefJson(), nodeId);
             for(Map nextTaskNode: nextTaskNodeList){
                 nodeId = (String)nextTaskNode.get("id");
                 nodeName = (String)nextTaskNode.get("name");
-                FlowTaskNodeVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName);
+                nodeType = (String)nextTaskNode.get("nodetype");
+                FlowTaskNodeVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName, nodeType);
                 nextHandlerList.add(nextHandler);
             }
         }else if(nodeType.equals(FlowNodeTypeEnum.INCLUSIVE.getCode())){
@@ -192,7 +212,8 @@ public class FlowServiceImpl implements FlowService {
             for(Map nextTaskNode: nextTaskNodeList){
                 nodeId = (String)nextTaskNode.get("id");
                 nodeName = (String)nextTaskNode.get("name");
-                FlowTaskNodeVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName);
+                nodeType = (String)nextTaskNode.get("nodetype");
+                FlowTaskNodeVO nextHandler = this.getNextTaskFLowHandler(flowInfoVO, nodeId, nodeName, nodeType);
                 nextHandler.setInclusiveGateWayId(nodeId);
                 nextHandlerList.add(nextHandler);
             }
@@ -205,11 +226,13 @@ public class FlowServiceImpl implements FlowService {
      * @param flowInfoVO
      * @param nextNodeId
      * @param nextNodeName
+     * @param nextNodeType
      * @return
      */
-    private FlowTaskNodeVO getNextTaskFLowHandler(FlowInfoVO flowInfoVO, String nextNodeId, String nextNodeName){
+    private FlowTaskNodeVO getNextTaskFLowHandler(FlowInfoVO flowInfoVO, String nextNodeId,
+                                                  String nextNodeName, String nextNodeType){
         FlowTaskNodeVO nextHandlerVO = new FlowTaskNodeVO();
-        nextHandlerVO.setNodeType(FlowNodeTypeEnum.TASK.getCode());
+        nextHandlerVO.setNodeType(nextNodeType);
         nextHandlerVO.setNodeId(nextNodeId);
         nextHandlerVO.setNodeName(nextNodeName);
         FlowHandlerVO flowHandlerVO = flowHandlerService.getNextNodeFlowHandler(
@@ -246,7 +269,7 @@ public class FlowServiceImpl implements FlowService {
             nextHandlerVO.setHandlers(thizHandlers);
             nextHandlerVO.setReselectPermit(CommonWhetherEnum.YES.getCode());
         }
-        // TODO 人员过滤规则
+        // 人员过滤规则
         if(CollectionUtil.isNotEmpty(nextHandlerVO.getHandlers()) && StrUtil.isNotBlank(flowHandlerVO.getFilterRule())){
             try {
                 String[] filterRule = flowHandlerVO.getFilterRule().split("\\.");

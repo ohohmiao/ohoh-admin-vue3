@@ -7,6 +7,7 @@ import com.ohohmiao.modules.workflow.model.dto.FlowEventAddOrEditDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowEventPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowEvent;
 import com.ohohmiao.modules.workflow.model.vo.FlowEventVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 
 /**
  * 流程事件Service
@@ -40,5 +41,23 @@ public interface FlowEventService extends CommonService<FlowEvent> {
      * @param idListDTO
      */
     void multiDelete(CommonIdListDTO idListDTO);
+
+    /**
+     * 获取流程事件
+     * @param defCode
+     * @param defVersion
+     * @param nodeId
+     * @param eventType
+     * @return
+     */
+    FlowEventVO get(String defCode, Integer defVersion, String nodeId, Integer eventType);
+
+    /**
+     * 执行流程事件
+     * @param flowInfoVO
+     * @param eventType
+     * @return
+     */
+    FlowInfoVO executeBindEvent(FlowInfoVO flowInfoVO, Integer eventType);
 
 }

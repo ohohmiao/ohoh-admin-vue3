@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 流程核心信息
@@ -57,6 +58,9 @@ public class FlowInfoVO {
     private String processId;
 
     private String curTaskId;
+
+    @ApiModelProperty(value = "下一环节节点id，如存储分支判断节点事件结果")
+    private Set<String> nextTaskNodeIds;
 
     @ApiModelProperty(value = "是否处于查阅状态")
     private Boolean doQueryFlag;

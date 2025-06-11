@@ -25,4 +25,15 @@ public interface FlowEventMapper extends BaseMapper<FlowEvent> {
      */
     Page<FlowEventVO> page(Page<FlowEventVO> page, @Param("bind") FlowNodeBindQueryDTO queryDTO);
 
+    /**
+     * 获取流程事件
+     * @param defCode
+     * @param defVersion
+     * @param nodeId
+     * @param eventType
+     * @return
+     */
+    FlowEventVO get(@Param("defCode") String defCode, @Param("defVersion") Integer defVersion,
+                    @Param("nodeId") String nodeId, @Param("eventType") Integer eventType);
+
 }

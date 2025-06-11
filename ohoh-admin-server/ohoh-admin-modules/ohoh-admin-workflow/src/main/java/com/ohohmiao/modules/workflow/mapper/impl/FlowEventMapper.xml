@@ -26,4 +26,14 @@
         ORDER BY e.create_time desc
     </select>
 
+    <select id="get" resultType="com.ohohmiao.modules.workflow.model.vo.FlowEventVO">
+        select e.EVENT_ID, e.CREATE_TIME, e.DEF_CODE, e.DEF_VERSION, e.EVENT_NAME,
+               e.EVENT_TYPE, e.IMPL_TYPE, e.IMPL_LOCALSERVICE, e.IMPL_SCRIPT
+        from WORKFLOW_EVENT e
+            left join WORKFLOW_NODEBIND d on e.EVENT_ID = d.BIND_OBJID
+        where d.BIND_OBJID is not null
+          and e.DEF_CODE = #{defCode} and e.DEF_VERSION = #{defVersion} and d.NODE_ID = #{nodeId}
+          and e.EVENT_TYPE = #{eventType}
+    </select>
+
 </mapper>

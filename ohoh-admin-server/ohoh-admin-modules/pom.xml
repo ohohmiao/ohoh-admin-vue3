@@ -16,6 +16,7 @@
     <modules>
         <module>ohoh-admin-system</module>
         <module>ohoh-admin-workflow</module>
+        <module>ohoh-admin-demo</module>
     </modules>
 
 </project>
