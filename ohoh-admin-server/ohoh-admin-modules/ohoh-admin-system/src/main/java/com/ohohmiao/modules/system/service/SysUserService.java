@@ -118,6 +118,12 @@ public interface SysUserService extends IService<SysUser> {
     List<Tree<String>> getAuthOrgUserTree();
 
     /**
+     * 构建机构用户树
+     * @return
+     */
+    List<Tree<String>> getOrgUserTree();
+
+    /**
      * 根据角色id，列出其拥有的用户
      *    -判断登录用户数据范围
      * @param roleId

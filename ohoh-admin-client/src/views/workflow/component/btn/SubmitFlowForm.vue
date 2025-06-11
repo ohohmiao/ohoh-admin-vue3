@@ -123,6 +123,7 @@
 		title="请选择审核人员"
 		:selectorTypes="[SelectorTypeEnum.USER]"
 		:selectUserTypes="[SelectorUserTypeEnum.ORG, SelectorUserTypeEnum.POSITION]"
+		:orgUserTreeApi="getOrgUserTreeApi"
 		@select="handleHandlerSelected"
 	>
 	</SysCompositeSelector>
@@ -135,6 +136,7 @@ import { Workflow } from "@/api/modules/workflow/core";
 import { FormInstance } from "element-plus";
 import SysCompositeSelector from "@/components/Selector/SysCompositeSelector.vue";
 import { SelectorTypeEnum, SelectorUserTypeEnum } from "@/components/Selector/interface";
+import { getOrgUserTreeApi } from "@/api/modules/sys/user";
 
 interface FormProps {
 	nodeProp: WorkflowNode.Form;

@@ -455,6 +455,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    public List<Tree<String>> getOrgUserTree(){
+        List<SysOrgVO> allOrgs = sysOrgService.listCachedAllOrgs();
+        List<SysUserVO> allUsers = this.listCachedAllUsers();
+        // 构造树
+        // 部门节点
+        List<TreeNode<String>> treeNodeList = allOrgs.stream().map(sysOrg -> {
+            Map<String, Object> extraObj = new HashMap<>();
+            extraObj.put("type", "org");
+            extraObj.put("treePath", sysOrg.getTreePath());
+            return new TreeNode<>(sysOrg.getOrgId(), sysOrg.getParentId(),
+                    sysOrg.getOrgName(),
+                    "a#"+sysOrg.getTreeSort())
+                    .setExtra(extraObj);
+        }).collect(Collectors.toList());
+        // 人员节点
+        treeNodeList.addAll(allUsers.stream().map(sysUser -> {
+            Map<String, Object> extraObj = new HashMap<>();
+            extraObj.put("type", "user");
+            extraObj.put("extendValue", sysUser.getOrgPropid());
+            extraObj.put("parentName", sysUser.getOrgName());
+            extraObj.put("treePath", sysUser.getOrgPath()+sysUser.getUserId());
+            return new TreeNode<>(sysUser.getOrgId()+"#"+sysUser.getUserId(),
+                    sysUser.getOrgId(),
+                    sysUser.getUserName(),
+                    "b#"+sysUser.getUserSort()).setExtra(extraObj);
+        }).collect(Collectors.toList()));
+        return TreeUtil.build(treeNodeList, "0");
+    }
+
+    @Override
     public List<SysUserVO> listAuthSysUsersByRoleId(String roleId){
         // 列出该角色被授权给的所有用户
         Set<String> ownUserIds = sysRolePropService.listRecordIdsByRoleIdAndTableName(

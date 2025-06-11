@@ -108,6 +108,11 @@ export const getAuthOrgUserTreeApi = () => {
 	return http.post("/sysUser/authOrgUserTree");
 };
 
+// * 获取机构用户树
+export const getOrgUserTreeApi = () => {
+	return http.post("/sysUser/orgUserTree");
+};
+
 // * 列出某角色所授予的用户id集合
 export const listAuthUsersByRoleIdApi = (params: { id: string }) => {
 	return http.post<SysUser.Form[]>("/sysUser/listAuthSysUsersByRoleId", params);

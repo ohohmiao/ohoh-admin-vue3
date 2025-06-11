@@ -204,12 +204,24 @@ public class SysUserController {
     }
 
     /**
+     * 获取机构用户树
+     * @return
+     */
+    @ApiOperation(value = "获取机构用户树")
+    @ApiOperationSupport(order = 12)
+    @SaPcCheckPermission("/sysUser/orgUserTree")
+    @PostMapping("/sysUser/orgUserTree")
+    public CommonResp<List<Tree<String>>> orgUserTree(){
+        return CommonResp.data(sysUserService.getOrgUserTree());
+    }
+
+    /**
      * 列出某角色所授予的用户集合
      * @param idDTO 
      * @return
      */
     @ApiOperation(value = "列出某角色所授予的用户集合")
-    @ApiOperationSupport(order = 12)
+    @ApiOperationSupport(order = 13)
     @SaPcCheckPermission("/sysUser/listAuthSysUsersByRoleId")
     @PostMapping("/sysUser/listAuthSysUsersByRoleId")
     public CommonResp<List<SysUserVO>> listAuthSysUsersByRoleId(@RequestBody @Validated CommonIdDTO idDTO){
@@ -222,7 +234,7 @@ public class SysUserController {
      * @return
      */
     @ApiOperation(value = "给系统角色分配用户")
-    @ApiOperationSupport(order = 12)
+    @ApiOperationSupport(order = 14)
     @CommonLog("给系统角色分配用户")
     @SaPcCheckPermission("/sysUser/grantRoleToUser")
     @PostMapping("/sysUser/grantRoleToUser")
@@ -237,7 +249,7 @@ public class SysUserController {
      * @return
      */
     @ApiOperation(value = "列出某用户所授予的数据范围")
-    @ApiOperationSupport(order = 13)
+    @ApiOperationSupport(order = 15)
     @SaPcCheckPermission("/sysUser/ownDataScope")
     @PostMapping("/sysUser/ownDataScope")
     public CommonResp<Set<String>> ownDataScope(@RequestBody @Validated CommonIdDTO idDTO){
@@ -250,7 +262,7 @@ public class SysUserController {
      * @return
      */
     @ApiOperation(value = "给用户授权数据范围")
-    @ApiOperationSupport(order = 14)
+    @ApiOperationSupport(order = 16)
     @CommonLog("给用户授权数据范围")
     @SaPcCheckPermission("/sysUser/grantDataScope")
     @PostMapping("/sysUser/grantDataScope")
@@ -264,7 +276,7 @@ public class SysUserController {
      * @return
      */
     @ApiOperation(value = "获取岗位用户树")
-    @ApiOperationSupport(order = 15)
+    @ApiOperationSupport(order = 17)
     @SaPcCheckPermission("/sysUser/positionUserTree")
     @PostMapping("/sysUser/positionUserTree")
     public CommonResp<List<Tree<String>>> positionUserTree(){
