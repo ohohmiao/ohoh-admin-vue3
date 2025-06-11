@@ -53,6 +53,9 @@ public class FlowInfoVO {
     @ApiModelProperty(value = "当前环节绑定的流程按钮")
     private List<FlowBtnVO> flowBtns;
 
+    @ApiModelProperty(value = "流程实例id")
+    private String processId;
+
     private String curTaskId;
 
     @ApiModelProperty(value = "是否处于查阅状态")

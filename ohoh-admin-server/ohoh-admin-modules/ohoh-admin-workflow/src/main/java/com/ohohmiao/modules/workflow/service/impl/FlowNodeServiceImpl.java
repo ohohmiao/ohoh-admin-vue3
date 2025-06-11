@@ -92,7 +92,8 @@ public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> i
         }
         // 查询出当前环节办理人员，构造空配置
         if(CollectionUtil.isEmpty(resultList)){
-            resultList = flowHandlerService.listFlowNodeHanlder(
+            // 按权重，仅考虑指定人员情形
+            resultList = flowHandlerService.listFlowNodeHandler4ReferRes(
                     listDTO.getDefCode(), listDTO.getDefVersion(), listDTO.getNodeId())
                     .stream().map(m -> BeanUtil.copyProperties(m, FlowTaskMultiAssignWeight.class))
                     .collect(Collectors.toList());
@@ -111,7 +112,8 @@ public class FlowNodeServiceImpl extends ServiceImpl<FlowNodeMapper, FlowNode> i
         updateWrapper.set(FlowNode::getMultiassignWeightjson, null);
         this.update(updateWrapper);
         // 查询出当前环节办理人员，构造空配置
-        return flowHandlerService.listFlowNodeHanlder(
+        // 按权重，仅考虑指定人员情形
+        return flowHandlerService.listFlowNodeHandler4ReferRes(
                         getDTO.getDefCode(), getDTO.getDefVersion(), getDTO.getNodeId())
                 .stream().map(m -> BeanUtil.copyProperties(m, FlowTaskMultiAssignWeight.class))
                 .collect(Collectors.toList());

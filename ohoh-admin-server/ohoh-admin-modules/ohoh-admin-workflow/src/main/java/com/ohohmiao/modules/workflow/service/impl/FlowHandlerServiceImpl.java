@@ -145,7 +145,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
     }
 
     @Override
-    public List<FlowTaskHandler> listFlowNodeHanlder(String defCode, Integer defVersion, String nodeId){
+    public List<FlowTaskHandler> listFlowNodeHandler4ReferRes(String defCode, Integer defVersion, String nodeId){
         List<FlowTaskHandler> resultList = CollectionUtil.newArrayList();
         FlowHandlerVO flowHandlerVO = this.getNextNodeFlowHandler(defCode, defVersion, nodeId);
         if(ObjectUtil.isNull(flowHandlerVO)){
@@ -162,8 +162,6 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
                 handler.setHandlerName(user.getUserName());
                 return handler;
             }).collect(Collectors.toList());
-        }else if(handlerType.equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
-            // TODO 指定接口获取办理人员
         }
         return resultList;
     }

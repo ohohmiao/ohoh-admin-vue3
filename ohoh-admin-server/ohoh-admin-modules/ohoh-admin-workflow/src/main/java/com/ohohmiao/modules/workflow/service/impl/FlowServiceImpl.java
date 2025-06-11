@@ -1,8 +1,10 @@
 package com.ohohmiao.modules.workflow.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.modules.system.api.SysUserApi;
@@ -16,9 +18,11 @@ import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.*;
 import com.ohohmiao.modules.workflow.service.*;
 import com.ohohmiao.modules.workflow.util.WorkflowUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +33,7 @@ import java.util.stream.Collectors;
  * @author ohohmiao
  * @date 2025-06-08 11:24
  */
+@Slf4j
 @Service
 public class FlowServiceImpl implements FlowService {
 
@@ -54,7 +59,7 @@ public class FlowServiceImpl implements FlowService {
     public FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO, boolean includeExtraInfo){
         FlowInfoVO flowInfoVO = new FlowInfoVO();
         FlowDefVO flowDefVO = null;
-        if(StrUtil.isNotBlank(queryDTO.getExeId())){
+        if(StrUtil.isNotBlank(queryDTO.getProcessId())){
 
         }else{
             flowInfoVO.setStartFlowFlag(true);
@@ -220,7 +225,21 @@ public class FlowServiceImpl implements FlowService {
             nextHandlerVO.setHandlers(thizHandlers);
         }else if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
             // 指定接口情形
-
+            String[] interfaceCode = flowHandlerVO.getInterfaceCode().split("\\.");
+            String beanId = interfaceCode[0];
+            String method = interfaceCode[1];
+            Object serviceBean = SpringUtil.getBean(beanId);
+            if(ObjectUtil.isNull(serviceBean)){
+                throw new CommonException("未找到指定接口，请检查流程配置！");
+            }
+            try {
+                Method invokeMethod = serviceBean.getClass().getDeclaredMethod(method, FlowInfoVO.class);
+                List<FlowTaskHandler> thizHandlers = (List<FlowTaskHandler>)invokeMethod.invoke(serviceBean, flowInfoVO);
+                nextHandlerVO.setHandlers(thizHandlers);
+            } catch (Exception e) {
+                log.error(ExceptionUtil.stacktraceToString(e));
+                throw new CommonException(String.format("指定接口%s调用错误，请检查流程配置！", flowHandlerVO.getInterfaceCode()));
+            }
         }else{
             // 自行选择情形
             List<FlowTaskHandler> thizHandlers = CollectionUtil.newArrayList();

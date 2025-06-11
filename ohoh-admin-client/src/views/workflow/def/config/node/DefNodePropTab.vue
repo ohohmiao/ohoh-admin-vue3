@@ -3,7 +3,7 @@
 		<template #header>
 			<el-button type="primary" @click="handleSubmit">保存</el-button>
 		</template>
-		<el-form ref="formRef" label-width="145" label-suffix=" :" :rules="rules" :model="formProps.rowData">
+		<el-form ref="formRef" label-width="160" label-suffix=" :" :rules="rules" :model="formProps.rowData">
 			<el-row :gutter="16">
 				<el-col :span="12">
 					<el-form-item label="任务指派类别" prop="taskAssigntype">
@@ -47,6 +47,12 @@
 			<el-row :gutter="16" v-if="formProps.rowData.taskAssigntype == 1 && formProps.rowData.multiassignRule == 3">
 				<el-col :span="24">
 					<el-form-item label="办理人权重配置" prop="multiassignWeightjson" class="addchild-table" required>
+						<template #label>
+							<el-tooltip content="注：仅支持环节办理人类型是“指定人员”的情形！" placement="top">
+								<el-icon><QuestionFilled /></el-icon>
+							</el-tooltip>
+							办理人权重配置：
+						</template>
 						<el-button type="primary" plain class="addchild-btn" @click="handleResetMultiAssignWeight">重置</el-button>
 						<el-row :gutter="10" class="addchild-table-header">
 							<el-col :span="12" class="addchild-table-header-col">办理人</el-col>

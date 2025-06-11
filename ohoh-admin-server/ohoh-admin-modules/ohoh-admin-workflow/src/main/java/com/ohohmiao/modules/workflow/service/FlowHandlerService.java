@@ -61,12 +61,12 @@ public interface FlowHandlerService extends IService<FlowHandler> {
     void multiDelete(CommonIdListDTO idListDTO);
 
     /**
-     * 查询流程环节办理人
+     * 查询配置为指定人员情形的流程环节办理人
      * @param defCode
      * @param defVersion
      * @param nodeId
      * @return
      */
-    List<FlowTaskHandler> listFlowNodeHanlder(String defCode, Integer defVersion, String nodeId);
+    List<FlowTaskHandler> listFlowNodeHandler4ReferRes(String defCode, Integer defVersion, String nodeId);
 
 }

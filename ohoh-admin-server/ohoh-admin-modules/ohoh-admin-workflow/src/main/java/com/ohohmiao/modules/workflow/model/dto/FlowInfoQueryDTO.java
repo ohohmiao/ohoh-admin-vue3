@@ -26,13 +26,13 @@ public class FlowInfoQueryDTO {
     private Integer defVersion;
 
     @ApiModelProperty(value = "流程实例id")
-    private String exeId;
+    private String processId;
 
     @ApiModelProperty(value = "当前任务id")
     private String curTaskId;
 
     public boolean isLegalParams() {
-        if(StrUtil.isBlank(defCode) && StrUtil.isBlank(exeId)){
+        if(StrUtil.isBlank(defCode) && StrUtil.isBlank(processId)){
             return false;
         }
         return true;
