@@ -59,4 +59,53 @@
           )
     </select>
 
+    <select id="doFilterBySameOrg" resultType="com.ohohmiao.modules.system.model.vo.SysUserVO">
+        select distinct(u.USER_ID), u.USER_ACCOUNT, u.USER_NAME
+        from SYS_USER u
+             left join SYS_USERPROP p on u.USER_ID = p.USER_ID
+        where p.USER_ID is not null
+          and p.PROP_TABLENAME = 'SYS_ORG'
+          and u.DELETE_FLAG = 0
+          and u.USER_ID in
+          <foreach collection="sourceUserIdList" item="sourceUserId" open="(" separator="," close=")">
+              #{sourceUserId}
+          </foreach>
+          and p.PROP_RECORDID = #{targetOrgId}
+    </select>
+
+    <select id="doFilterByOneLevelUpOrg" resultType="com.ohohmiao.modules.system.model.vo.SysUserVO">
+        select distinct(u.USER_ID), u.USER_ACCOUNT, u.USER_NAME
+        from SYS_USER u
+        left join SYS_USERPROP p on u.USER_ID = p.USER_ID
+        where p.USER_ID is not null
+        and p.PROP_TABLENAME = 'SYS_ORG'
+        and u.DELETE_FLAG = 0
+        and u.USER_ID in
+        <foreach collection="sourceUserIdList" item="sourceUserId" open="(" separator="," close=")">
+            #{sourceUserId}
+        </foreach>
+        and p.PROP_RECORDID = (
+            select o.PARENT_ID from SYS_ORG o where o.ORG_ID = #{targetOrgId}
+        )
+    </select>
+
+    <select id="doFilterBySameAndChildOrg" resultType="com.ohohmiao.modules.system.model.vo.SysUserVO">
+        select distinct(u.USER_ID), u.USER_ACCOUNT, u.USER_NAME
+        from SYS_USER u
+        left join SYS_USERPROP p on u.USER_ID = p.USER_ID
+        where p.USER_ID is not null
+        and p.PROP_TABLENAME = 'SYS_ORG'
+        and u.DELETE_FLAG = 0
+        and u.USER_ID in
+        <foreach collection="sourceUserIdList" item="sourceUserId" open="(" separator="," close=")">
+            #{sourceUserId}
+        </foreach>
+        and p.PROP_RECORDID = (
+            select o.ORG_ID
+                from SYS_ORG o
+            where o.DELETE_FLAG = 0
+              and o.TREE_PATH like concat('%.', #{targetOrgId}, '.%')
+        )
+    </select>
+
 </mapper>

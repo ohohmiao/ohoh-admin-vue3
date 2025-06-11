@@ -78,6 +78,13 @@ public abstract class StpLoginUser {
     private List<UserOrg> orgList;
 
     /**
+     * 当前操作机构，可前端切换
+     * TODO 待实现
+     */
+    @ApiModelProperty(value = "当前操作机构，可前端切换")
+    private UserOrg switchOrg;
+
+    /**
      * 授权的角色id
      */
     @ApiModelProperty(value = "授权的角色id")

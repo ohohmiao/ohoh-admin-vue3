@@ -20,4 +20,28 @@ public interface SysUserApi {
      */
     List<SysUserVO> listByReferRes(List<SysReferRes> referResList);
 
+    /**
+     * 从源用户中过滤出与目标组织同一组织的用户列表
+     * @param sourceUserIdList
+     * @param targetOrgId
+     * @return
+     */
+    List<SysUserVO> doFilterBySameOrg(List<String> sourceUserIdList, String targetOrgId);
+
+    /**
+     * 从源用户中过滤出是目标组织上一级组织的用户列表
+     * @param sourceUserIdList
+     * @param targetOrgId
+     * @return
+     */
+    List<SysUserVO> doFilterByOneLevelUpOrg(List<String> sourceUserIdList, String targetOrgId);
+
+    /**
+     * 从源用户中过滤出与目标组织同一或孩子组织的用户列表
+     * @param sourceUserIdList
+     * @param targetOrgId
+     * @return
+     */
+    List<SysUserVO> doFilterBySameAndChildOrg(List<String> sourceUserIdList, String targetOrgId);
+
 }

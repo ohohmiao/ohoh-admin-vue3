@@ -8,6 +8,7 @@ import com.ohohmiao.modules.workflow.model.dto.FlowHandlerPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowHandler;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.FlowHandlerVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 
 import java.util.List;
 
@@ -68,5 +69,29 @@ public interface FlowHandlerService extends IService<FlowHandler> {
      * @return
      */
     List<FlowTaskHandler> listFlowNodeHandler4ReferRes(String defCode, Integer defVersion, String nodeId);
+
+    /**
+     * 流程环节办理人过滤规则-和当前办理人处于同一组织
+     * @param flowInfoVO
+     * @param sourceList
+     * @return
+     */
+    List<FlowTaskHandler> doHandlerFilterBySameOrg(FlowInfoVO flowInfoVO, List<FlowTaskHandler> sourceList);
+
+    /**
+     * 流程环节办理人过滤规则-处于当前办理人的上一级组织
+     * @param flowInfoVO
+     * @param sourceList
+     * @return
+     */
+    List<FlowTaskHandler> doHandlerFilterByOneLevelUpOrg(FlowInfoVO flowInfoVO, List<FlowTaskHandler> sourceList);
+
+    /**
+     * 流程环节办理人过滤规则-处于当前人的同一组织或孩子组织
+     * @param flowInfoVO
+     * @param sourceList
+     * @return
+     */
+    List<FlowTaskHandler> doHandlerFilterBySameAndChildOrg(FlowInfoVO flowInfoVO, List<FlowTaskHandler> sourceList);
 
 }

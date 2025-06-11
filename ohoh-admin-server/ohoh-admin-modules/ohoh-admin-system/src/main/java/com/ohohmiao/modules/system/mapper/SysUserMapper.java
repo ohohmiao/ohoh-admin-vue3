@@ -56,4 +56,31 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
                         @Param("referPositions")List<SysReferRes> referPositions,
                         @Param("referContacts")List<SysReferRes> referContacts);
 
+    /**
+     * 从源用户中过滤出与目标组织同一组织的用户列表
+     * @param sourceUserIdList
+     * @param targetOrgId
+     * @return
+     */
+    List<SysUserVO> doFilterBySameOrg(@Param("sourceUserIdList") List<String> sourceUserIdList,
+                            @Param("targetOrgId") String targetOrgId);
+
+    /**
+     * 从源用户中过滤出是目标组织上一级组织的用户列表
+     * @param sourceUserIdList
+     * @param targetOrgId
+     * @return
+     */
+    List<SysUserVO> doFilterByOneLevelUpOrg(@Param("sourceUserIdList") List<String> sourceUserIdList,
+                              @Param("targetOrgId") String targetOrgId);
+
+    /**
+     * 从源用户中过滤出与目标组织同一或孩子组织的用户列表
+     * @param sourceUserIdList
+     * @param targetOrgId
+     * @return
+     */
+    List<SysUserVO> doFilterBySameAndChildOrg(@Param("sourceUserIdList") List<String> sourceUserIdList,
+                                            @Param("targetOrgId") String targetOrgId);
+
 }

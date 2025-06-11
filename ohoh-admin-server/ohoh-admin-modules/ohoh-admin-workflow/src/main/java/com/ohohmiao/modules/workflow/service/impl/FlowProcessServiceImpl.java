@@ -17,7 +17,7 @@ import java.util.List;
  * @author ohohmiao
  * @date 2025-06-11 10:22
  */
-@Service
+@Service("flowProcessService")
 public class FlowProcessServiceImpl implements FlowProcessService {
 
     @Override

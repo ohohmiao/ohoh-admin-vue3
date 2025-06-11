@@ -31,6 +31,7 @@ import java.util.List;
 @ScriptAssert(lang = "javascript", script = "_this.isTargetReferResListRequired()", message = "指定人员不能为空")
 @ScriptAssert(lang = "javascript", script = "_this.isInterfaceCodeRequired()", message = "指定接口不能为空")
 @ScriptAssert(lang = "javascript", script = "_this.isReselectPermitRequired()", message = "是否允许重选办理人不能为空")
+@ScriptAssert(lang = "javascript", script = "_this.cleanHandlerType()", message = "清理数据...")
 public class FlowHandlerAddOrEditDTO {
 
     @ApiModelProperty(value = "id，编辑时必传")
@@ -78,10 +79,29 @@ public class FlowHandlerAddOrEditDTO {
     @ApiModelProperty(value = "是否允许重选办理人")
     private Integer reselectPermit;
 
-    public boolean isTargetReferResListRequired(){
+    public boolean cleanHandlerType(){
         if(ObjectUtil.isNotNull(this.handlerType)){
             if(this.handlerType.equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
                 this.setInterfaceCode(null);
+            }else if(this.handlerType.equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
+                if(this.getTargetReferResList() != null){
+                    this.getTargetReferResList().clear();
+                }
+            }else if(this.handlerType.equals(FlowHandlerTypeEnum.SELF.ordinal())){
+                this.setInterfaceCode(null);
+                if(this.getTargetReferResList() != null){
+                    this.getTargetReferResList().clear();
+                }
+                this.setReselectPermit(CommonWhetherEnum.YES.getCode());
+                this.setFilterRule(null);
+            }
+        }
+        return true;
+    }
+
+    public boolean isTargetReferResListRequired(){
+        if(ObjectUtil.isNotNull(this.handlerType)){
+            if(this.handlerType.equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
                 return CollectionUtil.isNotEmpty(this.targetReferResList);
             }
         }
@@ -91,9 +111,6 @@ public class FlowHandlerAddOrEditDTO {
     public boolean isInterfaceCodeRequired(){
         if(ObjectUtil.isNotNull(this.handlerType)){
             if(this.handlerType.equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
-                if(this.targetReferResList != null){
-                    this.targetReferResList.clear();
-                }
                 return StrUtil.isNotBlank(this.interfaceCode);
             }
         }
@@ -104,8 +121,6 @@ public class FlowHandlerAddOrEditDTO {
         if(ObjectUtil.isNotNull(this.handlerType)){
             if(!this.handlerType.equals(FlowHandlerTypeEnum.SELF.ordinal())){
                 return ObjectUtil.isNotNull(this.reselectPermit);
-            }else{
-                this.setReselectPermit(CommonWhetherEnum.YES.getCode());
             }
         }
         return true;

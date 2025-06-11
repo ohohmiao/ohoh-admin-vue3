@@ -36,4 +36,19 @@ public class SysUserApiProvider implements SysUserApi {
              null);
     }
 
+    @Override
+    public List<SysUserVO> doFilterBySameOrg(List<String> sourceUserIdList, String targetOrgId){
+        return sysUserMapper.doFilterBySameOrg(sourceUserIdList, targetOrgId);
+    }
+
+    @Override
+    public List<SysUserVO> doFilterByOneLevelUpOrg(List<String> sourceUserIdList, String targetOrgId){
+        return sysUserMapper.doFilterByOneLevelUpOrg(sourceUserIdList, targetOrgId);
+    }
+
+    @Override
+    public List<SysUserVO> doFilterBySameAndChildOrg(List<String> sourceUserIdList, String targetOrgId){
+        return sysUserMapper.doFilterBySameAndChildOrg(sourceUserIdList, targetOrgId);
+    }
+
 }

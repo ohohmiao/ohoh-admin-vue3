@@ -225,14 +225,11 @@ public class FlowServiceImpl implements FlowService {
             nextHandlerVO.setHandlers(thizHandlers);
         }else if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
             // 指定接口情形
-            String[] interfaceCode = flowHandlerVO.getInterfaceCode().split("\\.");
-            String beanId = interfaceCode[0];
-            String method = interfaceCode[1];
-            Object serviceBean = SpringUtil.getBean(beanId);
-            if(ObjectUtil.isNull(serviceBean)){
-                throw new CommonException("未找到指定接口，请检查流程配置！");
-            }
             try {
+                String[] interfaceCode = flowHandlerVO.getInterfaceCode().split("\\.");
+                String beanId = interfaceCode[0];
+                String method = interfaceCode[1];
+                Object serviceBean = SpringUtil.getBean(beanId);
                 Method invokeMethod = serviceBean.getClass().getDeclaredMethod(method, FlowInfoVO.class);
                 List<FlowTaskHandler> thizHandlers = (List<FlowTaskHandler>)invokeMethod.invoke(serviceBean, flowInfoVO);
                 nextHandlerVO.setHandlers(thizHandlers);
@@ -247,7 +244,21 @@ public class FlowServiceImpl implements FlowService {
             nextHandlerVO.setReselectPermit(CommonWhetherEnum.YES.getCode());
         }
         // TODO 人员过滤规则
-
+        if(CollectionUtil.isNotEmpty(nextHandlerVO.getHandlers()) && StrUtil.isNotBlank(flowHandlerVO.getFilterRule())){
+            try {
+                String[] filterRule = flowHandlerVO.getFilterRule().split("\\.");
+                String beanId = filterRule[0];
+                String method = filterRule[1];
+                Object serviceBean = SpringUtil.getBean(beanId);
+                Method invokeMethod = serviceBean.getClass().getDeclaredMethod(method, FlowInfoVO.class, List.class);
+                List<FlowTaskHandler> thizHandlers = (List<FlowTaskHandler>)invokeMethod.invoke(
+                        serviceBean, flowInfoVO, nextHandlerVO.getHandlers());
+                nextHandlerVO.setHandlers(thizHandlers);
+            } catch (Exception e) {
+                log.error(ExceptionUtil.stacktraceToString(e));
+                throw new CommonException(String.format("过滤规则%s调用错误，请检查流程配置！", flowHandlerVO.getFilterRule()));
+            }
+        }
         return nextHandlerVO;
     }
 

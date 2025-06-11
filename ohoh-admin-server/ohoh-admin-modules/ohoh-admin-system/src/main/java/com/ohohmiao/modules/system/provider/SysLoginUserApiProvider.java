@@ -112,6 +112,8 @@ public class SysLoginUserApiProvider implements StpLoginUserApi {
                     loginUser.setMainOrgName(mainUserOrg.getOrgName());
                     loginUser.setMainOrgShortname(mainUserOrg.getOrgShortname());
                     loginUser.setMainOrgCode(mainUserOrg.getOrgCode());
+                    // 刚登录情形，切换机构默认设置为主机构
+                    loginUser.setSwitchOrg(mainUserOrg);
                 });
             }
 

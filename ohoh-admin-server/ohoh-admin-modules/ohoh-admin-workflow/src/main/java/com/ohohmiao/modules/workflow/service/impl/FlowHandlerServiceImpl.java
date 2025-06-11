@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.framework.common.model.dto.CommonIdListDTO;
 import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
+import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
+import com.ohohmiao.framework.security.util.StpPCUtil;
 import com.ohohmiao.modules.system.api.SysUserApi;
 import com.ohohmiao.modules.system.model.pojo.SysReferRes;
 import com.ohohmiao.modules.system.model.vo.SysUserVO;
@@ -20,6 +22,7 @@ import com.ohohmiao.modules.workflow.model.dto.FlowHandlerPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowHandler;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.FlowHandlerVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import com.ohohmiao.modules.workflow.service.FlowDefBindService;
 import com.ohohmiao.modules.workflow.service.FlowHandlerService;
 import org.springframework.stereotype.Service;
@@ -36,7 +39,7 @@ import java.util.stream.Collectors;
  * @author ohohmiao
  * @date 2025-06-01 11:01
  */
-@Service
+@Service("flowHandlerService")
 public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowHandler> implements FlowHandlerService {
 
     @Resource
@@ -164,6 +167,57 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
             }).collect(Collectors.toList());
         }
         return resultList;
+    }
+
+    @Override
+    public List<FlowTaskHandler> doHandlerFilterBySameOrg(FlowInfoVO flowInfoVO, List<FlowTaskHandler> sourceList){
+        StpLoginUser loginUser = StpPCUtil.getLoginUser();
+        if(ObjectUtil.isNotNull(loginUser.getSwitchOrg())){
+            List<String> sourceUserIdList = sourceList.stream().map(FlowTaskHandler::getHandlerId).collect(Collectors.toList());
+            List<SysUserVO> sysUserVOList = sysUserApi.doFilterBySameOrg(sourceUserIdList, loginUser.getSwitchOrg().getOrgId());
+            return sysUserVOList.stream().map(user -> {
+                FlowTaskHandler handler = new FlowTaskHandler();
+                handler.setHandlerId(user.getUserId());
+                handler.setHandlerName(user.getUserName());
+                return handler;
+            }).collect(Collectors.toList());
+        }else{
+            return sourceList;
+        }
+    }
+
+    @Override
+    public List<FlowTaskHandler> doHandlerFilterByOneLevelUpOrg(FlowInfoVO flowInfoVO, List<FlowTaskHandler> sourceList){
+        StpLoginUser loginUser = StpPCUtil.getLoginUser();
+        if(ObjectUtil.isNotNull(loginUser.getSwitchOrg())){
+            List<String> sourceUserIdList = sourceList.stream().map(FlowTaskHandler::getHandlerId).collect(Collectors.toList());
+            List<SysUserVO> sysUserVOList = sysUserApi.doFilterByOneLevelUpOrg(sourceUserIdList, loginUser.getSwitchOrg().getOrgId());
+            return sysUserVOList.stream().map(user -> {
+                FlowTaskHandler handler = new FlowTaskHandler();
+                handler.setHandlerId(user.getUserId());
+                handler.setHandlerName(user.getUserName());
+                return handler;
+            }).collect(Collectors.toList());
+        }else{
+            return sourceList;
+        }
+    }
+
+    @Override
+    public List<FlowTaskHandler> doHandlerFilterBySameAndChildOrg(FlowInfoVO flowInfoVO, List<FlowTaskHandler> sourceList){
+        StpLoginUser loginUser = StpPCUtil.getLoginUser();
+        if(ObjectUtil.isNotNull(loginUser.getSwitchOrg())){
+            List<String> sourceUserIdList = sourceList.stream().map(FlowTaskHandler::getHandlerId).collect(Collectors.toList());
+            List<SysUserVO> sysUserVOList = sysUserApi.doFilterBySameAndChildOrg(sourceUserIdList, loginUser.getSwitchOrg().getOrgId());
+            return sysUserVOList.stream().map(user -> {
+                FlowTaskHandler handler = new FlowTaskHandler();
+                handler.setHandlerId(user.getUserId());
+                handler.setHandlerName(user.getUserName());
+                return handler;
+            }).collect(Collectors.toList());
+        }else{
+            return sourceList;
+        }
     }
 
 }
