@@ -1,5 +1,6 @@
 package com.ohohmiao.modules.demo.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
@@ -11,7 +12,6 @@ import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -26,7 +26,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     @Override
     public FlowInfoVO getFlowDecideResult(FlowInfoVO flowInfoVO){
-        Set<String> result = new HashSet<>();
+        Set<String> result = CollectionUtil.newHashSet();
         StpLoginUser loginUser = StpPCUtil.getLoginUser();
         StpLoginUser.UserOrg switchOrg = loginUser.getSwitchOrg();
         if(ObjectUtil.isNotNull(switchOrg) && StrUtil.isNotBlank(switchOrg.getPropExtendid())){

@@ -45,6 +45,8 @@
         <!-- mapstruct -->
         <mapstruct-plus.version>1.4.4</mapstruct-plus.version>
         <mapstruct-plus.lombok.version>0.2.0</mapstruct-plus.lombok.version>
+        <!-- beanshell -->
+        <beanshell-bsh.version>2.0b5</beanshell-bsh.version>
         <!-- 打包跳过单元测试 -->
         <skipTests>true</skipTests>
     </properties>
@@ -253,6 +255,13 @@
                 <groupId>io.github.linpeilie</groupId>
                 <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
                 <version>${mapstruct-plus.version}</version>
+            </dependency>
+
+            <!-- beanshell -->
+            <dependency>
+                <groupId>org.beanshell</groupId>
+                <artifactId>bsh</artifactId>
+                <version>${beanshell-bsh.version}</version>
             </dependency>
 
         </dependencies>

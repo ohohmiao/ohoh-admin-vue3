@@ -206,9 +206,12 @@ const acceptParams = async (params: FormProps) => {
 				formProps.value[key] = params[key];
 			} else {
 				formProps.value[key] = Object.assign({}, params[key], {
-					//表单字段默认值
+					// 表单字段默认值
 					eventType: 0,
-					implType: 0
+					implType: 0,
+					// TODO 动态脚本模式，初始化需引入的包，待扩展
+					implScript: `import java.util.*;
+import cn.hutool.core.util.*;`
 				});
 			}
 		} else {

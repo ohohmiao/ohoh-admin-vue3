@@ -1,5 +1,6 @@
 package com.ohohmiao.modules.workflow.service.impl;
 
+import bsh.Interpreter;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -27,6 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 流程事件Service实现类
@@ -123,8 +126,18 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
                 throw new CommonException(String.format("执行流程事件%s出错！", flowEventVO.getImplLocalservice()));
             }
         }else if(flowEventVO.getImplType().equals(FlowEventImplTypeEnum.SCRIPT.ordinal())){
-            // TODO 执行脚本情形
-
+            // TODO 执行脚本情形，待完善
+            try {
+                Matcher matcher = Pattern.compile("\\<(.*?)>").matcher(flowEventVO.getImplScript());
+                String javaCode = matcher.replaceAll("");
+                Interpreter interpreter = new Interpreter();
+                interpreter.set("flowInfoVO", flowInfoVO);
+                interpreter.set("flowEventVO", flowEventVO);
+                flowInfoVO = (FlowInfoVO) interpreter.eval(javaCode);
+            } catch (Exception e) {
+                log.error(ExceptionUtil.stacktraceToString(e));
+                throw new CommonException(String.format("执行动态脚本出错，流程事件id：%s！", flowEventVO.getEventId()));
+            }
         }
         return flowInfoVO;
     }

@@ -119,6 +119,12 @@
             <artifactId>mapstruct-plus-spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- beanshell -->
+        <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
