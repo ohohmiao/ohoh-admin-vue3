@@ -24,7 +24,7 @@
 						>
 							<el-input placeholder="请选择" :value="getNextHandlerNames(nextHandlerIndex)" autocomplete="off" readonly>
 								<template #append v-if="nextHandler.reselectPermit == 1">
-									<el-button>选择</el-button>
+									<el-button @click="openHandlerSelector(nextHandlerIndex)">选择</el-button>
 								</template>
 							</el-input>
 						</el-form-item>
@@ -60,7 +60,7 @@
 						>
 							<el-input placeholder="请选择" :value="getNextHandlerNames(nextHandlerIndex)" autocomplete="off" readonly>
 								<template #append v-if="nextHandler.reselectPermit == 1">
-									<el-button>选择</el-button>
+									<el-button @click="openHandlerSelector(nextHandlerIndex)">选择</el-button>
 								</template>
 							</el-input>
 						</el-form-item>
@@ -93,6 +93,7 @@
 							type="datetime"
 							value-format="YYYY-MM-DD HH:mm:ss"
 							placeholder="请选择"
+							style="width: 100%"
 						></el-date-picker>
 					</el-form-item>
 				</el-col>
@@ -116,6 +117,15 @@
 			<el-button type="primary" @click="handleSubmit">确定</el-button>
 		</template>
 	</el-dialog>
+	<!-- 审核人员选择对话框 -->
+	<SysCompositeSelector
+		ref="selectorRef"
+		title="请选择审核人员"
+		:selectorTypes="[SelectorTypeEnum.USER]"
+		:selectUserTypes="[SelectorUserTypeEnum.ORG, SelectorUserTypeEnum.POSITION]"
+		@select="handleHandlerSelected"
+	>
+	</SysCompositeSelector>
 </template>
 
 <script setup lang="ts">
@@ -123,6 +133,8 @@ import { ref } from "vue";
 import { WorkflowNode } from "@/api/modules/workflow/node";
 import { Workflow } from "@/api/modules/workflow/core";
 import { FormInstance } from "element-plus";
+import SysCompositeSelector from "@/components/Selector/SysCompositeSelector.vue";
+import { SelectorTypeEnum, SelectorUserTypeEnum } from "@/components/Selector/interface";
 
 interface FormProps {
 	nodeProp: WorkflowNode.Form;
@@ -132,10 +144,12 @@ interface FormProps {
 const formVisible = ref(false);
 const formProps = ref<FormProps>();
 
+// 审核人员姓名回显
 const getNextHandlerNames = (index: number) => {
 	return formProps.value?.rowData.nextHandlerList[index].handlers.map(handler => handler.handlerName).join(",");
 };
 
+// 分支多环节下拉框选择
 const handleMultiNodeNextHandlerSelChange = (nodeId: string, index: number) => {
 	const thizNodeList = formProps.value?.rowData.nextHandlerList[index].nodeList;
 	const selectedNode = thizNodeList?.find(node => node.nodeId == nodeId);
@@ -143,6 +157,30 @@ const handleMultiNodeNextHandlerSelChange = (nodeId: string, index: number) => {
 		formProps.value!.rowData.nextHandlerList[index] = { ...selectedNode };
 		formProps.value!.rowData.nextHandlerList[index].nodeList = thizNodeList;
 	}
+};
+
+// 选择审核人员
+const selectorRef = ref<InstanceType<typeof SysCompositeSelector>>();
+let selectorIndex = -1;
+const openHandlerSelector = (index: number) => {
+	selectorIndex = index;
+	selectorRef.value?.acceptParams({
+		selected: formProps.value?.rowData.nextHandlerList[index].handlers.map(item => {
+			return {
+				type: SelectorTypeEnum.USER,
+				value: item.handlerId,
+				label: item.handlerName
+			};
+		})
+	});
+};
+const handleHandlerSelected = (datas: { [key: string]: any }[]) => {
+	formProps.value!.rowData.nextHandlerList[selectorIndex].handlers = datas.map(item => {
+		return {
+			handlerId: item.value,
+			handlerName: item.label
+		};
+	});
 };
 
 // 接收父组件传过来的参数

@@ -7,15 +7,18 @@ import { WorkflowNode } from "./node";
  */
 // * 数据定义
 export namespace Workflow {
+	// * 流程核心信息请求参数
 	export interface ReqParams {
 		defCode?: string;
 		defVersion?: number;
 		exeId?: string;
 		curTaskId?: string;
 	}
+	// * 下一步环节信息请求参数
 	export interface ReqNextNodeParams extends ReqParams {
 		actType: number;
 	}
+	// * 流程核心信息
 	export interface FlowInfo {
 		startFlowFlag: boolean;
 		defCode: string;
@@ -31,10 +34,12 @@ export namespace Workflow {
 		flowBtns: WorkflowBtn.Form[];
 		doQueryFlag: boolean;
 	}
+	// * 流程环节办理人
 	export interface FlowTaskHandler {
 		handlerId: string;
 		handlerName: string;
 	}
+	// * 流程任务环节
 	export interface FlowTaskNode {
 		nodeId: string;
 		nodeName: string;
@@ -45,21 +50,25 @@ export namespace Workflow {
 		inclusiveGateWayId: string;
 		nodeList?: FlowTaskNode[];
 	}
+	// * 审核表单
 	export interface ProcessForm {
 		approvalResult?: number;
 		handleDeadline?: string;
 		handleOpition: string;
 	}
+	// * 流程提交表单
 	export interface FlowSubmitForm {
 		nextHandlerList: FlowTaskNode[];
 		processForm: ProcessForm;
 		businessForm: Object;
 	}
+	// * 流程执行动作枚举
 	export enum ActTypeEnum {
 		TEMPSAVE = 0,
 		SUBMIT = 1,
 		RETURN = 2
 	}
+	// * 流程节点类型枚举
 	export enum NodeTypeEnum {
 		TASK = "task",
 		END = "end",
