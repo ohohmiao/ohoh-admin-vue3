@@ -76,6 +76,9 @@ public class FlowServiceImpl implements FlowService {
             Map firstTaskNode = WorkflowUtil.getFirstTaskNode(flowDefVO.getDefJson());
             String curNodeId = (String)firstTaskNode.get("id");
             FlowNodeVO curNodeInfo = flowNodeService.get(queryDTO.getDefCode(), queryDTO.getDefVersion(), curNodeId);
+            if(ObjectUtil.isNull(curNodeInfo)){
+                throw new CommonException("操作失败，未配置流程环节属性！");
+            }
             flowInfoVO.setCurNodeInfo(curNodeInfo);
             // 当前正在运行的节点ids
             flowInfoVO.setCurRunningNodeIds(curNodeId);
@@ -90,7 +93,7 @@ public class FlowServiceImpl implements FlowService {
             FlowFormVO flowFormVO = flowFormService.getBindForm(flowInfoVO.getDefCode(),
                     flowInfoVO.getDefVersion(), flowInfoVO.getCurNodeInfo().getNodeId());
             if(ObjectUtil.isNull(flowFormVO)){
-                throw new CommonException("操作出错，流程表单未绑定！");
+                throw new CommonException("操作失败，未绑定流程环节表单！");
             }
             flowInfoVO.setFormId(flowFormVO.getFormId());
             flowInfoVO.setFormPath(flowFormVO.getFormPath());
