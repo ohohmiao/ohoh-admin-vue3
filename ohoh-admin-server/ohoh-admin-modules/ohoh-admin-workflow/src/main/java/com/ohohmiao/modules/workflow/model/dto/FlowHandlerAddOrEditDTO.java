@@ -3,6 +3,7 @@ package com.ohohmiao.modules.workflow.model.dto;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.common.validation.group.CommonAddGroup;
 import com.ohohmiao.framework.common.validation.group.CommonEditGroup;
 import com.ohohmiao.modules.system.model.pojo.SysReferRes;
@@ -29,6 +30,7 @@ import java.util.List;
 @Setter
 @ScriptAssert(lang = "javascript", script = "_this.isTargetReferResListRequired()", message = "指定人员不能为空")
 @ScriptAssert(lang = "javascript", script = "_this.isInterfaceCodeRequired()", message = "指定接口不能为空")
+@ScriptAssert(lang = "javascript", script = "_this.isReselectPermitRequired()", message = "是否允许重选办理人不能为空")
 public class FlowHandlerAddOrEditDTO {
 
     @ApiModelProperty(value = "id，编辑时必传")
@@ -73,8 +75,7 @@ public class FlowHandlerAddOrEditDTO {
     @NotNull(message = "多人审核方式不能为空")
     private Integer multiHandletype;
 
-    @ApiModelProperty(value = "是否允许重选办理人", required = true)
-    @NotNull(message = "是否允许重选办理人不能为空")
+    @ApiModelProperty(value = "是否允许重选办理人")
     private Integer reselectPermit;
 
     public boolean isTargetReferResListRequired(){
@@ -94,6 +95,17 @@ public class FlowHandlerAddOrEditDTO {
                     this.targetReferResList.clear();
                 }
                 return StrUtil.isNotBlank(this.interfaceCode);
+            }
+        }
+        return true;
+    }
+
+    public boolean isReselectPermitRequired(){
+        if(ObjectUtil.isNotNull(this.handlerType)){
+            if(!this.handlerType.equals(FlowHandlerTypeEnum.SELF.ordinal())){
+                return ObjectUtil.isNotNull(this.reselectPermit);
+            }else{
+                this.setReselectPermit(CommonWhetherEnum.YES.getCode());
             }
         }
         return true;

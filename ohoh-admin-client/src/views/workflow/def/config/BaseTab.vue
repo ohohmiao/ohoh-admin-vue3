@@ -198,7 +198,7 @@ const rules = reactive({
 				return new Promise((resolve, reject) => {
 					if (formProps.value.rowData.processLimittype != 0) {
 						if (!value) {
-							reject("请选择" + computedProcessLimitTypeName.value);
+							reject("请输入" + computedProcessLimitTypeName.value);
 						} else {
 							resolve("");
 						}

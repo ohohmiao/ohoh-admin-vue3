@@ -223,6 +223,8 @@ public class FlowServiceImpl implements FlowService {
 
         }else{
             // 自行选择情形
+            List<FlowTaskHandler> thizHandlers = CollectionUtil.newArrayList();
+            nextHandlerVO.setHandlers(thizHandlers);
             nextHandlerVO.setReselectPermit(CommonWhetherEnum.YES.getCode());
         }
         // TODO 人员过滤规则

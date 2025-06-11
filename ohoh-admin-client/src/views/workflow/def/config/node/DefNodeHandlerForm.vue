@@ -72,7 +72,7 @@
 					<el-radio-button label="串审" :value="1"></el-radio-button>
 				</el-radio-group>
 			</el-form-item>
-			<el-form-item label="允许重选办理人" prop="reselectPermit">
+			<el-form-item label="允许重选办理人" prop="reselectPermit" v-if="formProps.rowData.handlerType != 2">
 				<el-radio-group v-model="formProps.rowData.reselectPermit">
 					<el-radio-button label="禁止" :value="0"></el-radio-button>
 					<el-radio-button label="允许" :value="1"></el-radio-button>
@@ -172,7 +172,24 @@ const formRules = reactive({
 		}
 	],
 	multiHandletype: [{ required: true, message: "请选择多人审核方式" }],
-	reselectPermit: [{ required: true, message: "请选择是否允许重选办理人" }]
+	reselectPermit: [
+		{
+			type: "number",
+			validator: (rule: any, value: number) => {
+				return new Promise((resolve, reject) => {
+					if (formProps.value.rowData.handlerType == 0 || formProps.value.rowData.handlerType == 1) {
+						if (value == null) {
+							reject("请选择是否允许重选办理人");
+						} else {
+							resolve("");
+						}
+					} else {
+						resolve("");
+					}
+				});
+			}
+		}
+	]
 });
 
 // 下一环节下拉框变更
