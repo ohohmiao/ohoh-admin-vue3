@@ -3,8 +3,11 @@ package com.ohohmiao.modules.demo.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
 import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
 import com.ohohmiao.framework.security.util.StpPCUtil;
+import com.ohohmiao.modules.demo.mapper.LeaveMapper;
+import com.ohohmiao.modules.demo.model.entity.Leave;
 import com.ohohmiao.modules.demo.service.LeaveService;
 import com.ohohmiao.modules.system.model.entity.SysPosition;
 import com.ohohmiao.modules.system.service.SysPositionService;
@@ -19,7 +22,7 @@ import java.util.Set;
  * @date 2025-06-11 14:34
  */
 @Service("leaveService")
-public class LeaveServiceImpl implements LeaveService {
+public class LeaveServiceImpl extends CommonServiceImpl<LeaveMapper, Leave> implements LeaveService {
 
     @Resource
     private SysPositionService sysPositionService;

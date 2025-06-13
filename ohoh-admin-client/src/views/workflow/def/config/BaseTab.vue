@@ -54,6 +54,13 @@
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
+					<el-form-item label="业务实体" prop="flowentityClassname">
+						<el-select v-model="formProps.rowData.flowentityClassname" filterable>
+							<el-option v-for="item in flowEntityClassNameList" :key="item" :value="item" :label="item"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :span="12">
 					<el-form-item label="排序" prop="defSort">
 						<el-input-number
 							v-model="formProps.rowData.defSort"
@@ -65,7 +72,6 @@
 						></el-input-number>
 					</el-form-item>
 				</el-col>
-				<el-col :span="12"></el-col>
 				<el-col :span="24">
 					<el-form-item label="发起范围" prop="initiatorScope">
 						<el-radio-group v-model="formProps.rowData.initiatorScope">
@@ -142,7 +148,13 @@
 
 <script setup lang="ts">
 import { ref, defineProps, onMounted, reactive, computed } from "vue";
-import { WorkflowDefType, WorkflowDef, getWorkflowDefTypeTreeApi, editWorkflowHisDeployApi } from "@/api/modules/workflow/def";
+import {
+	WorkflowDefType,
+	WorkflowDef,
+	getWorkflowDefTypeTreeApi,
+	editWorkflowHisDeployApi,
+	getFlowEnitityClassNameListApi
+} from "@/api/modules/workflow/def";
 import * as eleValidate from "@/utils/eleValidate";
 import { FormInstance, ElMessage } from "element-plus";
 import { Delete, Pointer } from "@element-plus/icons-vue";
@@ -161,6 +173,8 @@ const formProps = ref<FormProps>({
 const defTypeTreeSelectDatas = ref<WorkflowDefType.TreeNode[]>([]);
 // 类别树默认展开节点
 const defTypeTreeSelectDefaultExpandKeys = ref<string[]>([]);
+// 所有注册的业务实体类名列表
+const flowEntityClassNameList = ref<string[]>([]);
 
 const rules = reactive({
 	deftypeId: [{ required: true, message: "请选择类别" }],
@@ -170,6 +184,7 @@ const rules = reactive({
 		{ validator: eleValidate.checkLetterOrNumOrUnderline, message: "仅限输入字母、数字和下划线" }
 	],
 	defVersion: [{ required: true, message: "请输入版本号" }],
+	flowentityClassname: [{ required: true, message: "请选择业务实体" }],
 	defSort: [{ required: true, message: "请输入排序" }],
 	initiatorScope: [{ required: true, message: "请选择发起范围" }],
 	targetInitiators: [
@@ -250,15 +265,19 @@ const handleTargetInitiatorsSelected = (datas: { [key: string]: any }[]) => {
 };
 
 onMounted(async () => {
-	const { data } = await getWorkflowDefTypeTreeApi();
-	handleDefTypeTreeCheckDisable(data);
+	// 获取流程类别树
+	const { data: defTypeTreeData } = await getWorkflowDefTypeTreeApi();
+	handleDefTypeTreeCheckDisable(defTypeTreeData);
 	// 默认展开一级的树节点
-	data?.forEach((item: { [key: string]: any }) => {
+	defTypeTreeData?.forEach((item: { [key: string]: any }) => {
 		if (item.parentId === "0") {
 			defTypeTreeSelectDefaultExpandKeys.value.push(item.deftypeId);
 		}
 	});
-	defTypeTreeSelectDatas.value = data;
+	defTypeTreeSelectDatas.value = defTypeTreeData;
+	// 获取注册的业务实体列表
+	const { data: flowEntityData } = await getFlowEnitityClassNameListApi();
+	flowEntityClassNameList.value = flowEntityData;
 
 	formProps.value.rowData = props.rowData;
 });

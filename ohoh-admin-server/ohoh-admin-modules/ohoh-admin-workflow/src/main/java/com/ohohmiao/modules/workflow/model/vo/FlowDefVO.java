@@ -38,6 +38,9 @@ public class FlowDefVO extends CommonVO {
     @ApiModelProperty(value = "版本号")
     private Integer defVersion;
 
+    @ApiModelProperty(value = "业务实体类名")
+    private String flowentityClassname;
+
     @ApiModelProperty(value = "排序")
     private Integer defSort;
 

@@ -42,11 +42,10 @@ const preDefinedMethods: Record<string, Function> = {
 	 * 执行流程
 	 */
 	doWorkflowSubmit: async () => {
-		let thizValid = true;
-		let thizBusParams = null;
-		emit("doWorkflowSubmit", (valid: boolean, busParams: Object) => {
-			thizValid = valid;
-			thizBusParams = busParams;
+		const { valid: thizValid, busParams: thizBusParams } = await new Promise<{ valid: boolean; busParams: object }>(resolve => {
+			emit("doWorkflowSubmit", (valid: boolean, busParams: object) => {
+				resolve({ valid, busParams });
+			});
 		});
 		if (!thizValid) {
 			return;

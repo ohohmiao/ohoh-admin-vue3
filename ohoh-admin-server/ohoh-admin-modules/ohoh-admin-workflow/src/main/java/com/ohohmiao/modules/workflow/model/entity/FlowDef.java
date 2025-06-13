@@ -35,6 +35,9 @@ public class FlowDef extends CommonEntity {
     private Integer defVersion;
 
     @TableField
+    private String flowentityClassname;
+
+    @TableField
     private Integer defSort;
 
     @TableField(insertStrategy = FieldStrategy.ALWAYS, updateStrategy = FieldStrategy.ALWAYS)

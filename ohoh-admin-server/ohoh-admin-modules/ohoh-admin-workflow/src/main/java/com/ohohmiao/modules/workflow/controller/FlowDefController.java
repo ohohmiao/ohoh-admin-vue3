@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Set;
 
 /**
  * 流程定义controller
@@ -111,6 +112,18 @@ public class FlowDefController {
     public CommonResp<String> delete(@RequestBody @Validated CommonIdDTO idDTO){
         flowDefService.delete(idDTO);
         return CommonResp.success("删除成功");
+    }
+
+    /**
+     * 列出被@FlowEntity标注的实体类名
+     * @return
+     */
+    @ApiOperation(value = "列出被@FlowEntity标注的实体类名")
+    @ApiOperationSupport(order = 6)
+    @SaPcCheckPermission("/workflowDef/listFlowEnitityClassNames")
+    @PostMapping("/workflowDef/listFlowEnitityClassNames")
+    public CommonResp<Set<String>> listFlowEnitityClassNames(){
+        return CommonResp.data(flowDefService.listFlowEnitityClassNames());
     }
 
 }

@@ -8,6 +8,8 @@ import com.ohohmiao.modules.workflow.model.dto.FlowDefPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.FlowDef;
 import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 
+import java.util.Set;
+
 /**
  * 流程定义Service
  *
@@ -62,5 +64,11 @@ public interface FlowDefService extends CommonService<FlowDef> {
      * @return
      */
     FlowDef getByDefCodeAndDefVersion(String defCode, Integer defVersion);
+
+    /**
+     * 列出被@FlowEntity标注的类名
+     * @return
+     */
+    Set<String> listFlowEnitityClassNames();
 
 }

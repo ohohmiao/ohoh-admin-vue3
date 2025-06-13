@@ -9,6 +9,7 @@ import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.common.exception.CommonException;
 import com.ohohmiao.modules.system.api.SysUserApi;
 import com.ohohmiao.modules.system.model.vo.SysUserVO;
+import com.ohohmiao.modules.workflow.annotation.FlowEntity;
 import com.ohohmiao.modules.workflow.enums.FlowActTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowEventTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowHandlerTypeEnum;
@@ -65,7 +66,7 @@ public class FlowServiceImpl implements FlowService {
         FlowInfoVO flowInfoVO = new FlowInfoVO();
         FlowDefVO flowDefVO = null;
         if(StrUtil.isNotBlank(queryDTO.getProcessId())){
-
+            // TODO 从流程实例表+流程任务表获取
         }else{
             flowInfoVO.setStartFlowFlag(true);
             flowInfoVO.setDefCode(queryDTO.getDefCode());
@@ -74,9 +75,6 @@ public class FlowServiceImpl implements FlowService {
             Integer defVersion = ObjectUtil.isNotNull(queryDTO.getDefVersion())? queryDTO.getDefVersion(): 1;
             // 查询指定版本流程定义
             flowDefVO = flowHisDeployService.get(queryDTO.getDefCode(), defVersion, false);
-            flowInfoVO.setDefName(flowDefVO.getDefName());
-            flowInfoVO.setDefJson(flowDefVO.getDefJson());
-            flowInfoVO.setDefXml(flowDefVO.getDefXml());
             // 查询第一个任务节点
             Map firstTaskNode = WorkflowUtil.getFirstTaskNode(flowDefVO.getDefJson());
             String curNodeId = (String)firstTaskNode.get("id");
@@ -87,12 +85,11 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setCurNodeInfo(curNodeInfo);
             // 当前正在运行的节点ids
             flowInfoVO.setCurRunningNodeIds(curNodeId);
-            if(includeExtraInfo){
-                // 查询环节绑定的按钮
-                List<FlowBtnVO> flowBtnVOList = flowBtnService.listBindBtns(queryDTO.getDefCode(), queryDTO.getDefVersion(), curNodeId);
-                flowInfoVO.setFlowBtns(flowBtnVOList);
-            }
         }
+        flowInfoVO.setFlowEntityClassName(flowDefVO.getFlowentityClassname());
+        flowInfoVO.setDefName(flowDefVO.getDefName());
+        flowInfoVO.setDefJson(flowDefVO.getDefJson());
+        flowInfoVO.setDefXml(flowDefVO.getDefXml());
         if(includeExtraInfo){
             // 查询绑定的流程表单
             FlowFormVO flowFormVO = flowFormService.getBindForm(flowInfoVO.getDefCode(),
@@ -102,6 +99,14 @@ public class FlowServiceImpl implements FlowService {
             }
             flowInfoVO.setFormId(flowFormVO.getFormId());
             flowInfoVO.setFormPath(flowFormVO.getFormPath());
+            // 查询环节绑定的按钮
+            List<FlowBtnVO> flowBtnVOList = flowBtnService.listBindBtns(
+                    queryDTO.getDefCode(), queryDTO.getDefVersion(), flowInfoVO.getCurNodeInfo().getNodeId());
+            flowInfoVO.setFlowBtns(flowBtnVOList);
+        }
+        // 执行业务数据读取事件
+        if(flowEventService.executeBindEvent(flowInfoVO, FlowEventTypeEnum.READ.ordinal()) == null){
+            this.executeDefaultReadEvent(flowInfoVO);
         }
 
         return flowInfoVO;
@@ -119,6 +124,24 @@ public class FlowServiceImpl implements FlowService {
 
         }
         return nextHandlerList;
+    }
+
+    /**
+     * 执行默认的业务数据读取事件
+     * @param flowInfoVO
+     */
+    private void executeDefaultReadEvent(FlowInfoVO flowInfoVO){
+        if(StrUtil.isNotBlank(flowInfoVO.getProcessId())){
+            // TODO 从流程实例表获取业务表数据
+        }else{
+            try {
+                Class<?> clazz = Class.forName(flowInfoVO.getFlowEntityClassName());
+                flowInfoVO.setEntityVO(clazz.getAnnotation(FlowEntity.class).value().newInstance());
+            } catch (Exception e) {
+                log.error(ExceptionUtil.stacktraceToString(e));
+                throw new CommonException(String.format("操作失败，获取流程业务实体异常！"));
+            }
+        }
     }
 
     /**

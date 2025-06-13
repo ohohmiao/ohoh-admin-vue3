@@ -37,6 +37,7 @@ export namespace WorkflowDef {
 		defName: string;
 		defCode: string;
 		defVersion: number;
+		flowentityClassname: string;
 		defSort?: number;
 		defXml: string;
 		defJson: string;
@@ -116,4 +117,9 @@ export const getWorkflowTypeFirstLevelNodeListApi = () => {
 // * 根据流程类别，获取可发起的流程列表
 export const getWorkflowIntitiableListApi = (params: { deftypeId: string }) => {
 	return http.post<Map<string, WorkflowDef.Form[]>>("/workflowHisDeploy/listInitiableByDeftype", params);
+};
+
+// * 列出被@FlowEntity标注的实体类名
+export const getFlowEnitityClassNameListApi = () => {
+	return http.post<string[]>("/workflowDef/listFlowEnitityClassNames");
 };

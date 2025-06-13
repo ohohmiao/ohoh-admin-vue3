@@ -38,11 +38,11 @@ public class FlowFormBindAddOrEditDTO {
     private String formId;
 
     @ApiModelProperty(value = "表单名称", required = true)
-    @NotBlank(message = " 表单名称不能为空")
+    @NotBlank(message = "表单名称不能为空")
     private String formName;
 
     @ApiModelProperty(value = "表单路径", required = true)
-    @NotBlank(message = " 表单路径不能为空")
+    @NotBlank(message = "表单路径不能为空")
     private String formPath;
 
     @ApiModelProperty(value = "绑定环节id", required = true)

@@ -19,7 +19,7 @@ export namespace Workflow {
 		actType: number;
 	}
 	// * 流程核心信息
-	export interface FlowInfo {
+	export interface FlowInfo<T> {
 		startFlowFlag: boolean;
 		defCode: string;
 		defVersion: number;
@@ -32,6 +32,10 @@ export namespace Workflow {
 		curNodeInfo: WorkflowNode.Form;
 		curRunningNodeIds: string;
 		flowBtns: WorkflowBtn.Form[];
+		processId: string;
+		flowEntityClassName: string;
+		entityVO: T;
+		//entityId: string;
 		doQueryFlag: boolean;
 	}
 	// * 流程环节办理人
@@ -60,7 +64,7 @@ export namespace Workflow {
 	export interface FlowSubmitForm {
 		nextHandlerList: FlowTaskNode[];
 		processForm: ProcessForm;
-		businessForm: Object;
+		businessForm: object;
 	}
 	// * 流程执行动作枚举
 	export enum ActTypeEnum {
@@ -80,7 +84,8 @@ export namespace Workflow {
 
 // * 获取流程核心信息
 export const getWorkflowFlowInfoApi = (params: Workflow.ReqParams) => {
-	return http.post<Workflow.FlowInfo>("/workflow/getFlowInfo", params);
+	//return http.post<Workflow.FlowInfo>("/workflow/getFlowInfo", params);
+	return http.post("/workflow/getFlowInfo", params);
 };
 
 // * 查询流程下一环节信息

@@ -44,6 +44,10 @@ public class FlowHisDeployDTO {
     @NotNull(message = "版本号不能为空")
     private Integer defVersion;
 
+    @ApiModelProperty(value = "业务实体类名", required = true)
+    @NotBlank(message = "业务实体类名不能为空")
+    private String flowentityClassname;
+
     @ApiModelProperty(value = "排序", required = true)
     @NotNull(message = "排序不能为空")
     private Integer defSort;

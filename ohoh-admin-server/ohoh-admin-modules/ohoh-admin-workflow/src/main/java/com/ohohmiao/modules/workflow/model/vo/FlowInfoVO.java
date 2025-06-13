@@ -17,7 +17,7 @@ import java.util.Set;
 @ApiModel("流程核心信息")
 @Getter
 @Setter
-public class FlowInfoVO {
+public class FlowInfoVO<T> {
 
     @ApiModelProperty(value = "是否发起流程阶段")
     private Boolean startFlowFlag;
@@ -57,10 +57,19 @@ public class FlowInfoVO {
     @ApiModelProperty(value = "流程实例id")
     private String processId;
 
-    private String curTaskId;
-
     @ApiModelProperty(value = "下一环节节点id，如存储分支判断节点事件结果")
     private Set<String> nextTaskNodeIds;
+
+    @ApiModelProperty(value = "业务实体类")
+    private String flowEntityClassName;
+
+    @ApiModelProperty(value = "业务实体VO")
+    private T entityVO;
+
+    //@ApiModelProperty(value = "业务表记录id")
+    //private String entityId;
+
+    private String curTaskId;
 
     @ApiModelProperty(value = "是否处于查阅状态")
     private Boolean doQueryFlag;

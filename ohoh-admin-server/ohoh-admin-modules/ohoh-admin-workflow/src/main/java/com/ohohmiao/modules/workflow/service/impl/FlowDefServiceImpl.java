@@ -15,6 +15,7 @@ import com.ohohmiao.framework.common.listener.CommonDataChangeEventCenter;
 import com.ohohmiao.framework.common.model.dto.CommonIdDTO;
 import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
+import com.ohohmiao.modules.workflow.annotation.FlowEntity;
 import com.ohohmiao.modules.workflow.enums.FlowDataListenerEnum;
 import com.ohohmiao.modules.workflow.mapper.FlowDefMapper;
 import com.ohohmiao.modules.workflow.model.dto.FlowDefAddOrEditDTO;
@@ -25,11 +26,16 @@ import com.ohohmiao.modules.workflow.model.vo.FlowDefVO;
 import com.ohohmiao.modules.workflow.service.FlowDefService;
 import com.ohohmiao.modules.workflow.service.FlowDefTypeService;
 import com.ohohmiao.modules.workflow.util.WorkflowUtil;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 流程定义Service实现类
@@ -183,6 +189,16 @@ public class FlowDefServiceImpl extends CommonServiceImpl<FlowDefMapper, FlowDef
         getWrapper.eq(FlowDef::getDefCode, defCode);
         getWrapper.eq(FlowDef::getDefVersion, defVersion);
         return this.getOne(getWrapper);
+    }
+
+    @Override
+    public Set<String> listFlowEnitityClassNames(){
+        ClassPathScanningCandidateComponentProvider scanner =
+                new ClassPathScanningCandidateComponentProvider(false);
+        scanner.addIncludeFilter(new AnnotationTypeFilter(FlowEntity.class));
+        String scanBasePackage = "com.ohohmiao.modules";
+        return scanner.findCandidateComponents(scanBasePackage).stream().map(
+                BeanDefinition::getBeanClassName).collect(Collectors.toSet());
     }
 
 }
