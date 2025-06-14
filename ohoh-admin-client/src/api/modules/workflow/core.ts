@@ -17,6 +17,7 @@ export namespace Workflow {
 	// * 下一步环节信息请求参数
 	export interface ReqNextNodeParams extends ReqParams {
 		actType: number;
+		businessForm: object;
 	}
 	// * 流程核心信息
 	export interface FlowInfo<T> {

@@ -53,7 +53,8 @@ const preDefinedMethods: Record<string, Function> = {
 		const { data } = await getWorkflowNextNodeListApi({
 			defCode: props.defCode,
 			defVersion: props.defVersion,
-			actType: Workflow.ActTypeEnum.SUBMIT
+			actType: Workflow.ActTypeEnum.SUBMIT,
+			businessForm: thizBusParams
 		});
 		submitFlowFormRef.value.acceptParams({
 			nodeProp: props.nodeProp,

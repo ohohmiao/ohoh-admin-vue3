@@ -19,4 +19,7 @@ public class FlowNextNodeQueryDTO extends FlowInfoQueryDTO {
     @ApiModelProperty(value = "执行动作")
     private Integer actType;
 
+    @ApiModelProperty(value = "流程表单业务数据")
+    private Object businessForm;
+
 }

@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class LeaveVO extends CommonVO {
+public class LeaveVO {
 
     private String leaveId;
 

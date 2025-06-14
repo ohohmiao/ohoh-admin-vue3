@@ -1,5 +1,6 @@
 package com.ohohmiao.modules.workflow.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -115,6 +116,11 @@ public class FlowServiceImpl implements FlowService {
     @Override
     public List<FlowTaskNodeVO> getNextNodeList(FlowNextNodeQueryDTO queryDTO){
         FlowInfoVO flowInfoVO = this.getFlowInfo(queryDTO, false);
+        // 将页面传递的流程表单业务字段注入
+        if(ObjectUtil.isNotNull(queryDTO.getBusinessForm())){
+            flowInfoVO.setEntityVO(BeanUtil.copyProperties(
+                    queryDTO.getBusinessForm(), flowInfoVO.getEntityVO().getClass()));
+        }
         List<FlowTaskNodeVO> nextHandlerList = CollectionUtil.newArrayList();
         if(queryDTO.getActType().equals(FlowActTypeEnum.SUBMIT.ordinal())){
             // 流程提交情形
