@@ -1,14 +1,15 @@
-# ohoh-admin-vue3
+# ✨ ohoh-admin-vue3 🚀
 
-### 介绍 
+### 项目介绍 
 
-基于Spring Boot + Vue3前后端分离的开发脚手架。
+基于Spring Boot + Vue3前后端分离的开发脚手架。正在开发更适合咱中国宝宝体质的工作流引擎～
 
 - 后端技术栈：Spring Boot2.7.12、MyBatis-Plus、MySQL、Redis。
 - 前端采用 [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin) 框架：Vue3.4、TypeScript、Vite5、Pinia、Element-Plus。
 - 权限认证框架依赖 [Sa-Token](https://sa-token.cc/) 实现，让鉴权变得简单、优雅。
-- RBAC权限设计，支持菜单和按钮级的动态权限控制，支持数据权限分级授权。
+- RBAC权限设计，支持菜单和按钮级的动态权限控制，支持权限分级授权。
 - 系统功能齐全的后端管理基础框架。
+- 集成bpmn.js流程设计器，加上极简的流程配置，降低工作流具体业务开发难度，并且可自由扩展实现定制化需求。
 
 ### 代码仓库 
 
@@ -17,8 +18,8 @@
 
 ### 项目功能 
 > 版本 2
-> - 流程定义管理：bpmn.js流程设计器。
 > - 节假日管理：维护节假日数据，计算工作日。
+> - 流程定义管理：支持图形化流程建模，可视化配置流程节点与审批规则。
 > - 开发ing...
 
 > 版本 1.0.0
@@ -41,6 +42,14 @@ ohoh-admin-vue3
 └─ README.md                # README 介绍
 ```
 ### 效果图
+- bpmn.js流程设计器
+
+<img src="images/bpmnjs流程设计器.gif" width="666"/>
+
+- 流程配置
+
+<img src="images/流程配置.gif" width="666"/>
+
 - 登录页
 
 <img src="images/登录页.png" width="666" />
@@ -69,11 +78,7 @@ ohoh-admin-vue3
 
 <img src="images/给用户授权角色.gif" width="666" />
 
-- bpmn.js流程设计器
-
-<img src="images/bpmnjs流程设计器.gif" width="666"/>
-
 ### Respect！！！
 
-- [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin)：优雅的前端框架。
-- [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus)：是重写 [RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) ，针对分布式集群与多租户场景的全方位升级。
+- [Geeker-Admin](https://gitee.com/HalseySpicy/Geeker-Admin) 
+- [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus) 
