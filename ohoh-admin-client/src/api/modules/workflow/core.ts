@@ -65,7 +65,7 @@ export namespace Workflow {
 	export interface FlowSubmitForm {
 		nextHandlerList: FlowTaskNode[];
 		processForm: ProcessForm;
-		businessForm: object;
+		businessForm: Record<string, any>;
 	}
 	// * 流程执行动作枚举
 	export enum ActTypeEnum {
