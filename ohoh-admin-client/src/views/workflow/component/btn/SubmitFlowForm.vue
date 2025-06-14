@@ -100,10 +100,10 @@
 			</el-row>
 			<el-row>
 				<el-col :span="24">
-					<el-form-item label="审核意见" prop="processForm.handleOpition">
+					<el-form-item label="审核意见" prop="processForm.handleOpinion">
 						<el-input
 							type="textarea"
-							v-model.trim="formProps!.rowData.processForm.handleOpition"
+							v-model.trim="formProps!.rowData.processForm.handleOpinion"
 							:maxlength="300"
 							:rows="8"
 							show-word-limit

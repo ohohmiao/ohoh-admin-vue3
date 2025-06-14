@@ -2,6 +2,7 @@ package com.ohohmiao.modules.workflow.service;
 
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowSubmitDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
 
@@ -29,5 +30,11 @@ public interface FlowService {
      * @return
      */
     List<FlowTaskNodeVO> getNextNodeList(FlowNextNodeQueryDTO queryDTO);
+
+    /**
+     * 提交流程
+     * @param submitDTO
+     */
+    void doSubmit(FlowSubmitDTO submitDTO);
 
 }

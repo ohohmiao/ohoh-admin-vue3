@@ -17,12 +17,14 @@ import com.ohohmiao.modules.workflow.enums.FlowHandlerTypeEnum;
 import com.ohohmiao.modules.workflow.enums.FlowNodeTypeEnum;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowSubmitDTO;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.*;
 import com.ohohmiao.modules.workflow.service.*;
 import com.ohohmiao.modules.workflow.util.WorkflowUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
@@ -130,6 +132,12 @@ public class FlowServiceImpl implements FlowService {
 
         }
         return nextHandlerList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void doSubmit(FlowSubmitDTO submitDTO){
+
     }
 
     /**

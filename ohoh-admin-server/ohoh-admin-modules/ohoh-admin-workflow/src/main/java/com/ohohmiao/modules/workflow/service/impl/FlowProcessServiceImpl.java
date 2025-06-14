@@ -1,8 +1,11 @@
 package com.ohohmiao.modules.workflow.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
 import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
 import com.ohohmiao.framework.security.util.StpPCUtil;
+import com.ohohmiao.modules.workflow.mapper.FlowProcessMapper;
+import com.ohohmiao.modules.workflow.model.entity.FlowProcess;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import com.ohohmiao.modules.workflow.service.FlowProcessService;
@@ -18,7 +21,7 @@ import java.util.List;
  * @date 2025-06-11 10:22
  */
 @Service("flowProcessService")
-public class FlowProcessServiceImpl implements FlowProcessService {
+public class FlowProcessServiceImpl extends CommonServiceImpl<FlowProcessMapper, FlowProcess> implements FlowProcessService {
 
     @Override
     public List<FlowTaskHandler> getCreator(FlowInfoVO flowInfoVO){

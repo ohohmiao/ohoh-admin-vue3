@@ -59,7 +59,7 @@ export namespace Workflow {
 	export interface ProcessForm {
 		approvalResult?: number;
 		handleDeadline?: string;
-		handleOpition: string;
+		handleOpinion: string;
 	}
 	// * 流程提交表单
 	export interface FlowSubmitForm {
@@ -91,4 +91,9 @@ export const getWorkflowFlowInfoApi = (params: Workflow.ReqParams) => {
 // * 查询流程下一环节信息
 export const getWorkflowNextNodeListApi = (params: Workflow.ReqNextNodeParams) => {
 	return http.post<Workflow.FlowTaskNode[]>("/workflow/getNextNodeList", params);
+};
+
+// * 提交流程
+export const doSubmitFlowApi = (params: Workflow.FlowSubmitForm) => {
+	return http.post<string>("/workflow/submit", params);
 };

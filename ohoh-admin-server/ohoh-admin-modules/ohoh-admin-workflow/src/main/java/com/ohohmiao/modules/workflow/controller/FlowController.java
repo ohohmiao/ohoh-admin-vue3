@@ -3,9 +3,11 @@ package com.ohohmiao.modules.workflow.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
+import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
+import com.ohohmiao.modules.workflow.model.dto.FlowSubmitDTO;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
 import com.ohohmiao.modules.workflow.service.FlowService;
@@ -57,6 +59,21 @@ public class FlowController {
     @PostMapping("/workflow/getNextNodeList")
     public CommonResp<List<FlowTaskNodeVO>> getNextNodeList(@RequestBody @Validated FlowNextNodeQueryDTO queryDTO){
         return CommonResp.data(flowService.getNextNodeList(queryDTO));
+    }
+
+    /**
+     * 提交流程
+     * @param submitDTO
+     * @return
+     */
+    @ApiOperation(value = "提交流程")
+    @ApiOperationSupport(order = 3)
+    @CommonLog("提交流程")
+    @SaPcCheckPermission("/workflow/submit")
+    @PostMapping("/workflow/submit")
+    public CommonResp<String> submit(@RequestBody @Validated FlowSubmitDTO submitDTO){
+        flowService.doSubmit(submitDTO);
+        return CommonResp.success("操作成功");
     }
 
 }

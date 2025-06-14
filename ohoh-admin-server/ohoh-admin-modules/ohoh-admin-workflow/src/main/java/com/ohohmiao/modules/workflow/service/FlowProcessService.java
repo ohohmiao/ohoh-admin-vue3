@@ -1,5 +1,7 @@
 package com.ohohmiao.modules.workflow.service;
 
+import com.ohohmiao.framework.mybatis.service.CommonService;
+import com.ohohmiao.modules.workflow.model.entity.FlowProcess;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 
@@ -11,7 +13,7 @@ import java.util.List;
  * @author ohohmiao
  * @date 2025-06-11 10:22
  */
-public interface FlowProcessService {
+public interface FlowProcessService extends CommonService<FlowProcess> {
 
     /**
      * 获取流程发起人
