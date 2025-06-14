@@ -10,7 +10,7 @@
 			<el-tab-pane label="环节属性" name="baseTab">
 				<DefNodePropTab :row-data="formProps.rowData"></DefNodePropTab>
 			</el-tab-pane>
-			<el-tab-pane label="表单字段权限" name="formTab"></el-tab-pane>
+			<!--<el-tab-pane label="表单字段权限" name="formTab"></el-tab-pane>-->
 			<el-tab-pane label="下一步办理人" name="nextHandlerTab" v-if="computedNextHandlerTab">
 				<DefNodeHandlerListTab
 					:def-code="tabProps.defCode"
