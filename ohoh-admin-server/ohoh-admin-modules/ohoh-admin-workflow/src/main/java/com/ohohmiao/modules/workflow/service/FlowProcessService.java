@@ -14,7 +14,6 @@ import java.util.List;
 public interface FlowProcessService {
 
     /**
-     * TODO 指定接口暂定结构
      * 获取流程发起人
      * @param flowInfoVO
      * @return

@@ -90,7 +90,7 @@ const dynamicFlowFormRef = shallowRef();
 // Vite自动扫描指定目录下的Vue文件
 const dynamicFlowFormViews = import.meta.glob("@/views/workflow/workspace/**/*.vue");
 // 流程核心信息
-let thizFlowInfo: Workflow.FlowInfo;
+let thizFlowInfo: Workflow.FlowInfo<any>;
 
 // 发起流程
 const handleClick = async (item: any) => {

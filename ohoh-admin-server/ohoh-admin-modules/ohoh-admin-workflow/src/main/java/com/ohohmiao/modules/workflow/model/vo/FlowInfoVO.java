@@ -54,9 +54,6 @@ public class FlowInfoVO<T> {
     @ApiModelProperty(value = "当前环节绑定的流程按钮")
     private List<FlowBtnVO> flowBtns;
 
-    @ApiModelProperty(value = "流程实例id")
-    private String processId;
-
     @ApiModelProperty(value = "下一环节节点id，如存储分支判断节点事件结果")
     private Set<String> nextTaskNodeIds;
 
@@ -68,6 +65,9 @@ public class FlowInfoVO<T> {
 
     //@ApiModelProperty(value = "业务表记录id")
     //private String entityId;
+
+    @ApiModelProperty(value = "流程实例id")
+    private String processId;
 
     private String curTaskId;
 

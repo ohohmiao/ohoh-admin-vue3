@@ -84,8 +84,7 @@ export namespace Workflow {
 
 // * 获取流程核心信息
 export const getWorkflowFlowInfoApi = (params: Workflow.ReqParams) => {
-	//return http.post<Workflow.FlowInfo>("/workflow/getFlowInfo", params);
-	return http.post("/workflow/getFlowInfo", params);
+	return http.post<Workflow.FlowInfo<any>>("/workflow/getFlowInfo", params);
 };
 
 // * 查询流程下一环节信息
