@@ -1,12 +1,12 @@
 package com.ohohmiao.modules.system.model.vo;
 
-import cn.hutool.core.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * FullCalendar事件VO
@@ -46,8 +46,8 @@ public class FullCalendarEventVO {
     @ApiModelProperty(value = "字体对齐")
     private String textAlign;
 
-    public FullCalendarEventVO(Date date){
-        String formatDate = DateUtil.format(date, "yyyy-MM-dd");
+    public FullCalendarEventVO(LocalDate date){
+        String formatDate = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.id = formatDate;
         this.title = "休";
         this.allDay = true;
