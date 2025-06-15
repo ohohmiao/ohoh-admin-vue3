@@ -15,7 +15,12 @@ public enum FlowCacheKeyEnum {
     /**
      * 流程定义类别
      */
-    DEFTYPE_ALL("workflow_deftype:all", PlatRedisUtil.TMPKEY_TTL);
+    DEFTYPE_ALL("workflow_deftype:all", PlatRedisUtil.TMPKEY_TTL),
+
+    /**
+     * 流程实例流水号
+     */
+    WORKFLOW_SERIAL("workflow:serial:%s:%s", PlatRedisUtil.TMPKEY_TTL);
 
     /**
      * 缓存key

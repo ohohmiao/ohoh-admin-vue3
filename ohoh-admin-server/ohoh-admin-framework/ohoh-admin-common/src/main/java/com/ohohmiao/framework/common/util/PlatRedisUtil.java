@@ -261,4 +261,13 @@ public class PlatRedisUtil {
         redisTemplate.execute(script, keys, args);
     }
 
+    /**
+     * 计数
+     * @param key
+     * @return
+     */
+    public Long increment(String key){
+        return redisTemplate.opsForValue().increment(key);
+    }
+
 }

@@ -6,18 +6,20 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.common.exception.CommonException;
+import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
+import com.ohohmiao.framework.security.util.StpPCUtil;
 import com.ohohmiao.modules.system.api.SysUserApi;
 import com.ohohmiao.modules.system.model.vo.SysUserVO;
 import com.ohohmiao.modules.workflow.annotation.FlowEntity;
-import com.ohohmiao.modules.workflow.enums.FlowActTypeEnum;
-import com.ohohmiao.modules.workflow.enums.FlowEventTypeEnum;
-import com.ohohmiao.modules.workflow.enums.FlowHandlerTypeEnum;
-import com.ohohmiao.modules.workflow.enums.FlowNodeTypeEnum;
+import com.ohohmiao.modules.workflow.enums.*;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowSubmitDTO;
+import com.ohohmiao.modules.workflow.model.entity.FlowProcess;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.*;
 import com.ohohmiao.modules.workflow.service.*;
@@ -27,6 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -64,16 +68,51 @@ public class FlowServiceImpl implements FlowService {
     @Resource(name = "sysUserApi")
     private SysUserApi sysUserApi;
 
+    @Resource
+    private FlowProcessService flowProcessService;
+
     @Override
     public FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO, boolean includeExtraInfo){
         FlowInfoVO flowInfoVO = new FlowInfoVO();
         FlowDefVO flowDefVO = null;
         if(StrUtil.isNotBlank(queryDTO.getProcessId())){
             // TODO 从流程实例表+流程任务表获取
+            flowInfoVO.setStartFlowFlag(false);
+            FlowProcess flowProcess = flowProcessService.getById(queryDTO.getProcessId());
+            if(ObjectUtil.isNull(flowProcess)){
+                throw new CommonException("操作失败，不存在的流程实例！");
+            }
+            flowInfoVO.setDefCode(flowProcess.getDefCode());
+            flowInfoVO.setDefVersion(flowProcess.getDefVersion());
+            flowInfoVO.setProcessId(flowProcess.getProcessId());
+            flowInfoVO.setProcessSubject(flowProcess.getProcessSubject());
+            flowInfoVO.setCreatorType(flowProcess.getCreatorType());
+            flowInfoVO.setCreatorId(flowProcess.getCreatorId());
+            flowInfoVO.setCreatorName(flowProcess.getCreatorName());
+            flowInfoVO.setCurRunningNodeIds(flowProcess.getCurrunningNodeids());
+            flowInfoVO.setBusTableName(flowProcess.getBusTablename());
+            flowInfoVO.setBusRecordId(flowProcess.getBusRecordid());
+            // 查询指定版本流程定义
+            flowDefVO = flowHisDeployService.get(flowProcess.getDefCode(), flowProcess.getDefVersion(), false);
+            if(StrUtil.isNotBlank(queryDTO.getCurTaskId())){
+                // TODO 查询流程任务表，回填当前环节信息+当前任务状态
+                
+                flowInfoVO.setDoQueryFlag(false);
+            }else{
+                // 查阅情况，无当前操作节点信息
+                flowInfoVO.setCurNodeInfo(null);
+                flowInfoVO.setDoQueryFlag(true);
+            }
         }else{
             flowInfoVO.setStartFlowFlag(true);
             flowInfoVO.setDefCode(queryDTO.getDefCode());
             flowInfoVO.setDefVersion(queryDTO.getDefVersion());
+            if(ObjectUtil.isNull(queryDTO.getCreatorId())){
+                flowInfoVO.setCreatorType(ProcessCreatorTypeEnum.SYSUSER.ordinal());
+                StpLoginUser loginUser = StpPCUtil.getLoginUser();
+                flowInfoVO.setCreatorId(loginUser.getUserId());
+                flowInfoVO.setCreatorName(loginUser.getUserName());
+            }
             flowInfoVO.setDoQueryFlag(false);
             Integer defVersion = ObjectUtil.isNotNull(queryDTO.getDefVersion())? queryDTO.getDefVersion(): 1;
             // 查询指定版本流程定义
@@ -88,11 +127,20 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setCurNodeInfo(curNodeInfo);
             // 当前正在运行的节点ids
             flowInfoVO.setCurRunningNodeIds(curNodeId);
+            try {
+                Class<?> clazz = Class.forName(flowDefVO.getFlowentityClassname());
+                flowInfoVO.setBusTableName(clazz.getAnnotation(TableName.class).value());
+            } catch (Exception e) {
+                log.error(ExceptionUtil.stacktraceToString(e));
+                throw new CommonException("操作失败，获取业务实体信息异常！");
+            }
         }
         flowInfoVO.setFlowEntityClassName(flowDefVO.getFlowentityClassname());
         flowInfoVO.setDefName(flowDefVO.getDefName());
         flowInfoVO.setDefJson(flowDefVO.getDefJson());
         flowInfoVO.setDefXml(flowDefVO.getDefXml());
+        flowInfoVO.setProcessLimittype(flowDefVO.getProcessLimittype());
+        flowInfoVO.setProcessLimitvalue(flowDefVO.getProcessLimitvalue());
         if(includeExtraInfo){
             // 查询绑定的流程表单
             FlowFormVO flowFormVO = flowFormService.getBindForm(flowInfoVO.getDefCode(),
@@ -137,24 +185,89 @@ public class FlowServiceImpl implements FlowService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void doSubmit(FlowSubmitDTO submitDTO){
+        // 1、获取流程核心信息
+        FlowInfoVO flowInfoVO = this.getFlowInfo(submitDTO, false);
+        // 将页面传递的流程表单业务字段注入
+        if(ObjectUtil.isNotNull(submitDTO.getBusinessForm())){
+            flowInfoVO.setEntityVO(BeanUtil.copyProperties(
+                    submitDTO.getBusinessForm(), flowInfoVO.getEntityVO().getClass()));
+        }
+        // TODO 2、根据当前任务id，判断是否重复请求
+        // 3、执行绑定的流程前置事件
+        flowEventService.executeBindEvent(flowInfoVO, FlowEventTypeEnum.PRE.ordinal());
+        // 4、执行绑定的流程存储事件，有则执行，无则执行默认的存储事件
+        if(flowEventService.executeBindEvent(flowInfoVO, FlowEventTypeEnum.WRITE.ordinal()) == null){
+            this.executeDefaultWriteEvent(flowInfoVO);
+        }
+        // 5、保存或更新流程实例表
+        flowProcessService.saveOrUpdate(flowInfoVO, false);
+        // TODO 6、派发流程任务
 
     }
 
     /**
-     * 执行默认的业务数据读取事件
+     * 执行默认的流程读取事件
      * @param flowInfoVO
      */
     private void executeDefaultReadEvent(FlowInfoVO flowInfoVO){
-        if(StrUtil.isNotBlank(flowInfoVO.getProcessId())){
-            // TODO 从流程实例表获取业务表数据
-        }else{
-            try {
+        try {
+            if(StrUtil.isNotBlank(flowInfoVO.getProcessId())){
+                // 获取实体类类型
+                Class<?> entityClazz = Class.forName(flowInfoVO.getFlowEntityClassName());
+                // 获取对应Mapper类
+                Class<?> beanMapperClazz = entityClazz.getAnnotation(FlowEntity.class).mapper();
+                // 获取Mapper实例
+                Object mapperBean = SpringUtil.getBean(beanMapperClazz);
+                // 调用selectById方法
+                Method selectByIdMethod = beanMapperClazz.getMethod("selectById", Serializable.class);
+                flowInfoVO.setEntityVO(selectByIdMethod.invoke(mapperBean, flowInfoVO.getBusRecordId(), entityClazz));
+            }else{
+                // 发起流程情形，构造空业务实体
                 Class<?> clazz = Class.forName(flowInfoVO.getFlowEntityClassName());
                 flowInfoVO.setEntityVO(clazz.getAnnotation(FlowEntity.class).value().newInstance());
-            } catch (Exception e) {
-                log.error(ExceptionUtil.stacktraceToString(e));
-                throw new CommonException(String.format("操作失败，获取流程业务实体异常！"));
+                flowInfoVO.setBusRecordId(null);
             }
+        } catch (Exception e) {
+            log.error(ExceptionUtil.stacktraceToString(e));
+            throw new CommonException(String.format("操作失败，执行默认流程读取事件异常！"));
+        }
+    }
+
+    /**
+     * 执行默认的流程存储事件
+     * @param flowInfoVO
+     */
+    private void executeDefaultWriteEvent(FlowInfoVO flowInfoVO){
+        try {
+            // 获取实体类类型
+            Class<?> entityClazz = Class.forName(flowInfoVO.getFlowEntityClassName());
+            // 获取对应Mapper类
+            Class<?> beanMapperClazz = entityClazz.getAnnotation(FlowEntity.class).mapper();
+            // 获取Mapper实例
+            Object mapperBean = SpringUtil.getBean(beanMapperClazz);
+            // 复制对象并保留引用
+            Object entityObj = BeanUtil.copyProperties(flowInfoVO.getEntityVO(), entityClazz);
+            // 调用保存或更新方法
+            if(StrUtil.isNotBlank(flowInfoVO.getBusRecordId())){
+                Method updateMethod = beanMapperClazz.getMethod("updateById", Object.class);
+                updateMethod.invoke(mapperBean, entityObj);
+            }else{
+                Method insertMethod = beanMapperClazz.getMethod("insert", Object.class);
+                insertMethod.invoke(mapperBean, entityObj);
+                // !!! 获取主键值
+                String pkValue = null;
+                for(Field field: entityClazz.getDeclaredFields()){
+                    if(field.isAnnotationPresent(TableId.class)) {
+                        field.setAccessible(true);
+                        pkValue = (String)field.get(entityObj);
+                        break;
+                    }
+                }
+                flowInfoVO.setBusRecordId(pkValue);
+            }
+        } catch (Exception e) {
+            log.error(ExceptionUtil.stacktraceToString(e));
+            throw new CommonException(String.format("操作失败，执行默认流程存储事件异常！"));
         }
     }
 
@@ -165,9 +278,9 @@ public class FlowServiceImpl implements FlowService {
      */
     private List<FlowTaskNodeVO> getSubmitNextHandlerList(FlowInfoVO flowInfoVO){
         List<FlowTaskNodeVO> nextHandlerList = CollectionUtil.newArrayList();
-        if(StrUtil.isNotEmpty(flowInfoVO.getCurTaskId())){
+        //if(StrUtil.isNotEmpty(flowInfoVO.getCurTaskId())){
             // TODO 从流程任务表查询去往任务信息，组装返回
-        }
+        //}
         // 从流程定义查询下一节点信息
         List<Map> nextNodeList = WorkflowUtil.getNextNodes(
                 flowInfoVO.getDefJson(), flowInfoVO.getCurNodeInfo().getNodeId());

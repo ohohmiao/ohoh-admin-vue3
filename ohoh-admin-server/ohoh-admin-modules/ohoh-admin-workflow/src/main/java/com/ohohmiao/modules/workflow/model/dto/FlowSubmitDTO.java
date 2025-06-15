@@ -18,7 +18,7 @@ import java.util.List;
 @ApiModel("提交流程")
 @Getter
 @Setter
-public class FlowSubmitDTO {
+public class FlowSubmitDTO extends FlowInfoQueryDTO {
 
     @ApiModelProperty(value ="下一步环节办理人", required = true)
     @NotNull(message = "下一步环节办理人不能为空")

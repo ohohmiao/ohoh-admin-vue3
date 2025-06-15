@@ -132,8 +132,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { WorkflowNode } from "@/api/modules/workflow/node";
-import { Workflow } from "@/api/modules/workflow/core";
-import { FormInstance } from "element-plus";
+import { Workflow, doSubmitFlowApi } from "@/api/modules/workflow/core";
+import { ElMessage, FormInstance } from "element-plus";
 import SysCompositeSelector from "@/components/Selector/SysCompositeSelector.vue";
 import { SelectorTypeEnum, SelectorUserTypeEnum } from "@/components/Selector/interface";
 import { getOrgUserTreeApi } from "@/api/modules/sys/user";
@@ -197,6 +197,12 @@ const formRef = ref<FormInstance>();
 const handleSubmit = () => {
 	formRef.value!.validate(async valid => {
 		if (!valid) return;
+		try {
+			const { msg } = await doSubmitFlowApi(formProps.value!.rowData);
+			ElMessage.success({ message: msg });
+		} catch (e) {
+			console.log(e);
+		}
 	});
 };
 

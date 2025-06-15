@@ -54,7 +54,7 @@
 							</el-row>
 							<el-row :gutter="16">
 								<el-col :span="24">
-									<el-form-item label="申请事由" prop="applyReason">
+									<el-form-item label="申请理由" prop="applyReason">
 										<el-input
 											type="textarea"
 											v-model.trim="formProps.flowInfo.entityVO!.applyReason"
@@ -124,7 +124,7 @@ const handleFlowChartModelerInit = (modeler: Modeler) => {
 const doWorkflowSubmit = (callback: Function) => {
 	processFormRef.value!.validate(valid => {
 		if (!valid) {
-			ElMessage.warning({ message: "请将业务表单输入完整！" });
+			ElMessage.warning({ message: "业务表单未填写完整！" });
 			callback(false, null);
 			return;
 		}

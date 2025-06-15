@@ -11,7 +11,7 @@ public enum FlowEventTypeEnum {
     /**
      * 存储
      */
-    SAVE,
+    WRITE,
 
     /**
      * 前置

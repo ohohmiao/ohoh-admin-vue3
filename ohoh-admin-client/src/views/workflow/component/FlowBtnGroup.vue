@@ -61,6 +61,8 @@ const preDefinedMethods: Record<string, Function> = {
 		submitFlowFormRef.value.acceptParams({
 			nodeProp: props.nodeProp,
 			rowData: {
+				defCode: props.defCode,
+				defVersion: props.defVersion,
 				nextHandlerList: data,
 				processForm: {},
 				businessForm: thizBusParams

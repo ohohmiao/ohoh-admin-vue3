@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ohohmiao.framework.mybatis.model.entity.CommonEntity;
+import com.ohohmiao.modules.demo.mapper.LeaveMapper;
 import com.ohohmiao.modules.demo.model.dto.LeaveAddOrEditDTO;
 import com.ohohmiao.modules.demo.model.vo.LeaveVO;
 import com.ohohmiao.modules.workflow.annotation.FlowEntity;
@@ -18,7 +19,7 @@ import java.util.Date;
  * @author ohohmiao
  * @date 2025-06-12 14:25
  */
-@FlowEntity(value = LeaveVO.class, dto = LeaveAddOrEditDTO.class)
+@FlowEntity(value = LeaveVO.class, dto = LeaveAddOrEditDTO.class, mapper = LeaveMapper.class)
 @Getter
 @Setter
 @TableName(value = "demo_leave")

@@ -11,7 +11,10 @@ export namespace Workflow {
 	export interface ReqParams {
 		defCode?: string;
 		defVersion?: number;
-		exeId?: string;
+		creatorType?: number;
+		creatorId?: string;
+		creatorName?: string;
+		processId?: string;
 		curTaskId?: string;
 	}
 	// * 下一步环节信息请求参数
@@ -27,16 +30,22 @@ export namespace Workflow {
 		defName: string;
 		defXml: string;
 		defJson: string;
+		processLimittype: number;
+		processLimitvalue: number;
 		formId: string;
 		formPath: string;
-		flowSubject: string;
 		curNodeInfo: WorkflowNode.Form;
 		curRunningNodeIds: string;
 		flowBtns: WorkflowBtn.Form[];
-		processId: string;
 		flowEntityClassName: string;
 		entityVO: T;
-		//entityId: string;
+		busTableName: string;
+		busRecordId: string;
+		creatorType: number;
+		creatorId: string;
+		creatorName: string;
+		processId: string;
+		flowSubject: string;
 		doQueryFlag: boolean;
 	}
 	// * 流程环节办理人
@@ -62,7 +71,7 @@ export namespace Workflow {
 		handleOpinion: string;
 	}
 	// * 流程提交表单
-	export interface FlowSubmitForm {
+	export interface FlowSubmitForm extends ReqParams {
 		nextHandlerList: FlowTaskNode[];
 		processForm: ProcessForm;
 		businessForm: Record<string, any>;

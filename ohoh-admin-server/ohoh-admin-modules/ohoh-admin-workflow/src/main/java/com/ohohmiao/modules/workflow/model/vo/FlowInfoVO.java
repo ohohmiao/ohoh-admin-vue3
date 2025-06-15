@@ -37,13 +37,17 @@ public class FlowInfoVO<T> {
     @ApiModelProperty(value = "定义JSON")
     private String defJson;
 
+    @ApiModelProperty(value = "时限限制类别")
+    private Integer processLimittype;
+
+    @ApiModelProperty(value = "时限限制值")
+    private Integer processLimitvalue;
+
     @ApiModelProperty(value = "绑定的表单id")
     private String formId;
 
     @ApiModelProperty(value = "绑定的表单路径")
     private String formPath;
-
-    private String flowSubject;
 
     @ApiModelProperty(value = "当前操作环节")
     private FlowNodeVO curNodeInfo;
@@ -63,13 +67,28 @@ public class FlowInfoVO<T> {
     @ApiModelProperty(value = "业务实体VO")
     private T entityVO;
 
-    //@ApiModelProperty(value = "业务表记录id")
-    //private String entityId;
+    @ApiModelProperty(value = "业务表名")
+    private String busTableName;
+
+    @ApiModelProperty(value = "业务表记录id")
+    private String busRecordId;
+
+    @ApiModelProperty(value = "发起人类别")
+    private Integer creatorType;
+
+    @ApiModelProperty(value = "发起人id")
+    private String creatorId;
+
+    @ApiModelProperty(value = "发起人")
+    private String creatorName;
 
     @ApiModelProperty(value = "流程实例id")
     private String processId;
 
-    private String curTaskId;
+    @ApiModelProperty(value = "流程实例标题")
+    private String processSubject;
+
+    //private String curTaskId;
 
     @ApiModelProperty(value = "是否处于查阅状态")
     private Boolean doQueryFlag;

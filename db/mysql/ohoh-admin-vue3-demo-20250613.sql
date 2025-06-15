@@ -33,9 +33,9 @@ CREATE TABLE `demo_leave` (
   `applyuser_orgid` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '申请人部门id',
   `applyuser_orgname` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '申请人部门',
   `leave_type` int NOT NULL COMMENT '请假类别',
-  `leave_startdate` date NOT NULL COMMENT '开始日期',
-  `leave_enddate` date NOT NULL COMMENT '结束日期',
-  `leave_days` int NOT NULL COMMENT '请假天数',
+  `leave_startdate` date DEFAULT NULL COMMENT '开始日期',
+  `leave_enddate` date DEFAULT NULL COMMENT '结束日期',
+  `leave_days` int DEFAULT NULL COMMENT '请假天数',
   `apply_reason` varchar(256) NOT NULL COMMENT '申请理由',
   `agent_userid` varchar(32) DEFAULT NULL COMMENT '职务代理人id',
   `agent_user` varchar(64) DEFAULT NULL COMMENT '职务代理人',
@@ -61,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-13 22:39:34
+-- Dump completed on 2025-06-15 17:11:33

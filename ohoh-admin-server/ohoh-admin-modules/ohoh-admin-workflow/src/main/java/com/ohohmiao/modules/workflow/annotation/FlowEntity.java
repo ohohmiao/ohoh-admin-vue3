@@ -26,4 +26,10 @@ public @interface FlowEntity {
      */
     Class<?> dto();
 
+    /**
+     * mapper
+     * @return
+     */
+    Class<?> mapper();
+
 }

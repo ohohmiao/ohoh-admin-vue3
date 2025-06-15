@@ -22,4 +22,11 @@ public interface FlowProcessService extends CommonService<FlowProcess> {
      */
     List<FlowTaskHandler> getCreator(FlowInfoVO flowInfoVO);
 
+    /**
+     * 保存或更新流程实例
+     * @param flowInfoVO
+     * @param isTempSave
+     */
+    void saveOrUpdate(FlowInfoVO flowInfoVO, boolean isTempSave);
+
 }

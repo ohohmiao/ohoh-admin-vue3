@@ -25,6 +25,15 @@ public class FlowInfoQueryDTO {
     @ApiModelProperty(value = "版本号")
     private Integer defVersion;
 
+    @ApiModelProperty(value = "发起人类别")
+    private Integer creatorType;
+
+    @ApiModelProperty(value = "发起人id")
+    private String creatorId;
+
+    @ApiModelProperty(value = "发起人")
+    private String creatorName;
+
     @ApiModelProperty(value = "流程实例id")
     private String processId;
 
