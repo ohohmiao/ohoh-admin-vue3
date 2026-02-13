@@ -19,7 +19,7 @@ import com.ohohmiao.modules.workflow.enums.*;
 import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowSubmitDTO;
-import com.ohohmiao.modules.workflow.model.entity.FlowProcess;
+import com.ohohmiao.modules.workflow.model.entity.ProcessInstance;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.*;
 import com.ohohmiao.modules.workflow.service.*;
@@ -69,7 +69,7 @@ public class FlowServiceImpl implements FlowService {
     private SysUserApi sysUserApi;
 
     @Resource
-    private FlowProcessService flowProcessService;
+    private ProcessInstanceService processInstanceService;
 
     @Override
     public FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO, boolean includeExtraInfo){
@@ -78,22 +78,22 @@ public class FlowServiceImpl implements FlowService {
         if(StrUtil.isNotBlank(queryDTO.getProcessId())){
             // TODO 从流程实例表+流程任务表获取
             flowInfoVO.setStartFlowFlag(false);
-            FlowProcess flowProcess = flowProcessService.getById(queryDTO.getProcessId());
-            if(ObjectUtil.isNull(flowProcess)){
+            ProcessInstance processInstance = processInstanceService.getById(queryDTO.getProcessId());
+            if(ObjectUtil.isNull(processInstance)){
                 throw new CommonException("操作失败，不存在的流程实例！");
             }
-            flowInfoVO.setDefCode(flowProcess.getDefCode());
-            flowInfoVO.setDefVersion(flowProcess.getDefVersion());
-            flowInfoVO.setProcessId(flowProcess.getProcessId());
-            flowInfoVO.setProcessSubject(flowProcess.getProcessSubject());
-            flowInfoVO.setCreatorType(flowProcess.getCreatorType());
-            flowInfoVO.setCreatorId(flowProcess.getCreatorId());
-            flowInfoVO.setCreatorName(flowProcess.getCreatorName());
-            flowInfoVO.setCurRunningNodeIds(flowProcess.getCurrunningNodeids());
-            flowInfoVO.setBusTableName(flowProcess.getBusTablename());
-            flowInfoVO.setBusRecordId(flowProcess.getBusRecordid());
+            flowInfoVO.setDefCode(processInstance.getDefCode());
+            flowInfoVO.setDefVersion(processInstance.getDefVersion());
+            flowInfoVO.setProcessId(processInstance.getInstanceId());
+            flowInfoVO.setProcessSubject(processInstance.getProcessSubject());
+            flowInfoVO.setCreatorType(processInstance.getCreatorType());
+            flowInfoVO.setCreatorId(processInstance.getCreatorId());
+            flowInfoVO.setCreatorName(processInstance.getCreatorName());
+            flowInfoVO.setCurRunningNodeIds(processInstance.getCurrunningNodeids());
+            flowInfoVO.setBusTableName(processInstance.getBusTablename());
+            flowInfoVO.setBusRecordId(processInstance.getBusRecordid());
             // 查询指定版本流程定义
-            flowDefVO = flowHisDeployService.get(flowProcess.getDefCode(), flowProcess.getDefVersion(), false);
+            flowDefVO = flowHisDeployService.get(processInstance.getDefCode(), processInstance.getDefVersion(), false);
             if(StrUtil.isNotBlank(queryDTO.getCurTaskId())){
                 // TODO 查询流程任务表，回填当前环节信息+当前任务状态
                 
@@ -200,7 +200,7 @@ public class FlowServiceImpl implements FlowService {
             this.executeDefaultWriteEvent(flowInfoVO);
         }
         // 5、保存或更新流程实例表
-        flowProcessService.saveOrUpdate(flowInfoVO, false);
+        processInstanceService.saveOrUpdate(flowInfoVO, false);
         // TODO 6、派发流程任务
 
     }

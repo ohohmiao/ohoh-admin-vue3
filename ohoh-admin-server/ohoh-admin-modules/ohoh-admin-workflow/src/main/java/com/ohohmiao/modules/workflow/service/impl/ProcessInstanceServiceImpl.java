@@ -10,11 +10,11 @@ import com.ohohmiao.modules.system.service.SysRestDayService;
 import com.ohohmiao.modules.workflow.enums.FlowCacheKeyEnum;
 import com.ohohmiao.modules.workflow.enums.FlowProcessStateEnum;
 import com.ohohmiao.modules.workflow.enums.ProcessLimitTypeEnum;
-import com.ohohmiao.modules.workflow.mapper.FlowProcessMapper;
-import com.ohohmiao.modules.workflow.model.entity.FlowProcess;
+import com.ohohmiao.modules.workflow.mapper.ProcessInstanceMapper;
+import com.ohohmiao.modules.workflow.model.entity.ProcessInstance;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
-import com.ohohmiao.modules.workflow.service.FlowProcessService;
+import com.ohohmiao.modules.workflow.service.ProcessInstanceService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,8 +30,8 @@ import java.util.List;
  * @author ohohmiao
  * @date 2025-06-11 10:22
  */
-@Service("flowProcessService")
-public class FlowProcessServiceImpl extends CommonServiceImpl<FlowProcessMapper, FlowProcess> implements FlowProcessService {
+@Service("processInstanceService")
+public class ProcessInstanceServiceImpl extends CommonServiceImpl<ProcessInstanceMapper, ProcessInstance> implements ProcessInstanceService {
 
     @Resource
     private PlatRedisUtil platRedisUtil;
@@ -57,42 +57,42 @@ public class FlowProcessServiceImpl extends CommonServiceImpl<FlowProcessMapper,
     @Override
     public void saveOrUpdate(FlowInfoVO flowInfoVO, boolean isTempSave){
         if(StrUtil.isBlank(flowInfoVO.getProcessId())){
-            FlowProcess flowProcess = new FlowProcess();
-            flowProcess.setDefCode(flowInfoVO.getDefCode());
-            flowProcess.setDefVersion(flowInfoVO.getDefVersion());
+            ProcessInstance processInstance = new ProcessInstance();
+            processInstance.setDefCode(flowInfoVO.getDefCode());
+            processInstance.setDefVersion(flowInfoVO.getDefVersion());
             LocalDateTime curDateTime = LocalDateTime.now();
-            flowProcess.setProcessStarttime(curDateTime);
-            flowProcess.setProcessNum(generateWorkflowSerial(flowInfoVO.getDefCode()));
+            processInstance.setProcessStarttime(curDateTime);
+            processInstance.setProcessNum(generateWorkflowSerial(flowInfoVO.getDefCode()));
             if(isTempSave){
-                flowProcess.setProcessState(FlowProcessStateEnum.DRAFT.ordinal());
-                flowProcess.setCurrunningNodeids(flowInfoVO.getCurNodeInfo().getNodeId());
-                flowProcess.setCurrunningNodenames(flowInfoVO.getCurNodeInfo().getNodeName());
-                flowProcess.setCurHandlerids(flowInfoVO.getCreatorId());
-                flowProcess.setCurHandlernames(flowInfoVO.getCreatorName());
+                processInstance.setProcessState(FlowProcessStateEnum.DRAFT.ordinal());
+                processInstance.setCurrunningNodeids(flowInfoVO.getCurNodeInfo().getNodeId());
+                processInstance.setCurrunningNodenames(flowInfoVO.getCurNodeInfo().getNodeName());
+                processInstance.setCurHandlerids(flowInfoVO.getCreatorId());
+                processInstance.setCurHandlernames(flowInfoVO.getCreatorName());
             }else{
-                flowProcess.setProcessState(FlowProcessStateEnum.RUNNING.ordinal());
+                processInstance.setProcessState(FlowProcessStateEnum.RUNNING.ordinal());
                 // 计算截止日期
-                flowProcess.setEndDeadline(getProcessDeadline(curDateTime, flowInfoVO));
+                processInstance.setEndDeadline(getProcessDeadline(curDateTime, flowInfoVO));
             }
-            flowProcess.setBusTablename(flowInfoVO.getBusTableName());
-            flowProcess.setBusRecordid(flowInfoVO.getBusRecordId());
-            flowProcess.setProcessSubject(String.format("%s【发起人：%s】",
+            processInstance.setBusTablename(flowInfoVO.getBusTableName());
+            processInstance.setBusRecordid(flowInfoVO.getBusRecordId());
+            processInstance.setProcessSubject(String.format("%s【发起人：%s】",
                     flowInfoVO.getDefName(), flowInfoVO.getCreatorName()));
-            flowProcess.setCreatorType(flowInfoVO.getCreatorType());
-            flowProcess.setCreatorId(flowInfoVO.getCreatorId());
-            flowProcess.setCreatorName(flowInfoVO.getCreatorName());
-            this.save(flowProcess);
+            processInstance.setCreatorType(flowInfoVO.getCreatorType());
+            processInstance.setCreatorId(flowInfoVO.getCreatorId());
+            processInstance.setCreatorName(flowInfoVO.getCreatorName());
+            this.save(processInstance);
             // 设置流程实例id
-            flowInfoVO.setProcessId(flowProcess.getProcessId());
+            flowInfoVO.setProcessId(processInstance.getInstanceId());
         }else{
-            FlowProcess flowProcess = this.getById(flowInfoVO.getProcessId());
-            if(ObjectUtil.isNotNull(flowProcess) && flowProcess.getProcessState().equals(
+            ProcessInstance processInstance = this.getById(flowInfoVO.getProcessId());
+            if(ObjectUtil.isNotNull(processInstance) && processInstance.getProcessState().equals(
                     FlowProcessStateEnum.DRAFT.ordinal()) && !isTempSave){
                 // 计算截止日期
                 LocalDateTime curDateTime = LocalDateTime.now();
-                flowProcess.setProcessStarttime(curDateTime);
-                flowProcess.setEndDeadline(getProcessDeadline(curDateTime, flowInfoVO));
-                this.updateById(flowProcess);
+                processInstance.setProcessStarttime(curDateTime);
+                processInstance.setEndDeadline(getProcessDeadline(curDateTime, flowInfoVO));
+                this.updateById(processInstance);
             }
         }
     }

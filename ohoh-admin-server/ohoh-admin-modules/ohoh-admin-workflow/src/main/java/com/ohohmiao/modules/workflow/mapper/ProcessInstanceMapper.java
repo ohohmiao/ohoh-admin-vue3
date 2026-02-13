@@ -1,7 +1,7 @@
 package com.ohohmiao.modules.workflow.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.ohohmiao.modules.workflow.model.entity.FlowProcess;
+import com.ohohmiao.modules.workflow.model.entity.ProcessInstance;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2025-06-14 14:30
  */
 @Mapper
-public interface FlowProcessMapper extends BaseMapper<FlowProcess> {
+public interface ProcessInstanceMapper extends BaseMapper<ProcessInstance> {
 }

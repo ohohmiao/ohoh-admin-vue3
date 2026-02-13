@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName(value = "workflow_process")
-public class FlowProcess extends CommonEntity {
+@TableName(value = "process_instance")
+public class ProcessInstance extends CommonEntity {
 
     @TableId
-    private String processId;
+    private String instanceId;
 
     @TableField
     private String defCode;

@@ -21,6 +21,31 @@ public enum FlowActTypeEnum {
     /**
      * 退回
      */
-    RETURN;
+    RETURN,
+
+    /**
+     * 挂起
+     */
+    SUSPEND,
+
+    /**
+     * 重启
+     */
+    RESTART,
+
+    /**
+     * 追回
+     */
+    RECOVER,
+
+    /**
+     * 转办
+     */
+    TRANSFER,
+
+    /**
+     * 跳转
+     */
+    JUMP;
 
 }
