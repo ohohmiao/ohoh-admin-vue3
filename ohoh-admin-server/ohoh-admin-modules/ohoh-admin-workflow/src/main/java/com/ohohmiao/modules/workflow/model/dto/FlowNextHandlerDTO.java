@@ -26,4 +26,8 @@ public class FlowNextHandlerDTO {
 
     private List<FlowTaskHandler> handlers;
 
+    private Integer multiHandletype;
+
+    private String inclusiveGateWayId;
+
 }

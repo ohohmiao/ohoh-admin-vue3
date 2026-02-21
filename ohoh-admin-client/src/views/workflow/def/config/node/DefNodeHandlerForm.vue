@@ -72,7 +72,7 @@
 					<el-radio-button label="串审" :value="1"></el-radio-button>
 				</el-radio-group>
 			</el-form-item>
-			<el-form-item label="允许重选办理人" prop="reselectPermit" v-if="formProps.rowData.handlerType != 2">
+			<el-form-item label="允许重选办理人" prop="reselectPermit" v-if="formProps.rowData.handlerType != 2" required>
 				<el-radio-group v-model="formProps.rowData.reselectPermit">
 					<el-radio-button label="禁止" :value="0"></el-radio-button>
 					<el-radio-button label="允许" :value="1"></el-radio-button>

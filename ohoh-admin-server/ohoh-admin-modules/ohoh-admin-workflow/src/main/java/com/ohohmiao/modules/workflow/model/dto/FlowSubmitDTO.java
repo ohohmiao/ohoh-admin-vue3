@@ -20,6 +20,10 @@ import java.util.List;
 @Setter
 public class FlowSubmitDTO extends FlowInfoQueryDTO {
 
+    @ApiModelProperty(value = "执行动作", required = true)
+    @NotNull(message = "执行动作不能为空")
+    private Integer actType;
+
     @ApiModelProperty(value ="下一步环节办理人", required = true)
     @NotNull(message = "下一步环节办理人不能为空")
     private List<FlowNextHandlerDTO> nextHandlerList;

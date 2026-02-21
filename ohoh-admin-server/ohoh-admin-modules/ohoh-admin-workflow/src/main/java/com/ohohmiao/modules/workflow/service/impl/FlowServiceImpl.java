@@ -84,7 +84,7 @@ public class FlowServiceImpl implements FlowService {
             }
             flowInfoVO.setDefCode(processInstance.getDefCode());
             flowInfoVO.setDefVersion(processInstance.getDefVersion());
-            flowInfoVO.setProcessId(processInstance.getInstanceId());
+            flowInfoVO.setProcessId(processInstance.getProcessId());
             flowInfoVO.setProcessSubject(processInstance.getProcessSubject());
             flowInfoVO.setCreatorType(processInstance.getCreatorType());
             flowInfoVO.setCreatorId(processInstance.getCreatorId());
@@ -166,16 +166,17 @@ public class FlowServiceImpl implements FlowService {
     @Override
     public List<FlowTaskNodeVO> getNextNodeList(FlowNextNodeQueryDTO queryDTO){
         FlowInfoVO flowInfoVO = this.getFlowInfo(queryDTO, false);
+        flowInfoVO.setActType(queryDTO.getActType());
         // 将页面传递的流程表单业务字段注入
         if(ObjectUtil.isNotNull(queryDTO.getBusinessForm())){
             flowInfoVO.setEntityVO(BeanUtil.copyProperties(
                     queryDTO.getBusinessForm(), flowInfoVO.getEntityVO().getClass()));
         }
         List<FlowTaskNodeVO> nextHandlerList = CollectionUtil.newArrayList();
-        if(queryDTO.getActType().equals(FlowActTypeEnum.SUBMIT.ordinal())){
+        if(flowInfoVO.getActType() == FlowActTypeEnum.SUBMIT.ordinal()){
             // 流程提交情形
             nextHandlerList = this.getSubmitNextHandlerList(flowInfoVO);
-        }else if(queryDTO.getActType().equals(FlowActTypeEnum.RETURN.ordinal())){
+        }else if(flowInfoVO.getActType() == FlowActTypeEnum.RETURN.ordinal()){
             // TODO 流程退回情形
 
         }
@@ -187,6 +188,7 @@ public class FlowServiceImpl implements FlowService {
     public void doSubmit(FlowSubmitDTO submitDTO){
         // 1、获取流程核心信息
         FlowInfoVO flowInfoVO = this.getFlowInfo(submitDTO, false);
+        flowInfoVO.setActType(submitDTO.getActType());
         // 将页面传递的流程表单业务字段注入
         if(ObjectUtil.isNotNull(submitDTO.getBusinessForm())){
             flowInfoVO.setEntityVO(BeanUtil.copyProperties(
@@ -202,6 +204,10 @@ public class FlowServiceImpl implements FlowService {
         // 5、保存或更新流程实例表
         processInstanceService.saveOrUpdate(flowInfoVO, false);
         // TODO 6、派发流程任务
+
+        // TODO 7、更新流程实例
+
+        // TODO 8、执行绑定的流程后置事件
 
     }
 

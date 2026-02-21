@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class ProcessInstance extends CommonEntity {
 
     @TableId
-    private String instanceId;
+    private String processId;
 
     @TableField
     private String defCode;

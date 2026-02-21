@@ -83,7 +83,7 @@ public class ProcessInstanceServiceImpl extends CommonServiceImpl<ProcessInstanc
             processInstance.setCreatorName(flowInfoVO.getCreatorName());
             this.save(processInstance);
             // 设置流程实例id
-            flowInfoVO.setProcessId(processInstance.getInstanceId());
+            flowInfoVO.setProcessId(processInstance.getProcessId());
         }else{
             ProcessInstance processInstance = this.getById(flowInfoVO.getProcessId());
             if(ObjectUtil.isNotNull(processInstance) && processInstance.getProcessState().equals(

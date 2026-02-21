@@ -93,4 +93,7 @@ public class FlowInfoVO<T> {
     @ApiModelProperty(value = "是否处于查阅状态")
     private Boolean doQueryFlag;
 
+    @ApiModelProperty(value = "执行动作")
+    private Integer actType;
+
 }

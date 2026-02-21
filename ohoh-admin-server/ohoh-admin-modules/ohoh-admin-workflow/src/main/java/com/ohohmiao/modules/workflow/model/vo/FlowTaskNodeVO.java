@@ -31,6 +31,7 @@ public class FlowTaskNodeVO {
     @ApiModelProperty(value = "办理人")
     private List<FlowTaskHandler> handlers;
 
+    @ApiModelProperty(value = "多人审核方式0-并审1-串审")
     private Integer multiHandletype;
 
     @ApiModelProperty(value = "允许重选办理人")

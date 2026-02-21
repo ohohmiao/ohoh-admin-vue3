@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 /**
  * 流程审核表单
  *
@@ -20,7 +22,7 @@ public class FlowProcessForm {
     private Integer appovalResult;
 
     @ApiModelProperty(value = "指定办理期限")
-    private String handleDeadline;
+    private LocalDateTime handleDeadline;
 
     @ApiModelProperty(value = "审核意见")
     private String handleOpinion;

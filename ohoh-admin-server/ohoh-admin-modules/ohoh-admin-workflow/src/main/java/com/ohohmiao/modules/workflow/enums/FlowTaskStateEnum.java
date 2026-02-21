@@ -19,14 +19,14 @@ public enum FlowTaskStateEnum {
     HANDLED,
 
     /**
-     * 审核通过
+     * 审核通过？
      */
-    APPROVED,
+    //APPROVED,
 
     /**
-     * 审核不通过
+     * 审核不通过？
      */
-    NOTAPPROVED,
+    //NOTAPPROVED,
 
     /**
      * 已退回
@@ -54,17 +54,17 @@ public enum FlowTaskStateEnum {
     SUSPENDED,
 
     /**
-     * 已重启
+     * 已重启？
      */
-    RESTARTED,
+    //RESTARTED,
 
     /**
-     * 已追回
+     * 被追回
      */
-    RECOVERED,
+    REVOKED,
 
     /**
-     * 已跳转
+     * 被跳转
      */
     JUMPED;
 
