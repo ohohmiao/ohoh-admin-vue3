@@ -140,6 +140,43 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         return this.count(countWrapper) > 0;
     }
 
+    @Override
+    public List<ProcessTask> listHandledTasks(String processId, String taskNodeId, Integer taskAssignType){
+        LambdaQueryWrapper<ProcessTask> listWrapper = new LambdaQueryWrapper<>();
+        listWrapper.eq(ProcessTask::getProcessId, processId);
+        listWrapper.eq(ProcessTask::getTaskNodeid, taskNodeId);
+        listWrapper.eq(ProcessTask::getTaskState, FlowTaskStateEnum.HANDLED.ordinal());
+        listWrapper.isNull(ProcessTask::getOutgoingTaskids);
+        listWrapper.orderByDesc(ProcessTask::getTaskStarttime);
+        List<ProcessTask> taskList = this.list(listWrapper);
+        ProcessTask thizTask = taskList.get(0);
+        if(taskAssignType == FlowTaskAssignTypeEnum.SINGLE.ordinal()){
+            return CollUtil.newArrayList(thizTask);
+        }else{
+            LambdaQueryWrapper<ProcessTask> listGroupWrapper = new LambdaQueryWrapper<>();
+            listGroupWrapper.eq(ProcessTask::getProcessId, processId);
+            listGroupWrapper.eq(ProcessTask::getTaskNodeid, taskNodeId);
+            listGroupWrapper.eq(ProcessTask::getTaskState, FlowTaskStateEnum.HANDLED.ordinal());
+            listGroupWrapper.isNull(ProcessTask::getOutgoingTaskids);
+            listGroupWrapper.eq(ProcessTask::getTaskGroupid, thizTask.getTaskGroupid());
+            listGroupWrapper.orderByDesc(ProcessTask::getTaskStarttime);
+            return this.list(listGroupWrapper);
+        }
+    }
+
+    @Override
+    public String getMultiHandleNodeOutgoingTaskids(String taskId){
+        ProcessTask curTask = this.getById(taskId);
+        LambdaQueryWrapper<ProcessTask> listWrapper = new LambdaQueryWrapper<>();
+        listWrapper.eq(ProcessTask::getProcessId, curTask.getProcessId());
+        listWrapper.eq(ProcessTask::getTaskNodeid, curTask.getTaskNodeid());
+        listWrapper.eq(ProcessTask::getTaskState, FlowTaskStateEnum.RETURNED.ordinal());
+        listWrapper.eq(ProcessTask::getTaskGroupid, curTask.getTaskGroupid());
+        listWrapper.orderByAsc(ProcessTask::getTaskId);
+        List<ProcessTask> taskList = this.list(listWrapper);
+        return taskList.stream().map(ProcessTask::getTaskId).collect(Collectors.joining(","));
+    }
+
     private boolean saveStartNodeTask(FlowInfoVO flowInfoVO, FlowProcessForm processForm){
         ProcessTask startTask = new ProcessTask();
         startTask.setProcessId(flowInfoVO.getProcessId());

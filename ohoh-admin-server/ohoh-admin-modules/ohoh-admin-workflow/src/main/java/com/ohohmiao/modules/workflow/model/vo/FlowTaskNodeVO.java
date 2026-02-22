@@ -40,7 +40,8 @@ public class FlowTaskNodeVO {
     @ApiModelProperty(value = "流程任务id")
     private String taskId;
 
-    //private String toTaskIds;
+    @ApiModelProperty(value = "去往任务id串")
+    private String outgoingTaskids;
 
     @ApiModelProperty(value = "流程合并节点id")
     private String inclusiveGateWayId;

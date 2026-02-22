@@ -54,4 +54,20 @@ public interface ProcessTaskService extends CommonService<ProcessTask> {
      */
     boolean isExist(String taskId);
 
+    /**
+     * 列出已办理的流程任务
+     * @param processId
+     * @param taskNodeId
+     * @param taskAssignType
+     * @return
+     */
+    List<ProcessTask> listHandledTasks(String processId, String taskNodeId, Integer taskAssignType);
+
+    /**
+     * 获取多人办理的退回任务
+     * @param taskId
+     * @return
+     */
+    String getMultiHandleNodeOutgoingTaskids(String taskId);
+
 }

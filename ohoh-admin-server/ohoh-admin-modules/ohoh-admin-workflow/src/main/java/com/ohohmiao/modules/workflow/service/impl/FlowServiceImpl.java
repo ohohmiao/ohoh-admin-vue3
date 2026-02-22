@@ -103,10 +103,15 @@ public class FlowServiceImpl implements FlowService {
             // 查询指定版本流程定义
             flowDefVO = flowHisDeployService.get(processInstance.getDefCode(), processInstance.getDefVersion(), false);
             if(StrUtil.isNotBlank(queryDTO.getCurTaskId())){
-                // TODO 查询流程任务表，回填当前环节信息+当前任务状态
-                
+                ProcessTask curTask = processTaskService.getById(queryDTO.getCurTaskId());
+                FlowNodeVO curNodeInfo = flowNodeService.get(queryDTO.getDefCode(), queryDTO.getDefVersion(), curTask.getTaskNodeid());
+                if(ObjectUtil.isNull(curNodeInfo)){
+                    throw new CommonException("操作失败，流程环节属性未配置！");
+                }
+                flowInfoVO.setCurNodeInfo(curNodeInfo);
                 flowInfoVO.setDoQueryFlag(false);
             }else{
+                // TODO 需要考虑查阅情形，当前操作节点的回填？
                 // 查阅情况，无当前操作节点信息
                 flowInfoVO.setCurNodeInfo(null);
                 flowInfoVO.setDoQueryFlag(true);
@@ -131,7 +136,7 @@ public class FlowServiceImpl implements FlowService {
             String curNodeId = (String)firstTaskNode.get("id");
             FlowNodeVO curNodeInfo = flowNodeService.get(queryDTO.getDefCode(), queryDTO.getDefVersion(), curNodeId);
             if(ObjectUtil.isNull(curNodeInfo)){
-                throw new CommonException("操作失败，未配置流程环节属性！");
+                throw new CommonException("操作失败，流程环节属性未配置！");
             }
             flowInfoVO.setCurNodeInfo(curNodeInfo);
             // 当前正在运行的节点ids
@@ -168,7 +173,6 @@ public class FlowServiceImpl implements FlowService {
         if(flowEventService.executeBindEvent(flowInfoVO, FlowEventTypeEnum.READ.ordinal()) == null){
             this.executeDefaultReadEvent(flowInfoVO);
         }
-
         return flowInfoVO;
     }
 
@@ -187,7 +191,46 @@ public class FlowServiceImpl implements FlowService {
             nextHandlerList = this.getSubmitNextHandlerList(flowInfoVO);
         }else if(flowInfoVO.getActType() == FlowActTypeEnum.RETURN.ordinal()){
             // TODO 流程退回情形
-
+            ProcessTask curTask = processTaskService.getById(flowInfoVO.getCurTaskId());
+            FlowNodeVO curNodeInfo = flowNodeService.get(flowInfoVO.getDefCode(),
+                    flowInfoVO.getDefVersion(), flowInfoVO.getCurNodeInfo().getNodeId());
+            FlowNodeVO incomingNodeInfo = flowNodeService.get(flowInfoVO.getDefCode(),
+                    flowInfoVO.getDefVersion(), curTask.getIncomingNodeid());
+            if(incomingNodeInfo.getTaskAssigntype() == FlowTaskAssignTypeEnum.SINGLE.ordinal() ||
+               incomingNodeInfo.getTaskAssigntype() == FlowTaskAssignTypeEnum.MULTI.ordinal()){
+                List<ProcessTask> handledTaskList = processTaskService.listHandledTasks(
+                        flowInfoVO.getProcessId(), curTask.getIncomingNodeid(), incomingNodeInfo.getTaskAssigntype());
+                for(int i = 0; i < handledTaskList.size(); i++){
+                    ProcessTask handledTask = handledTaskList.get(i);
+                    FlowTaskNodeVO nextHandler = new FlowTaskNodeVO();
+                    nextHandler.setNodeId(curTask.getIncomingNodeid());
+                    nextHandler.setNodeName(handledTask.getTaskNodename());
+                    nextHandler.setNodeType(FlowNodeTypeEnum.TASK.getCode());
+                    // TODO nextHandler.setMultiHandletype();
+                    nextHandler.setReselectPermit(CommonWhetherEnum.NO.getCode());
+                    FlowTaskHandler handler = new FlowTaskHandler();
+                    handler.setHandlerId(handledTask.getHandlerId());
+                    handler.setHandlerName(handledTask.getHandlerName());
+                    handler.setHandlerOrgid(handledTask.getHandlerOrgid());
+                    handler.setHandlerOrgname(handledTask.getHandlerOrgname());
+                    nextHandler.setHandlers(CollUtil.newArrayList(handler));
+                    if(curNodeInfo.getTaskReturntype() == FlowTaskReturnTypeEnum.DIRECT.ordinal()){
+                        if(incomingNodeInfo.getTaskAssigntype() == FlowTaskAssignTypeEnum.SINGLE.ordinal()){
+                            nextHandler.setOutgoingTaskids(flowInfoVO.getCurTaskId());
+                        }else{
+                            String thizTaskids = processTaskService.getMultiHandleNodeOutgoingTaskids(flowInfoVO.getCurTaskId());
+                            nextHandler.setOutgoingTaskids(thizTaskids);
+                        }
+                    }
+                    if(incomingNodeInfo.getTaskAssigntype() == FlowTaskAssignTypeEnum.SINGLE.ordinal()){
+                        if(i == 0){
+                            nextHandlerList.add(nextHandler);
+                        }
+                    }else{
+                        nextHandlerList.add(nextHandler);
+                    }
+                }
+            }
         }
         return nextHandlerList;
     }
