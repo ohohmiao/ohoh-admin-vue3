@@ -67,6 +67,9 @@ const preDefinedMethods: Record<string, Function> = {
 				nextHandlerList: data,
 				processForm: {},
 				businessForm: thizBusParams
+			},
+			getTableList: () => {
+				emit("doWorkflowClose");
 			}
 		});
 	},

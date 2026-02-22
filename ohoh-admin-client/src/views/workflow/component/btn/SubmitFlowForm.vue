@@ -141,6 +141,7 @@ import { getOrgUserTreeApi } from "@/api/modules/sys/user";
 interface FormProps {
 	nodeProp: WorkflowNode.Form;
 	rowData: Workflow.FlowSubmitForm;
+	getTableList?: () => void;
 }
 
 const formVisible = ref(false);
@@ -204,6 +205,7 @@ const handleSubmit = () => {
 		try {
 			const { msg } = await doSubmitFlowApi(formProps.value!.rowData);
 			ElMessage.success({ message: msg });
+			formProps.value?.getTableList!();
 			formVisible.value = false;
 		} catch (e) {
 			console.log(e);
