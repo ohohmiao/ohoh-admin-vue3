@@ -67,7 +67,7 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         // 组装流程属性
         if(includeExtraInfo && ObjectUtil.isNotNull(flowDefVO)){
             if(flowDefVO.getInitiatorScope() != null &&
-               flowDefVO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
+               flowDefVO.getInitiatorScope() == FlowInitiatorScopeEnum.TARGET.ordinal()){
                 flowDefVO.setTargetInitiators(flowDefBindService.list(
                         FlowDefBindTypeEnum.INITIATOR.ordinal(), defCode, defVersion, null));
             }
@@ -87,7 +87,7 @@ public class FlowHisDeployServiceImpl extends CommonServiceImpl<FlowHisDeployMap
         }
         // 更新流程发起范围数据
         flowDefBindService.delete(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(), hisDTO.getDefVersion());
-        if(hisDTO.getInitiatorScope().equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
+        if(hisDTO.getInitiatorScope() == FlowInitiatorScopeEnum.TARGET.ordinal()){
             flowDefBindService.save(FlowDefBindTypeEnum.INITIATOR.ordinal(), hisDTO.getDefCode(),
                     hisDTO.getDefVersion(), hisDTO.getTargetInitiators(), null);
         }

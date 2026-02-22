@@ -1,6 +1,7 @@
 package com.ohohmiao.modules.workflow.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -20,6 +21,8 @@ import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
 import com.ohohmiao.modules.workflow.model.dto.FlowSubmitDTO;
 import com.ohohmiao.modules.workflow.model.entity.ProcessInstance;
+import com.ohohmiao.modules.workflow.model.entity.ProcessTask;
+import com.ohohmiao.modules.workflow.model.pojo.FlowProcessForm;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.*;
 import com.ohohmiao.modules.workflow.service.*;
@@ -71,6 +74,9 @@ public class FlowServiceImpl implements FlowService {
     @Resource
     private ProcessInstanceService processInstanceService;
 
+    @Resource
+    private ProcessTaskService processTaskService;
+
     @Override
     public FlowInfoVO getFlowInfo(FlowInfoQueryDTO queryDTO, boolean includeExtraInfo){
         FlowInfoVO flowInfoVO = new FlowInfoVO();
@@ -85,10 +91,12 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setDefCode(processInstance.getDefCode());
             flowInfoVO.setDefVersion(processInstance.getDefVersion());
             flowInfoVO.setProcessId(processInstance.getProcessId());
+            flowInfoVO.setCurTaskId(queryDTO.getCurTaskId());
             flowInfoVO.setProcessSubject(processInstance.getProcessSubject());
-            flowInfoVO.setCreatorType(processInstance.getCreatorType());
             flowInfoVO.setCreatorId(processInstance.getCreatorId());
             flowInfoVO.setCreatorName(processInstance.getCreatorName());
+            flowInfoVO.setCreatorOrgid(processInstance.getCreatorOrgid());
+            flowInfoVO.setCreatorOrgname(processInstance.getCreatorOrgname());
             flowInfoVO.setCurRunningNodeIds(processInstance.getCurrunningNodeids());
             flowInfoVO.setBusTableName(processInstance.getBusTablename());
             flowInfoVO.setBusRecordId(processInstance.getBusRecordid());
@@ -107,12 +115,13 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setStartFlowFlag(true);
             flowInfoVO.setDefCode(queryDTO.getDefCode());
             flowInfoVO.setDefVersion(queryDTO.getDefVersion());
-            if(ObjectUtil.isNull(queryDTO.getCreatorId())){
-                flowInfoVO.setCreatorType(ProcessCreatorTypeEnum.SYSUSER.ordinal());
-                StpLoginUser loginUser = StpPCUtil.getLoginUser();
-                flowInfoVO.setCreatorId(loginUser.getUserId());
-                flowInfoVO.setCreatorName(loginUser.getUserName());
-            }
+            flowInfoVO.setProcessId(null);
+            flowInfoVO.setCurTaskId(null);
+            StpLoginUser loginUser = StpPCUtil.getLoginUser();
+            flowInfoVO.setCreatorId(loginUser.getUserId());
+            flowInfoVO.setCreatorName(loginUser.getUserName());
+            flowInfoVO.setCreatorOrgid(loginUser.getSwitchOrg().getOrgId());
+            flowInfoVO.setCreatorOrgname(loginUser.getSwitchOrg().getOrgName());
             flowInfoVO.setDoQueryFlag(false);
             Integer defVersion = ObjectUtil.isNotNull(queryDTO.getDefVersion())? queryDTO.getDefVersion(): 1;
             // 查询指定版本流程定义
@@ -194,7 +203,12 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setEntityVO(BeanUtil.copyProperties(
                     submitDTO.getBusinessForm(), flowInfoVO.getEntityVO().getClass()));
         }
-        // TODO 2、根据当前任务id，判断是否重复请求
+        // 2、根据当前任务id，判断是否重复请求
+        if(StrUtil.isNotEmpty(flowInfoVO.getCurTaskId())){
+            if(!processTaskService.isExist(flowInfoVO.getCurTaskId())){
+                throw new CommonException("当前任务已失效，请刷新后重试！");
+            }
+        }
         // 3、执行绑定的流程前置事件
         flowEventService.executeBindEvent(flowInfoVO, FlowEventTypeEnum.PRE.ordinal());
         // 4、执行绑定的流程存储事件，有则执行，无则执行默认的存储事件
@@ -203,12 +217,12 @@ public class FlowServiceImpl implements FlowService {
         }
         // 5、保存或更新流程实例表
         processInstanceService.saveOrUpdate(flowInfoVO, false);
-        // TODO 6、派发流程任务
-
-        // TODO 7、更新流程实例
-
-        // TODO 8、执行绑定的流程后置事件
-
+        // 6、派发流程任务
+        processTaskService.assignTask(flowInfoVO, submitDTO.getProcessForm(), submitDTO.getNextHandlerList());
+        // 7、更新流程实例
+        this.updateProcessInstanceState(flowInfoVO, submitDTO.getProcessForm());
+        // 8、执行绑定的流程后置事件
+        flowEventService.executeBindEvent(flowInfoVO, FlowEventTypeEnum.AFT.ordinal());
     }
 
     /**
@@ -395,17 +409,19 @@ public class FlowServiceImpl implements FlowService {
                           flowInfoVO.getDefCode(), flowInfoVO.getDefVersion(), nextNodeId);
         nextHandlerVO.setMultiHandletype(flowHandlerVO.getMultiHandletype());
         nextHandlerVO.setReselectPermit(flowHandlerVO.getReselectPermit());
-        if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+        if(flowHandlerVO.getHandlerType() == FlowHandlerTypeEnum.REFERRES.ordinal()){
             // 指定人员情形
             List<SysUserVO> sysUserVOS = sysUserApi.listByReferRes(flowHandlerVO.getTargetReferResList());
             List<FlowTaskHandler> thizHandlers = sysUserVOS.stream().map(u -> {
                 FlowTaskHandler thizHandler = new FlowTaskHandler();
                 thizHandler.setHandlerId(u.getUserId());
                 thizHandler.setHandlerName(u.getUserName());
+                thizHandler.setHandlerOrgid(u.getOrgId());
+                thizHandler.setHandlerOrgname(u.getOrgName());
                 return thizHandler;
             }).collect(Collectors.toList());
             nextHandlerVO.setHandlers(thizHandlers);
-        }else if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
+        }else if(flowHandlerVO.getHandlerType() == FlowHandlerTypeEnum.INTERFACE.ordinal()){
             // 指定接口情形
             try {
                 String[] interfaceCode = flowHandlerVO.getInterfaceCode().split("\\.");
@@ -442,6 +458,26 @@ public class FlowServiceImpl implements FlowService {
             }
         }
         return nextHandlerVO;
+    }
+
+    private void updateProcessInstanceState(FlowInfoVO flowInfoVO, FlowProcessForm processForm){
+        List<ProcessTask> taskList = processTaskService.listCurRunningProcessTasks(flowInfoVO.getProcessId());
+        if(CollUtil.isNotEmpty(taskList)){
+            String curRunningNodeIds = taskList.stream().map(ProcessTask::getTaskNodeid).collect(Collectors.joining(","));
+            String curRunningNodeNames = taskList.stream().map(ProcessTask::getTaskNodename).collect(Collectors.joining(","));
+            String curHandlerIds = taskList.stream().map(ProcessTask::getAssignHandlerids).collect(Collectors.joining(","));
+            String curHandlerNames = taskList.stream().map(ProcessTask::getAssignHandlernames).collect(Collectors.joining(","));
+            processInstanceService.updateCurRunningInfo(flowInfoVO.getProcessId(), curRunningNodeIds, curRunningNodeNames, curHandlerIds, curHandlerNames);
+        }else{
+            Integer taskState = FlowTaskStateEnum.HANDLED.ordinal();
+            processTaskService.updateTaskStateCascade(flowInfoVO.getCurTaskId(), taskState);
+            Integer processState = FlowProcessStateEnum.END.ordinal();
+            if(processForm.getAppovalResult() != null){
+                processState = processForm.getAppovalResult() == CommonWhetherEnum.NO.getCode()?
+                        FlowProcessStateEnum.NOTAPPROVED.ordinal(): FlowProcessStateEnum.APPROVED.ordinal();
+            }
+            processInstanceService.updateHandleEndedInfo(flowInfoVO.getProcessId(), processState, processForm.getHandleOpinion());
+        }
     }
 
 }

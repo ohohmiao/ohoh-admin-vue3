@@ -61,6 +61,7 @@ const preDefinedMethods: Record<string, Function> = {
 		submitFlowFormRef.value.acceptParams({
 			nodeProp: props.nodeProp,
 			rowData: {
+				actType: Workflow.ActTypeEnum.SUBMIT,
 				defCode: props.defCode,
 				defVersion: props.defVersion,
 				nextHandlerList: data,

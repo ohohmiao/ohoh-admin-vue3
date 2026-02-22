@@ -100,7 +100,7 @@
 			</el-row>
 			<el-row>
 				<el-col :span="24">
-					<el-form-item label="审核意见" prop="processForm.handleOpinion">
+					<el-form-item label="办理意见" prop="processForm.handleOpinion">
 						<el-input
 							type="textarea"
 							v-model.trim="formProps!.rowData.processForm.handleOpinion"
@@ -171,7 +171,9 @@ const openHandlerSelector = (index: number) => {
 			return {
 				type: SelectorTypeEnum.USER,
 				value: item.handlerId,
-				label: item.handlerName
+				label: item.handlerName,
+				parentValue: item.handlerOrgid,
+				parentLabel: item.handlerOrgname
 			};
 		})
 	});
@@ -180,7 +182,9 @@ const handleHandlerSelected = (datas: { [key: string]: any }[]) => {
 	formProps.value!.rowData.nextHandlerList[selectorIndex].handlers = datas.map(item => {
 		return {
 			handlerId: item.value,
-			handlerName: item.label
+			handlerName: item.label,
+			handlerOrgid: item.parentValue,
+			handlerOrgname: item.parentLabel
 		};
 	});
 };
@@ -200,6 +204,7 @@ const handleSubmit = () => {
 		try {
 			const { msg } = await doSubmitFlowApi(formProps.value!.rowData);
 			ElMessage.success({ message: msg });
+			formVisible.value = false;
 		} catch (e) {
 			console.log(e);
 		}

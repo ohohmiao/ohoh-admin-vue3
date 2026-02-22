@@ -2,4 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohohmiao.modules.workflow.mapper.ProcessTaskMapper">
 
+    <select id="listMultiHandleNodeNextWaitingTasks" resultType="com.ohohmiao.modules.workflow.model.vo.ProcessTaskVO">
+        select *
+        from PROCESS_TASK k
+        where k.PROCESS_ID = #{processId}
+          and k.TASK_STATE = #{taskState}
+          and k.TASK_NODEID = (
+            select k.TASK_NODEID
+            from PROCESS_TASK t
+            where t.TASK_ID = #{taskId}
+        )
+        order by k.TASK_ID asc
+    </select>
+
 </mapper>

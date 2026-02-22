@@ -5,6 +5,7 @@ import com.ohohmiao.modules.workflow.model.dto.FlowNextHandlerDTO;
 import com.ohohmiao.modules.workflow.model.entity.ProcessTask;
 import com.ohohmiao.modules.workflow.model.pojo.FlowProcessForm;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
+import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
 
 import java.util.List;
 
@@ -25,11 +26,32 @@ public interface ProcessTaskService extends CommonService<ProcessTask> {
     void assignTask(FlowInfoVO flowInfoVO, FlowProcessForm processForm, List<FlowNextHandlerDTO> nextHandlerList);
 
     /**
-     * 保存开始环节流程任务
-     * @param flowInfoVO
-     * @param processForm
+     * 查询串审环节的下一等待办理人
+     * @param processId
+     * @param taskId
      * @return
      */
-    boolean saveStartNodeTask(FlowInfoVO flowInfoVO, FlowProcessForm processForm);
+    FlowTaskNodeVO getMultiHandleNodeNextWaitingHandler(String processId, String taskId);
+
+    /**
+     * 列出未办理的流程任务
+     * @param processId
+     * @return
+     */
+    List<ProcessTask> listCurRunningProcessTasks(String processId);
+
+    /**
+     * 级联更新任务状态
+     * @param taskId
+     * @param taskState
+     */
+    void updateTaskStateCascade(String taskId, Integer taskState);
+
+    /**
+     * 判断流程任务是否存在
+     * @param taskId
+     * @return
+     */
+    boolean isExist(String taskId);
 
 }

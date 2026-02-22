@@ -727,8 +727,8 @@ const handleSelectData = (param: { [key: string]: any }) => {
 			value: checkResult.data,
 			label: param.name,
 			type: curSelType.value,
-			parentLabel: param.parentName,
-			parentValue: param.parentId,
+			parentLabel: curSelType.value == SelectorTypeEnum.USER ? param.orgName : param.parentName,
+			parentValue: curSelType.value == SelectorTypeEnum.USER ? param.orgId : param.parentId,
 			extendValue: param.extendValue || ""
 		};
 		selectedTableData.value.push(insertRow);

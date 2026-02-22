@@ -45,13 +45,16 @@ public class ProcessInstance extends CommonEntity {
     private String processSubject;
 
     @TableField
-    private Integer creatorType;
-
-    @TableField
     private String creatorId;
 
     @TableField
     private String creatorName;
+
+    @TableField
+    private String creatorOrgid;
+
+    @TableField
+    private String creatorOrgname;
 
     @TableField
     private String currunningNodenames;
@@ -78,13 +81,10 @@ public class ProcessInstance extends CommonEntity {
     private LocalDateTime processEndtime;
 
     @TableField
-    private Integer overtimeFlag;
-
-    @TableField
     private Long consumeSeconds;
 
     @TableField
-    private Long leftSeconds;
+    private Integer overtimeFlag;
 
     @TableField
     private Long exceedSeconds;

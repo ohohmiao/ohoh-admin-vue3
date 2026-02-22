@@ -37,10 +37,12 @@ public class FlowTaskNodeVO {
     @ApiModelProperty(value = "允许重选办理人")
     private Integer reselectPermit;
 
-    //private String taskId;
+    @ApiModelProperty(value = "流程任务id")
+    private String taskId;
 
     //private String toTaskIds;
 
+    @ApiModelProperty(value = "流程合并节点id")
     private String inclusiveGateWayId;
 
     @ApiModelProperty(value = "流程环节")

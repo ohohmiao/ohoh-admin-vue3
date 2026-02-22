@@ -54,9 +54,9 @@ public enum FlowTaskStateEnum {
     SUSPENDED,
 
     /**
-     * 已重启？
+     * 已重启
      */
-    //RESTARTED,
+    RESTARTED,
 
     /**
      * 被追回

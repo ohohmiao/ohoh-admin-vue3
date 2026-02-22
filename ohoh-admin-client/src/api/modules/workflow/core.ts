@@ -11,9 +11,6 @@ export namespace Workflow {
 	export interface ReqParams {
 		defCode?: string;
 		defVersion?: number;
-		creatorType?: number;
-		creatorId?: string;
-		creatorName?: string;
 		processId?: string;
 		curTaskId?: string;
 	}
@@ -41,9 +38,10 @@ export namespace Workflow {
 		entityVO: T;
 		busTableName: string;
 		busRecordId: string;
-		creatorType: number;
 		creatorId: string;
 		creatorName: string;
+		creatorOrgid: string;
+		creatorOrgname: string;
 		processId: string;
 		flowSubject: string;
 		doQueryFlag: boolean;
@@ -52,6 +50,8 @@ export namespace Workflow {
 	export interface FlowTaskHandler {
 		handlerId: string;
 		handlerName: string;
+		handlerOrgid: string;
+		handlerOrgname: string;
 	}
 	// * 流程任务环节
 	export interface FlowTaskNode {
@@ -72,6 +72,7 @@ export namespace Workflow {
 	}
 	// * 流程提交表单
 	export interface FlowSubmitForm extends ReqParams {
+		actType: number;
 		nextHandlerList: FlowTaskNode[];
 		processForm: ProcessForm;
 		businessForm: Record<string, any>;

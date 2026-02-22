@@ -81,13 +81,13 @@ public class FlowHandlerAddOrEditDTO {
 
     public boolean cleanHandlerType(){
         if(ObjectUtil.isNotNull(this.handlerType)){
-            if(this.handlerType.equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+            if(this.handlerType == FlowHandlerTypeEnum.REFERRES.ordinal()){
                 this.setInterfaceCode(null);
-            }else if(this.handlerType.equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
+            }else if(this.handlerType == FlowHandlerTypeEnum.INTERFACE.ordinal()){
                 if(this.getTargetReferResList() != null){
                     this.getTargetReferResList().clear();
                 }
-            }else if(this.handlerType.equals(FlowHandlerTypeEnum.SELF.ordinal())){
+            }else if(this.handlerType == FlowHandlerTypeEnum.SELF.ordinal()){
                 this.setInterfaceCode(null);
                 if(this.getTargetReferResList() != null){
                     this.getTargetReferResList().clear();
@@ -101,7 +101,7 @@ public class FlowHandlerAddOrEditDTO {
 
     public boolean isTargetReferResListRequired(){
         if(ObjectUtil.isNotNull(this.handlerType)){
-            if(this.handlerType.equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+            if(this.handlerType == FlowHandlerTypeEnum.REFERRES.ordinal()){
                 return CollectionUtil.isNotEmpty(this.targetReferResList);
             }
         }
@@ -110,7 +110,7 @@ public class FlowHandlerAddOrEditDTO {
 
     public boolean isInterfaceCodeRequired(){
         if(ObjectUtil.isNotNull(this.handlerType)){
-            if(this.handlerType.equals(FlowHandlerTypeEnum.INTERFACE.ordinal())){
+            if(this.handlerType == FlowHandlerTypeEnum.INTERFACE.ordinal()){
                 return StrUtil.isNotBlank(this.interfaceCode);
             }
         }
@@ -119,7 +119,7 @@ public class FlowHandlerAddOrEditDTO {
 
     public boolean isReselectPermitRequired(){
         if(ObjectUtil.isNotNull(this.handlerType)){
-            if(!this.handlerType.equals(FlowHandlerTypeEnum.SELF.ordinal())){
+            if(this.handlerType != FlowHandlerTypeEnum.SELF.ordinal()){
                 return ObjectUtil.isNotNull(this.reselectPermit);
             }
         }

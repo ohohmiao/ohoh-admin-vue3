@@ -445,6 +445,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             extraObj.put("type", "user");
             extraObj.put("extendValue", sysUser.getOrgPropid());
             extraObj.put("parentName", sysUser.getOrgName());
+            extraObj.put("orgId", sysUser.getOrgId());
+            extraObj.put("orgName", sysUser.getOrgName());
             extraObj.put("treePath", sysUser.getOrgPath()+sysUser.getUserId());
             return new TreeNode<>(sysUser.getOrgId()+"#"+sysUser.getUserId(),
                     sysUser.getOrgId(),
@@ -475,6 +477,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             extraObj.put("type", "user");
             extraObj.put("extendValue", sysUser.getOrgPropid());
             extraObj.put("parentName", sysUser.getOrgName());
+            extraObj.put("orgId", sysUser.getOrgId());
+            extraObj.put("orgName", sysUser.getOrgName());
             extraObj.put("treePath", sysUser.getOrgPath()+sysUser.getUserId());
             return new TreeNode<>(sysUser.getOrgId()+"#"+sysUser.getUserId(),
                     sysUser.getOrgId(),
@@ -629,6 +633,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             extraObj.put("type", "user");
             extraObj.put("extendValue", sysUser.getPropId());
             extraObj.put("parentName", sysUser.getPositionName());
+            extraObj.put("orgId", sysUser.getOrgId());
+            extraObj.put("orgName", sysUser.getOrgName());
             extraObj.put("treePath", sysUser.getPositionPath()+sysUser.getUserId());
             return new TreeNode<>(sysUser.getPositionId()+"#"+sysUser.getUserId(), sysUser.getPositionId(),
                     sysUser.getUserName(),

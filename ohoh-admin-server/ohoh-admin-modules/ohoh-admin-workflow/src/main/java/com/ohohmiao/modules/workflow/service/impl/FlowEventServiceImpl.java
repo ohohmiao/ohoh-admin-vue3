@@ -112,7 +112,7 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
         if(ObjectUtil.isNull(flowEventVO)){
             return null;
         }
-        if(flowEventVO.getImplType().equals(FlowEventImplTypeEnum.LOCAL_SERVICE.ordinal())){
+        if(flowEventVO.getImplType() == FlowEventImplTypeEnum.LOCAL_SERVICE.ordinal()){
             // 本地服务情形
             try {
                 String[] localService = flowEventVO.getImplLocalservice().split("\\.");
@@ -125,7 +125,7 @@ public class FlowEventServiceImpl extends CommonServiceImpl<FlowEventMapper, Flo
                 log.error(ExceptionUtil.stacktraceToString(e));
                 throw new CommonException(String.format("执行流程事件%s出错！", flowEventVO.getImplLocalservice()));
             }
-        }else if(flowEventVO.getImplType().equals(FlowEventImplTypeEnum.SCRIPT.ordinal())){
+        }else if(flowEventVO.getImplType() == FlowEventImplTypeEnum.SCRIPT.ordinal()){
             // TODO 执行脚本情形，待完善
             try {
                 Matcher matcher = Pattern.compile("\\<(.*?)>").matcher(flowEventVO.getImplScript());

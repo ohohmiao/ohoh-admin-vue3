@@ -68,7 +68,7 @@ public class FlowHisDeployDTO {
 
     public boolean isTargetInitiatorsRequired(){
         if(ObjectUtil.isNotNull(this.initiatorScope)){
-            if(this.initiatorScope.equals(FlowInitiatorScopeEnum.TARGET.ordinal())){
+            if(this.initiatorScope == FlowInitiatorScopeEnum.TARGET.ordinal()){
                 if(CollUtil.isEmpty(this.targetInitiators)){
                     return false;
                 }
@@ -83,7 +83,7 @@ public class FlowHisDeployDTO {
 
     public boolean isProcessLimitvalueRequired(){
         if(ObjectUtil.isNotNull(this.processLimittype)){
-            if(!this.processLimittype.equals(ProcessLimitTypeEnum.NO.ordinal())){
+            if(this.processLimittype != ProcessLimitTypeEnum.NO.ordinal()){
                 if(ObjectUtil.isNull(this.processLimitvalue)){
                     return false;
                 }

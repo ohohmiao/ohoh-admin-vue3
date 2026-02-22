@@ -71,7 +71,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
         if(ObjectUtil.isNotNull(flowHandler)){
             FlowHandlerVO flowHandlerVO = new FlowHandlerVO();
             BeanUtil.copyProperties(flowHandler, flowHandlerVO);
-            if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+            if(flowHandlerVO.getHandlerType() == FlowHandlerTypeEnum.REFERRES.ordinal()){
                 // 组装指定人员数据
                 List<SysReferRes> targetReferResList = flowDefBindService.list(FlowDefBindTypeEnum.HANDLER.ordinal(),
                         flowHandlerVO.getDefCode(), flowHandlerVO.getDefVersion(), handlerId);
@@ -93,7 +93,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
         if(ObjectUtil.isNotNull(flowHandler)){
             FlowHandlerVO flowHandlerVO = new FlowHandlerVO();
             BeanUtil.copyProperties(flowHandler, flowHandlerVO);
-            if(flowHandlerVO.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+            if(flowHandlerVO.getHandlerType() == FlowHandlerTypeEnum.REFERRES.ordinal()){
                 // 组装指定人员数据
                 List<SysReferRes> targetReferResList = flowDefBindService.list(FlowDefBindTypeEnum.HANDLER.ordinal(),
                         flowHandlerVO.getDefCode(), flowHandlerVO.getDefVersion(), flowHandler.getHandlerId());
@@ -111,7 +111,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
         FlowHandler flowHandler = BeanUtil.copyProperties(flowHandlerAddOrEditDTO, FlowHandler.class);
         flowHandler.setCreateTime(new Date());
         this.save(flowHandler);
-        if(flowHandler.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+        if(flowHandler.getHandlerType() == FlowHandlerTypeEnum.REFERRES.ordinal()){
             // 更新指定人员
             flowDefBindService.save(FlowDefBindTypeEnum.HANDLER.ordinal(),
                     flowHandler.getDefCode(), flowHandler.getDefVersion(),
@@ -131,7 +131,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
         // 删除指定人员
         flowDefBindService.deleteByBindTypeAndBindObjid(
                 FlowDefBindTypeEnum.HANDLER.ordinal(), flowHandler.getHandlerId());
-        if(flowHandler.getHandlerType().equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+        if(flowHandler.getHandlerType() == FlowHandlerTypeEnum.REFERRES.ordinal()){
             // 更新指定人员
             flowDefBindService.save(FlowDefBindTypeEnum.HANDLER.ordinal(),
                     flowHandler.getDefCode(), flowHandler.getDefVersion(),
@@ -155,7 +155,7 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
             return resultList;
         }
         Integer handlerType = flowHandlerVO.getHandlerType();
-        if(handlerType.equals(FlowHandlerTypeEnum.REFERRES.ordinal())){
+        if(handlerType == FlowHandlerTypeEnum.REFERRES.ordinal()){
             // 指定人员情形，根据关联资源查找用户列表
             List<SysUserVO> userVOList = sysUserApi.listByReferRes(
                     flowHandlerVO.getTargetReferResList());
@@ -163,6 +163,8 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
                 FlowTaskHandler handler = new FlowTaskHandler();
                 handler.setHandlerId(user.getUserId());
                 handler.setHandlerName(user.getUserName());
+                handler.setHandlerOrgid(user.getOrgId());
+                handler.setHandlerOrgname(user.getOrgName());
                 return handler;
             }).collect(Collectors.toList());
         }
@@ -179,6 +181,8 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
                 FlowTaskHandler handler = new FlowTaskHandler();
                 handler.setHandlerId(user.getUserId());
                 handler.setHandlerName(user.getUserName());
+                handler.setHandlerOrgid(user.getOrgId());
+                handler.setHandlerOrgname(user.getOrgName());
                 return handler;
             }).collect(Collectors.toList());
         }else{
@@ -196,6 +200,8 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
                 FlowTaskHandler handler = new FlowTaskHandler();
                 handler.setHandlerId(user.getUserId());
                 handler.setHandlerName(user.getUserName());
+                handler.setHandlerOrgid(user.getOrgId());
+                handler.setHandlerOrgname(user.getOrgName());
                 return handler;
             }).collect(Collectors.toList());
         }else{
@@ -213,6 +219,8 @@ public class FlowHandlerServiceImpl extends ServiceImpl<FlowHandlerMapper, FlowH
                 FlowTaskHandler handler = new FlowTaskHandler();
                 handler.setHandlerId(user.getUserId());
                 handler.setHandlerName(user.getUserName());
+                handler.setHandlerOrgid(user.getOrgId());
+                handler.setHandlerOrgname(user.getOrgName());
                 return handler;
             }).collect(Collectors.toList());
         }else{

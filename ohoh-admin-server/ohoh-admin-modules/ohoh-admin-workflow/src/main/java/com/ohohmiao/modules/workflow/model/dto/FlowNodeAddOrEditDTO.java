@@ -71,7 +71,7 @@ public class FlowNodeAddOrEditDTO {
 
     public boolean isMultiassignRuleRequired(){
         if(ObjectUtil.isNotNull(this.taskAssigntype)){
-            if(this.taskAssigntype.equals(FlowTaskAssignTypeEnum.MULTI.ordinal())){
+            if(this.taskAssigntype == FlowTaskAssignTypeEnum.MULTI.ordinal()){
                 return ObjectUtil.isNotNull(this.multiassignRule);
             }else{
                 this.setMultiassignRule(null);
@@ -84,7 +84,7 @@ public class FlowNodeAddOrEditDTO {
 
     public boolean isMultiassignRatioRequired(){
         if(ObjectUtil.isNotNull(this.multiassignRule)){
-            if(this.multiassignRule.equals(FlowTaskMultiAssignRuleEnum.RATIO.ordinal())){
+            if(this.multiassignRule == FlowTaskMultiAssignRuleEnum.RATIO.ordinal()){
                 return ObjectUtil.isNotNull(this.multiassignRatio);
             }else{
                 this.setMultiassignRatio(null);
@@ -95,7 +95,7 @@ public class FlowNodeAddOrEditDTO {
 
     public boolean isMultiassignWeightjsonRequired(){
         if(ObjectUtil.isNotNull(this.multiassignRule)){
-            if(this.multiassignRule.equals(FlowTaskMultiAssignRuleEnum.WEIGHT.ordinal())){
+            if(this.multiassignRule == FlowTaskMultiAssignRuleEnum.WEIGHT.ordinal()){
                 return ObjectUtil.isNotNull(this.multiassignWeightjson);
             }else{
                 this.setMultiassignWeightjson(null);

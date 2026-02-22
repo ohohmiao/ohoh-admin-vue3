@@ -73,14 +73,17 @@ public class FlowInfoVO<T> {
     @ApiModelProperty(value = "业务表记录id")
     private String busRecordId;
 
-    @ApiModelProperty(value = "发起人类别")
-    private Integer creatorType;
-
     @ApiModelProperty(value = "发起人id")
     private String creatorId;
 
     @ApiModelProperty(value = "发起人")
     private String creatorName;
+
+    @ApiModelProperty(value = "发起人部门id")
+    private String creatorOrgid;
+
+    @ApiModelProperty(value = "发起人部门名称")
+    private String creatorOrgname;
 
     @ApiModelProperty(value = "流程实例id")
     private String processId;
@@ -88,7 +91,8 @@ public class FlowInfoVO<T> {
     @ApiModelProperty(value = "流程实例标题")
     private String processSubject;
 
-    //private String curTaskId;
+    @ApiModelProperty(value = "当前任务id")
+    private String curTaskId;
 
     @ApiModelProperty(value = "是否处于查阅状态")
     private Boolean doQueryFlag;

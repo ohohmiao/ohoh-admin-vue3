@@ -29,4 +29,23 @@ public interface ProcessInstanceService extends CommonService<ProcessInstance> {
      */
     void saveOrUpdate(FlowInfoVO flowInfoVO, boolean isTempSave);
 
+    /**
+     * 更新当前运行信息
+     * @param processId
+     * @param curRunningNodeIds
+     * @param curRunningNodeNames
+     * @param curHandlerIds
+     * @param curHandlerNames
+     */
+    void updateCurRunningInfo(String processId, String curRunningNodeIds,
+                              String curRunningNodeNames, String curHandlerIds, String curHandlerNames);
+
+    /**
+     * 更新办结信息
+     * @param processId
+     * @param processState
+     * @param finalOpinion
+     */
+    void updateHandleEndedInfo(String processId, Integer processState, String finalOpinion);
+
 }

@@ -60,6 +60,9 @@ public class ProcessTask extends CommonEntity {
     private String assignHandlernames;
 
     @TableField
+    private String assignHandlerorgids;
+
+    @TableField
     private String assignHandlerorgnames;
 
     @TableField

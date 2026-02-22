@@ -22,4 +22,10 @@ public class FlowTaskHandler {
     @ApiModelProperty(value = "办理人名称")
     private String handlerName;
 
+    @ApiModelProperty(value = "办理人部门id")
+    private String handlerOrgid;
+
+    @ApiModelProperty(value = "办理人部门名称")
+    private String handlerOrgname;
+
 }

@@ -70,13 +70,13 @@ public class FlowEventAddOrEditDTO {
 
     public boolean isValidImpl(){
         if(ObjectUtil.isNotNull(this.implType)){
-            if(this.implType.equals(FlowEventImplTypeEnum.LOCAL_SERVICE.ordinal())){
+            if(this.implType == FlowEventImplTypeEnum.LOCAL_SERVICE.ordinal()){
                 if(StrUtil.isBlank(this.implLocalservice)){
                     return false;
                 }
                 this.setImplScript(null);
             }
-            if(this.implType.equals(FlowEventImplTypeEnum.SCRIPT.ordinal())){
+            if(this.implType == FlowEventImplTypeEnum.SCRIPT.ordinal()){
                 if(StrUtil.isBlank(this.implScript)){
                     return false;
                 }
