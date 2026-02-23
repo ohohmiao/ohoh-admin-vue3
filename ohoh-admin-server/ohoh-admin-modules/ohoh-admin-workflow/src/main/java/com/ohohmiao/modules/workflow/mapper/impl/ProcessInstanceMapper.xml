@@ -2,4 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ohohmiao.modules.workflow.mapper.ProcessInstanceMapper">
 
+    <select id="listMyApprovalPage" resultType="com.ohohmiao.modules.workflow.model.vo.ProcessInstanceVO">
+        select p.PROCESS_ID, p.DEF_CODE, p.DEF_VERSION, p.PROCESS_NUM, p.PROCESS_STATE,
+               p.PROCESS_SUBJECT, p.CREATOR_ID, p.CREATOR_NAME, p.CREATOR_ORGID, p.CREATOR_ORGNAME,
+               p.PROCESS_STARTTIME, k.TASK_ID, k.TASK_STATE, k.TASK_NODEID, k.TASK_NODENAME,
+               k.TASK_STARTTIME, k.TASK_DEADLINE
+        from PROCESS_TASK k
+            left join PROCESS_INSTANCE p
+            on k.PROCESS_ID = p.PROCESS_ID
+        ${ew.customSqlSegment }
+    </select>
+
 </mapper>

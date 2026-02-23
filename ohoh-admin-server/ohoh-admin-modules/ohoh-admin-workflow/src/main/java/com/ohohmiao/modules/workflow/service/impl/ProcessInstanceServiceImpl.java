@@ -2,20 +2,26 @@ package com.ohohmiao.modules.workflow.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.common.util.PlatRedisUtil;
+import com.ohohmiao.framework.mybatis.page.CommonPageRequest;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
 import com.ohohmiao.framework.security.model.pojo.StpLoginUser;
 import com.ohohmiao.framework.security.util.StpPCUtil;
 import com.ohohmiao.modules.system.service.SysRestDayService;
 import com.ohohmiao.modules.workflow.enums.FlowCacheKeyEnum;
 import com.ohohmiao.modules.workflow.enums.FlowProcessStateEnum;
+import com.ohohmiao.modules.workflow.enums.FlowTaskStateEnum;
 import com.ohohmiao.modules.workflow.enums.ProcessLimitTypeEnum;
 import com.ohohmiao.modules.workflow.mapper.ProcessInstanceMapper;
+import com.ohohmiao.modules.workflow.model.dto.FlowMyApprovalPageDTO;
 import com.ohohmiao.modules.workflow.model.entity.ProcessInstance;
 import com.ohohmiao.modules.workflow.model.pojo.FlowTaskHandler;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
+import com.ohohmiao.modules.workflow.model.vo.ProcessInstanceVO;
 import com.ohohmiao.modules.workflow.service.ProcessInstanceService;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +47,9 @@ public class ProcessInstanceServiceImpl extends CommonServiceImpl<ProcessInstanc
 
     @Resource
     private SysRestDayService sysRestDayService;
+
+    @Resource
+    private ProcessInstanceMapper processInstanceMapper;
 
     @Override
     public List<FlowTaskHandler> getCreator(FlowInfoVO flowInfoVO){
@@ -151,6 +160,23 @@ public class ProcessInstanceServiceImpl extends CommonServiceImpl<ProcessInstanc
             }
         }
         this.update(updateWrapper);
+    }
+
+    @Override
+    public Page<ProcessInstanceVO> listMyApprovalPage(FlowMyApprovalPageDTO pageDTO){
+        QueryWrapper<ProcessInstanceVO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNotNull("p.PROCESS_ID");
+        queryWrapper.eq("k.DELETE_FLAG", CommonWhetherEnum.NO.getCode());
+        queryWrapper.eq("p.DELETE_FLAG", CommonWhetherEnum.NO.getCode());
+        queryWrapper.in("k.TASK_STATE", FlowTaskStateEnum.SUSPENDED.ordinal(), FlowTaskStateEnum.RUNNING.ordinal());
+        StpLoginUser loginUser = StpPCUtil.getLoginUser();
+        queryWrapper.eq("k.HANDLER_ID", loginUser.getUserId());
+        // 查询条件
+        queryWrapper.eq(StrUtil.isNotEmpty(pageDTO.getProcessNum()), "p.PROCESS_NUM", pageDTO.getProcessNum());
+        queryWrapper.like(StrUtil.isNotEmpty(pageDTO.getProcessSubject()), "p.PROCESS_SUBJECT", pageDTO.getProcessSubject());
+        queryWrapper.orderByDesc("k.TASK_ID");
+        return processInstanceMapper.listMyApprovalPage(CommonPageRequest.constructPage(
+                pageDTO.getCurrent(), pageDTO.getSize()), queryWrapper);
     }
 
     /**

@@ -1,6 +1,7 @@
 import http from "@/api";
 import { WorkflowBtn } from "@/api/modules/workflow/btn";
 import { WorkflowNode } from "./node";
+import { ReqPage } from "@/api/interface";
 
 /**
  * @name 流程核心模块
@@ -91,6 +92,31 @@ export namespace Workflow {
 		PARALLEL = "parallelGateway",
 		INCLUSIVE = "inclusiveGateway"
 	}
+	// * 流程实例
+	export interface ProcessInstanceForm {
+		processId: string;
+		defCode: string;
+		defVersion: number;
+		processNum: string;
+		processState: number;
+		processSubject: string;
+		creatorId: string;
+		creatorName: string;
+		creatorOrgid: string;
+		creatorOrgname: string;
+		processStarttime: string;
+		taskId: string;
+		taskState: number;
+		taskNodeid: string;
+		taskNodename: string;
+		taskStarttime: string;
+		taskDeadline: string;
+	}
+	// * 待我审批查询条件
+	export interface MyApprovalPageParams extends ReqPage {
+		processNum: string;
+		processSubject: string;
+	}
 }
 
 // * 获取流程核心信息
@@ -106,4 +132,9 @@ export const getWorkflowNextNodeListApi = (params: Workflow.ReqNextNodeParams) =
 // * 提交流程
 export const doSubmitFlowApi = (params: Workflow.FlowSubmitForm) => {
 	return http.post<string>("/workflow/submit", params);
+};
+
+// * 待我审批列表
+export const getMyApprovalPageApi = (params: Workflow.MyApprovalPageParams) => {
+	return http.post<Workflow.ProcessInstanceForm>("/workflow/pageMyApproval", params);
 };
