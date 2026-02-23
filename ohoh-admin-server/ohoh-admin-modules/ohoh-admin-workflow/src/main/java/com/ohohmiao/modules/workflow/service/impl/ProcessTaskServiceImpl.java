@@ -5,6 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.ohohmiao.framework.common.enums.CommonWhetherEnum;
 import com.ohohmiao.framework.mybatis.service.impl.CommonServiceImpl;
@@ -22,6 +23,7 @@ import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
 import com.ohohmiao.modules.workflow.model.vo.ProcessTaskVO;
 import com.ohohmiao.modules.workflow.service.FlowNodeService;
 import com.ohohmiao.modules.workflow.service.ProcessTaskService;
+import com.ohohmiao.modules.workflow.util.WorkflowUtil;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +31,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -175,6 +179,20 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         listWrapper.orderByAsc(ProcessTask::getTaskId);
         List<ProcessTask> taskList = this.list(listWrapper);
         return taskList.stream().map(ProcessTask::getTaskId).collect(Collectors.joining(","));
+    }
+
+    @Override
+    public List<ProcessTaskVO> listTasksByGroup(String[] taskIds){
+        QueryWrapper<ProcessTask> listWrapper = new QueryWrapper<>();
+        listWrapper.select("task_nodeid, task_nodename, " +
+                "GROUP_CONCAT(handler_id) as handler_id, " +
+                "GROUP_CONCAT(handler_name) as handler_name, " +
+                "GROUP_CONCAT(handler_orgid) as handler_orgid, " +
+                "GROUP_CONCAT(handler_orgname) as handler_orgname");
+        listWrapper.in("task_id", taskIds);
+        listWrapper.groupBy("task_nodeid, task_nodename");
+        List<Map<String, Object>> list = processTaskMapper.selectMaps(listWrapper);
+        return list.stream().map(m -> BeanUtil.toBean(m, ProcessTaskVO.class)).collect(Collectors.toList());
     }
 
     private boolean saveStartNodeTask(FlowInfoVO flowInfoVO, FlowProcessForm processForm){
@@ -449,14 +467,23 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         parentTask.setTaskNodeid(nextHandlerDTO.getNodeId());
         parentTask.setTaskNodename(nextHandlerDTO.getNodeName());
         if(actType == FlowActTypeEnum.TRANSFER.ordinal() || actType == FlowActTypeEnum.JUMP.ordinal()){
-            // TODO 转办/跳转
+            // 转办/跳转
+            ProcessTask curTask = this.getById(flowInfoVO.getCurTaskId());
+            parentTask.setIncomingNodeid(curTask.getIncomingNodeid());
+            parentTask.setIncomingNodename(curTask.getIncomingNodename());
         }else if(actType == FlowActTypeEnum.RETURN.ordinal()){
-            // TODO 退回
+            // 退回
+            List<ProcessTask> incomingTaskList = this.listReturnNodeIncomingTasks(flowInfoVO, nextHandlerDTO.getNodeId());
+            if(CollUtil.isNotEmpty(incomingTaskList)){
+                ProcessTask incomingTask = incomingTaskList.get(0);
+                parentTask.setIncomingNodeid(incomingTask.getTaskNodeid());
+                parentTask.setIncomingNodename(incomingTask.getTaskNodename());
+            }
         }else{
             parentTask.setIncomingNodeid(curNodeInfo.getNodeId());
             parentTask.setIncomingNodename(curNodeInfo.getNodeName());
         }
-        // TODO parentTask.setOutgoingTaskids();
+        parentTask.setOutgoingTaskids(nextHandlerDTO.getOutgoingTaskids());
         parentTask.setAssignHandlerids(nextHandlerIds);
         parentTask.setAssignHandlernames(nextHandlerNames);
         parentTask.setAssignHandlerorgids(nextHandlerOrgids);
@@ -481,6 +508,23 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         }
     }
 
+    /**
+     * 获取目标退回节点的来源任务列表
+     * @param flowInfoVO
+     * @param nodeId
+     * @return
+     */
+    private List<ProcessTask> listReturnNodeIncomingTasks(FlowInfoVO flowInfoVO, String nodeId){
+        Set<String> incomingNodeIds = WorkflowUtil.getInComingNodeIds(flowInfoVO.getDefJson(), nodeId);
+        LambdaQueryWrapper<ProcessTask> listWrapper = new LambdaQueryWrapper<>();
+        listWrapper.eq(ProcessTask::getProcessId, flowInfoVO.getProcessId());
+        listWrapper.eq(ProcessTask::getTaskState, FlowTaskStateEnum.HANDLED.ordinal());
+        listWrapper.isNull(ProcessTask::getParentTaskid);
+        listWrapper.in(ProcessTask::getTaskNodeid, incomingNodeIds);
+        listWrapper.orderByDesc(ProcessTask::getTaskId);
+        return this.list(listWrapper);
+    }
+
     private void assignMultiTask(FlowInfoVO flowInfoVO, FlowProcessForm processForm, FlowNextHandlerDTO nextHandlerDTO){
         LocalDateTime curDateTime = LocalDateTime.now();
         FlowNodeVO curNodeInfo = flowInfoVO.getCurNodeInfo();
@@ -488,7 +532,9 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         String curNodeName = curNodeInfo.getNodeName();
         Integer actType = flowInfoVO.getActType();
         if(actType == FlowActTypeEnum.TRANSFER.ordinal() || actType == FlowActTypeEnum.JUMP.ordinal()){
-            // TODO 转办/跳转 根据flowInfoVO curTaskId 查询任务表，回填当前任务节点id和当前任务节点名称
+            ProcessTask curTask = this.getById(flowInfoVO.getCurTaskId());
+            curNodeId = curTask.getIncomingNodeid();
+            curNodeName = curTask.getIncomingNodename();
         }
         List<FlowTaskHandler> nextHandlers = nextHandlerDTO.getHandlers();
         String taskGroupid = UUID.randomUUID().toString(true);
@@ -510,7 +556,7 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
             subTask.setTaskNodename(nextHandlerDTO.getNodeName());
             subTask.setIncomingNodeid(curNodeId);
             subTask.setIncomingNodename(curNodeName);
-            // TODO subTask.setOutgoingTaskids();
+            subTask.setOutgoingTaskids(nextHandlerDTO.getOutgoingTaskids());
             subTask.setMultiHandletype(nextHandlerDTO.getMultiHandletype());
             subTask.setTaskGroupid(taskGroupid);
             subTask.setAssignHandlerids(nextHandler.getHandlerId());
@@ -534,7 +580,9 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         String curNodeName = curNodeInfo.getNodeName();
         Integer actType = flowInfoVO.getActType();
         if(actType == FlowActTypeEnum.TRANSFER.ordinal() || actType == FlowActTypeEnum.JUMP.ordinal()){
-            // TODO 转办/跳转 根据flowInfoVO curTaskId 查询任务表，回填当前任务节点id和当前任务节点名称
+            ProcessTask curTask = this.getById(flowInfoVO.getCurTaskId());
+            curNodeId = curTask.getIncomingNodeid();
+            curNodeName = curTask.getIncomingNodename();
         }
         List<FlowTaskHandler> nextHandlers = nextHandlerDTO.getHandlers();
 
@@ -547,7 +595,7 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
             subTask.setTaskNodename(nextHandlerDTO.getNodeName());
             subTask.setIncomingNodeid(curNodeId);
             subTask.setIncomingNodename(curNodeName);
-            // TODO subTask.setOutgoingTaskids();
+            subTask.setOutgoingTaskids(nextHandlerDTO.getOutgoingTaskids());
             subTask.setMultiHandletype(nextHandlerDTO.getMultiHandletype());
             subTask.setAssignHandlerids(nextHandler.getHandlerId());
             subTask.setAssignHandlernames(nextHandler.getHandlerName());

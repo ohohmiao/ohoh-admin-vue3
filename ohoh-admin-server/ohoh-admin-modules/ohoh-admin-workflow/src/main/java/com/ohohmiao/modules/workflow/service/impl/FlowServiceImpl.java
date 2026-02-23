@@ -35,6 +35,7 @@ import javax.annotation.Resource;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -341,9 +342,47 @@ public class FlowServiceImpl implements FlowService {
      */
     private List<FlowTaskNodeVO> getSubmitNextHandlerList(FlowInfoVO flowInfoVO){
         List<FlowTaskNodeVO> nextHandlerList = CollectionUtil.newArrayList();
-        //if(StrUtil.isNotEmpty(flowInfoVO.getCurTaskId())){
-            // TODO 从流程任务表查询去往任务信息，组装返回
-        //}
+        if(StrUtil.isNotEmpty(flowInfoVO.getCurTaskId())){
+            ProcessTask curTask = processTaskService.getById(flowInfoVO.getCurTaskId());
+            // 从流程任务表查询去往任务信息，组装返回
+            if(StrUtil.isNotEmpty(curTask.getOutgoingTaskids())){
+                // TODO 验证
+                List<ProcessTaskVO> nextTaskList = processTaskService.listTasksByGroup(curTask.getOutgoingTaskids().split(","));
+                for(ProcessTaskVO nextTask: nextTaskList){
+                    FlowTaskNodeVO nextHandler = new FlowTaskNodeVO();
+                    nextHandler.setNodeId(nextTask.getTaskNodeid());
+                    nextHandler.setNodeName(nextTask.getTaskNodename());
+                    nextHandler.setNodeType(FlowNodeTypeEnum.TASK.getCode());
+                    String[] handlerIds = nextTask.getHandlerId().split(",");
+                    String[] handlerNames = nextTask.getHandlerName().split(",");
+                    String[] handlerOrgIds = nextTask.getHandlerOrgid().split(",");
+                    String[] handlerOrgNames = nextTask.getHandlerOrgname().split(",");
+                    List<FlowTaskHandler> handlerList = new ArrayList<>();
+                    for(int i = 0; i < handlerIds.length; i++){
+                        FlowTaskHandler handler = new FlowTaskHandler();
+                        handler.setHandlerId(handlerIds[i]);
+                        handler.setHandlerName(handlerNames[i]);
+                        handler.setHandlerOrgid(handlerOrgIds[i]);
+                        handler.setHandlerOrgname(handlerOrgNames[i]);
+                        handlerList.add(handler);
+                    }
+                    nextHandler.setHandlers(handlerList);
+                    nextHandler.setReselectPermit(CommonWhetherEnum.NO.getCode());
+                    nextHandlerList.add(nextHandler);
+                }
+                return nextHandlerList;
+            }
+            // 串审环节，取出下一等待办理人
+            if(curTask.getMultiHandletype() == FlowTaskMultiHandleTypeEnum.SERIAL.ordinal()){
+                // TODO 验证
+                FlowTaskNodeVO nextHandler = processTaskService.getMultiHandleNodeNextWaitingHandler(
+                        flowInfoVO.getProcessId(), flowInfoVO.getCurTaskId());
+                if(nextHandler != null){
+                    nextHandlerList.add(nextHandler);
+                    return nextHandlerList;
+                }
+            }
+        }
         // 从流程定义查询下一节点信息
         List<Map> nextNodeList = WorkflowUtil.getNextNodes(
                 flowInfoVO.getDefJson(), flowInfoVO.getCurNodeInfo().getNodeId());

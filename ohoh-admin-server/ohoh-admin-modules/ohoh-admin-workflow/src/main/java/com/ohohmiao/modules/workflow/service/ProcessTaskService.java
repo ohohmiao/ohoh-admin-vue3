@@ -6,6 +6,7 @@ import com.ohohmiao.modules.workflow.model.entity.ProcessTask;
 import com.ohohmiao.modules.workflow.model.pojo.FlowProcessForm;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
+import com.ohohmiao.modules.workflow.model.vo.ProcessTaskVO;
 
 import java.util.List;
 
@@ -69,5 +70,12 @@ public interface ProcessTaskService extends CommonService<ProcessTask> {
      * @return
      */
     String getMultiHandleNodeOutgoingTaskids(String taskId);
+
+    /**
+     * 列出流程任务，根据环节分组
+     * @param taskIds
+     * @return
+     */
+    List<ProcessTaskVO> listTasksByGroup(String[] taskIds);
 
 }

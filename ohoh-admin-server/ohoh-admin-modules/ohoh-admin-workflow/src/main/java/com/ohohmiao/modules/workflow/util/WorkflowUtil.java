@@ -4,8 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson2.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -165,6 +164,75 @@ public class WorkflowUtil {
             nextNodeList.add(getInComingNode(defJson, outging));
         }
         return nextNodeList;
+    }
+
+    /**
+     * 根据属性获取唯一节点
+     * @param defJson
+     * @param propName
+     * @param propValue
+     * @return
+     */
+    public static Map getFlowNodeByProp(String defJson, String propName, String propValue) {
+        StringBuffer regEx = new StringBuffer("$..[?(@.");
+        regEx.append(propName).append(" == '").append(propValue).append("')]");
+        Object value = JSONPath.extract(defJson, regEx.toString());
+        if(value != null) {
+            return JSON.parseArray(value.toString(), Map.class).get(0);
+        }else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取某节点的输入id
+     * @param defJson
+     * @param nodeId
+     * @return
+     */
+    public static List<String> getInComings(String defJson, String nodeId){
+        Map curNode = getFlowNode(defJson, nodeId);
+        Object incoming = curNode.get("incoming");
+        List<String> incomings = new ArrayList<>();
+        if(incoming != null){
+            if(incoming instanceof List){
+                incomings = JSON.parseArray(incoming.toString(), String.class);
+            }else{
+                incomings.add(incoming.toString());
+            }
+        }
+        return incomings;
+    }
+
+    /**
+     * 获取输入的节点列表
+     * @param defJson
+     * @param nodeId
+     * @return
+     */
+    public static List<Map> getInComingNodes(String defJson, String nodeId){
+        List<String> incomings = getInComings(defJson, nodeId);
+        List<Map> nodeList = new ArrayList<>();
+        for(String incoming: incomings){
+            Map node = getFlowNodeByProp(defJson, "outgoing", incoming);
+            nodeList.add(node);
+        }
+        return nodeList;
+    }
+
+    /**
+     * 获取输入的节点id列表
+     * @param defJson
+     * @param nodeId
+     * @return
+     */
+    public static Set<String> getInComingNodeIds(String defJson, String nodeId){
+        List<Map> nodeList = getInComingNodes(defJson, nodeId);
+        Set<String> nodeIds = new HashSet<>();
+        for(Map node: nodeList){
+            nodeIds.add((String)node.get("id"));
+        }
+        return nodeIds;
     }
 
 }

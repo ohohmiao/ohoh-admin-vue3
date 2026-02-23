@@ -28,6 +28,8 @@ public class FlowNextHandlerDTO {
 
     private Integer multiHandletype;
 
+    private String outgoingTaskids;
+
     private String inclusiveGateWayId;
 
 }
