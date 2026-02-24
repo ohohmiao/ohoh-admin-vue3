@@ -7,10 +7,10 @@ import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
 import com.ohohmiao.modules.workflow.model.dto.*;
-import com.ohohmiao.modules.workflow.model.entity.ProcessTask;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
 import com.ohohmiao.modules.workflow.model.vo.ProcessInstanceVO;
+import com.ohohmiao.modules.workflow.model.vo.ProcessTaskVO;
 import com.ohohmiao.modules.workflow.service.FlowService;
 import com.ohohmiao.modules.workflow.service.ProcessInstanceService;
 import com.ohohmiao.modules.workflow.service.impl.ProcessTaskServiceImpl;
@@ -94,7 +94,7 @@ public class FlowController {
     @ApiOperationSupport(order = 4)
     @SaPcCheckPermission("/workflow/listTaskLogs")
     @PostMapping("/workflow/listTaskLogs")
-    public CommonResp<List<ProcessTask>> listTaskLogs(@RequestBody FlowTaskLogListDTO listDTO){
+    public CommonResp<List<ProcessTaskVO>> listTaskLogs(@RequestBody FlowTaskLogListDTO listDTO){
         return CommonResp.data(processTaskService.listProcessTaskLogs(listDTO.getProcessId()));
     }
 

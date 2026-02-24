@@ -114,6 +114,36 @@ export namespace Workflow {
 		taskStarttime: string;
 		taskDeadline: string;
 	}
+	// * 流程任务
+	export interface ProcessTaskForm {
+		taskId: string;
+		processId: string;
+		taskState: number;
+		taskNodeid: string;
+		taskNodename: string;
+		incomingNodeid: string;
+		incomingNodename: string;
+		parentTaskid: string;
+		outgoingTaskid: string;
+		multiHandletype: number;
+		taskGroupid: string;
+		assignHandlerids: string;
+		assignHandlernames: string;
+		assignHandlerorgids: string;
+		assignHandlerorgnames: string;
+		handlerId: string;
+		handlerName: string;
+		handlerOrgid: string;
+		handlerOrgname: string;
+		taskStarttime: string;
+		approvalResult: number;
+		handleOpinion: string;
+		taskDeadline: string;
+		taskEndtime: string;
+		consumeSeconds: number;
+		overtimeFlag: number;
+		exceedSeconds: number;
+	}
 	// * 待我审批查询条件
 	export interface MyApprovalPageParams extends ReqPage {
 		processNum: string;
@@ -134,6 +164,11 @@ export const getWorkflowNextNodeListApi = (params: Workflow.ReqNextNodeParams) =
 // * 提交流程
 export const doSubmitFlowApi = (params: Workflow.FlowSubmitForm) => {
 	return http.post<string>("/workflow/submit", params);
+};
+
+// * 审批过程日志列表
+export const getWorkflowTaskLogListApi = (params: { processId: string }) => {
+	return http.post<Workflow.ProcessTaskForm>("/workflow/listTaskLogs", params);
 };
 
 // * 待我审批列表

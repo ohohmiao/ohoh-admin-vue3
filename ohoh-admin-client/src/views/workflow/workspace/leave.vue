@@ -70,7 +70,9 @@
 						</el-form>
 					</el-card>
 				</el-tab-pane>
-				<el-tab-pane label="审批过程" name="processTab" v-if="!formProps.flowInfo.startFlowFlag"> </el-tab-pane>
+				<el-tab-pane label="审批过程" name="processTab" v-if="!formProps.flowInfo.startFlowFlag">
+					<FlowTaskLogList :process-id="formProps.flowInfo.processId!"></FlowTaskLogList>
+				</el-tab-pane>
 				<el-tab-pane label="流程图" name="chartTab">
 					<BpmnViewer ref="flowChartRef" @modeler-init="handleFlowChartModelerInit"></BpmnViewer>
 				</el-tab-pane>
@@ -89,6 +91,7 @@ import type ElementRegistry from "diagram-js/lib/core/ElementRegistry";
 import type Modeling from "bpmn-js/lib/features/modeling/Modeling";
 import { ElMessage, FormInstance } from "element-plus";
 import { Leave } from "@/api/modules/demo/leave";
+import FlowTaskLogList from "@/views/workflow/component/FlowTaskLogList.vue";
 
 interface FormProps {
 	flowInfo: Partial<Workflow.FlowInfo<Leave.Form>>;

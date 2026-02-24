@@ -196,12 +196,20 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
     }
 
     @Override
-    public List<ProcessTask> listProcessTaskLogs(String processId){
+    public List<ProcessTaskVO> listProcessTaskLogs(String processId){
+        // TODO 验证 （开始节点parentId = 0）
+//        LambdaQueryWrapper<ProcessTask> listWrapper = new LambdaQueryWrapper<>();
+//        listWrapper.isNull(ProcessTask::getParentTaskid);
+//        listWrapper.eq(ProcessTask::getProcessId, processId);
+//        listWrapper.orderByAsc(ProcessTask::getTaskId);
+//        return this.list(listWrapper).stream().map(
+//                k -> BeanUtil.toBean(k, ProcessTaskVO.class)).collect(Collectors.toList());
         LambdaQueryWrapper<ProcessTask> listWrapper = new LambdaQueryWrapper<>();
-        listWrapper.isNull(ProcessTask::getParentTaskid);
+        listWrapper.isNotNull(ProcessTask::getParentTaskid);
         listWrapper.eq(ProcessTask::getProcessId, processId);
         listWrapper.orderByAsc(ProcessTask::getTaskId);
-        return this.list(listWrapper);
+        return this.list(listWrapper).stream().map(
+                k -> BeanUtil.toBean(k, ProcessTaskVO.class)).collect(Collectors.toList());
     }
 
     private boolean saveStartNodeTask(FlowInfoVO flowInfoVO, FlowProcessForm processForm){
@@ -211,6 +219,7 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         FlowNodeVO curNodeInfo = flowInfoVO.getCurNodeInfo();
         startTask.setTaskNodeid(curNodeInfo.getNodeId());
         startTask.setTaskNodename(curNodeInfo.getNodeName());
+        startTask.setParentTaskid("0"); // TODO 验证
         startTask.setAssignHandlerids(flowInfoVO.getCreatorId());
         startTask.setAssignHandlernames(flowInfoVO.getCreatorName());
         startTask.setAssignHandlerorgids(flowInfoVO.getCreatorOrgid());

@@ -83,6 +83,6 @@ public interface ProcessTaskService extends CommonService<ProcessTask> {
      * @param processId
      * @return
      */
-    List<ProcessTask> listProcessTaskLogs(String processId);
+    List<ProcessTaskVO> listProcessTaskLogs(String processId);
 
 }
