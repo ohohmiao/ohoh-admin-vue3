@@ -1,6 +1,6 @@
--- MySQL dump 10.13  Distrib 8.0.36, for macos14 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.45, for macos15 (x86_64)
 --
--- Host: localhost    Database: ohohplat
+-- Host: 127.0.0.1    Database: ohohplat
 -- ------------------------------------------------------
 -- Server version	8.0.28
 
@@ -14,6 +14,108 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `process_instance`
+--
+
+DROP TABLE IF EXISTS `process_instance`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `process_instance` (
+  `process_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '流程实例id',
+  `delete_flag` tinyint NOT NULL COMMENT '是否删除0=否1=是',
+  `create_userid` varchar(32) NOT NULL COMMENT '创建者id',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_userid` varchar(32) DEFAULT NULL COMMENT '更新者id',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `def_code` varchar(64) NOT NULL COMMENT '流程编码',
+  `def_version` int NOT NULL COMMENT '版本号',
+  `process_num` varchar(64) NOT NULL COMMENT '流水号',
+  `process_state` int NOT NULL COMMENT '状态0-草稿1-正在办理2-已办结(正常结束)3-已办结(审核通过)4-已办结(审核不通过)5-已办结(强制终止)',
+  `bus_tablename` varchar(64) NOT NULL COMMENT '业务表名',
+  `bus_recordid` varchar(32) NOT NULL COMMENT '业务记录id',
+  `process_subject` varchar(256) NOT NULL COMMENT '流程实例标题',
+  `creator_id` varchar(32) NOT NULL COMMENT '发起人id',
+  `creator_name` varchar(64) NOT NULL COMMENT '发起人',
+  `creator_orgid` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '发起人部门id',
+  `creator_orgname` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '发起人部门名称',
+  `currunning_nodenames` varchar(4000) DEFAULT NULL COMMENT '当前环节名称串',
+  `currunning_nodeids` varchar(4000) DEFAULT NULL COMMENT '当前环节id串',
+  `cur_handlerids` varchar(4000) DEFAULT NULL COMMENT '当前办理人id串',
+  `cur_handlernames` varchar(4000) DEFAULT NULL COMMENT '当前办理人名称串',
+  `process_starttime` datetime NOT NULL COMMENT '流程实例创建时间',
+  `end_deadline` datetime DEFAULT NULL COMMENT '办结截止期限',
+  `final_opinion` varchar(1024) DEFAULT NULL COMMENT '最终审核意见',
+  `process_endtime` datetime DEFAULT NULL COMMENT '流程实例办结时间',
+  `consume_seconds` bigint DEFAULT NULL COMMENT '办理消耗秒数',
+  `overtime_flag` int DEFAULT NULL COMMENT '是否办理超时0-否1-是',
+  `exceed_seconds` bigint DEFAULT NULL COMMENT '超期秒数',
+  PRIMARY KEY (`process_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='流程实例表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `process_instance`
+--
+
+LOCK TABLES `process_instance` WRITE;
+/*!40000 ALTER TABLE `process_instance` DISABLE KEYS */;
+/*!40000 ALTER TABLE `process_instance` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `process_task`
+--
+
+DROP TABLE IF EXISTS `process_task`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `process_task` (
+  `task_id` varchar(32) NOT NULL COMMENT '流程任务id',
+  `delete_flag` tinyint NOT NULL COMMENT '是否删除0=否1=是',
+  `create_userid` varchar(32) NOT NULL COMMENT '创建者id',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_userid` varchar(32) DEFAULT NULL COMMENT '更新者id',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `process_id` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '流程实例id',
+  `task_state` int NOT NULL COMMENT '状态0-正在办理1-已办理2-已退回3-等待中4-已转办5-已办结6-已挂起7-被追回8-被跳转',
+  `task_nodeid` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '任务环节id',
+  `task_nodename` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '任务环节名称',
+  `incoming_nodeid` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '上一环节节点id',
+  `incoming_nodename` varchar(64) DEFAULT NULL COMMENT '上一环节节点名称',
+  `parent_taskid` varchar(32) DEFAULT NULL COMMENT '父任务id',
+  `outgoing_taskids` varchar(4000) DEFAULT NULL COMMENT '去往任务id串',
+  `multi_handletype` int DEFAULT NULL COMMENT '多人任务审核方式0-并审1-串审',
+  `task_groupid` varchar(32) DEFAULT NULL COMMENT '任务组id',
+  `assign_handlerids` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '指定办理人id串',
+  `assign_handlernames` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '指定办理人姓名串',
+  `assign_handlerorgids` varchar(4000) DEFAULT NULL COMMENT '指定办理人部门id串',
+  `assign_handlerorgnames` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '指定办理人部门名称串',
+  `handler_id` varchar(32) DEFAULT NULL COMMENT '办理人id',
+  `handler_name` varchar(64) DEFAULT NULL COMMENT '办理人姓名',
+  `handler_orgid` varchar(32) DEFAULT NULL COMMENT '办理人部门id',
+  `handler_orgname` varchar(128) DEFAULT NULL COMMENT '办理人部门名称',
+  `task_starttime` datetime NOT NULL COMMENT '任务开始时间',
+  `approval_result` int DEFAULT NULL COMMENT '是否审核通过0-否1-是',
+  `handle_opinion` varchar(1024) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '办理意见',
+  `task_deadline` datetime DEFAULT NULL COMMENT '任务办理截止时间',
+  `task_endtime` datetime DEFAULT NULL COMMENT '任务办理时间',
+  `consume_seconds` bigint DEFAULT NULL COMMENT '办理消耗秒数',
+  `overtime_flag` int DEFAULT NULL COMMENT '是否办理超时0-否1-是',
+  `exceed_seconds` bigint DEFAULT NULL COMMENT '超期秒数',
+  PRIMARY KEY (`task_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='流程任务表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `process_task`
+--
+
+LOCK TABLES `process_task` WRITE;
+/*!40000 ALTER TABLE `process_task` DISABLE KEYS */;
+/*!40000 ALTER TABLE `process_task` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `workflow_btn`
@@ -307,7 +409,7 @@ CREATE TABLE `workflow_node` (
   `task_assigntype` int NOT NULL COMMENT '任务指派类别0-单人任务1-多人任务2-自由任务',
   `multiassign_rule` int DEFAULT NULL COMMENT '多人决策方式0-少数服从多数1-以最后一人结果为准2-按比例3-按权重',
   `multiassign_ratio` int DEFAULT NULL COMMENT '多人决策比例值',
-  `multiassign_weightjson` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '多人决策权重json，格式handlerId-handlerName-weight',
+  `multiassign_weightjson` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '多人决策权重json，格式handlerId-handlerName-handlerOrgid-handlerOrgname-weight',
   `task_returntype` int NOT NULL COMMENT '退回执行方式0-按流程图执行1-直接返回',
   `processlimit_permit` int NOT NULL COMMENT '允许指定办理期限0-禁止1-允许',
   `approval_permit` int NOT NULL COMMENT '添加审批结果控件0-不添加1-添加',
@@ -355,82 +457,6 @@ LOCK TABLES `workflow_nodebind` WRITE;
 INSERT INTO `workflow_nodebind` VALUES ('1931986097496875009','workflow03',1,'Activity_02szuig','填写申请单',0,'1931986096620265474'),('1931986189675094018','workflow04',1,'Activity_0f5x80l','填写申请单',0,'1931986189637345282'),('1932312321038024705','workflow01',1,'Activity_13r6s9c','填写申请单',2,'1931996397935661058'),('1932312369494818818','workflow01',1,'Activity_13r6s9c','填写申请单',2,'1931900295504896001'),('1932312369499013121','workflow01',1,'Activity_0tq7t8b','主管审批',2,'1931900295504896001'),('1932312369503207426','workflow01',1,'Activity_1ni6ih3','经理审批',2,'1931900295504896001'),('1932312492245319682','workflow03',1,'Activity_02szuig','填写申请单',2,'1931900295504896001'),('1932312596800929793','workflow04',1,'Activity_0f5x80l','填写申请单',2,'1931900295504896001'),('1932683242169004034','workflow02',1,'Activity_0m1uvi8','填写申请单',0,'1932683241900568578'),('1932683242181586946','workflow02',1,'Activity_1ru8eyo','分管副总审批',0,'1932683241900568578'),('1932683242185781250','workflow02',1,'Activity_1p9mujm','业务部门审批',0,'1932683241900568578'),('1932683242189975553','workflow02',1,'Activity_00bc3t4','人事部门审批',0,'1932683241900568578'),('1932684810004033537','workflow02',1,'Activity_0m1uvi8','填写申请单',2,'1931900295504896001'),('1932719392560619521','workflow02',1,'Gateway_0xvdqd2','判断节点#Gateway_0xvdqd2',1,'1932694045349744642'),('1933081594295525378','workflow01',1,'Activity_13r6s9c','填写申请单',0,'1931536946649440257'),('1933081594299719681','workflow01',1,'Activity_0tq7t8b','主管审批',0,'1931536946649440257'),('1933081594303913985','workflow01',1,'Activity_1ni6ih3','经理审批',0,'1931536946649440257');
 /*!40000 ALTER TABLE `workflow_nodebind` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `workflow_process`
---
-
-DROP TABLE IF EXISTS `workflow_process`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `workflow_process` (
-  `process_id` varchar(32) NOT NULL COMMENT '流程实例id',
-  `delete_flag` tinyint NOT NULL COMMENT '是否删除0=否1=是',
-  `create_userid` varchar(32) NOT NULL COMMENT '创建者id',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_userid` varchar(32) DEFAULT NULL COMMENT '更新者id',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `def_code` varchar(64) NOT NULL COMMENT '流程编码',
-  `def_version` int NOT NULL COMMENT '版本号',
-  `process_num` varchar(64) NOT NULL COMMENT '流水号',
-  `process_state` int NOT NULL COMMENT '状态0-草稿1-正在办理2-已办结(正常结束)3-已办结(审核通过)4-已办结(审核不通过)5-已办结(强制终止)',
-  `bus_tablename` varchar(64) NOT NULL COMMENT '业务表名',
-  `bus_recordid` varchar(32) NOT NULL COMMENT '业务记录id',
-  `process_subject` varchar(256) NOT NULL COMMENT '流程实例标题',
-  `creator_type` int NOT NULL COMMENT '发起人类别0-系统用户',
-  `creator_id` varchar(32) NOT NULL COMMENT '发起人id',
-  `creator_name` varchar(64) NOT NULL COMMENT '发起人',
-  `currunning_nodenames` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '当前环节名称串',
-  `currunning_nodeids` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '当前环节id串',
-  `cur_handlerids` varchar(4000) DEFAULT NULL COMMENT '当前办理人id串',
-  `cur_handlernames` varchar(4000) DEFAULT NULL COMMENT '当前办理人名称串',
-  `process_starttime` datetime NOT NULL COMMENT '流程实例创建时间',
-  `end_deadline` datetime DEFAULT NULL COMMENT '办结截止期限',
-  `final_opinion` varchar(1024) DEFAULT NULL COMMENT '最终审核意见',
-  `process_endtime` datetime DEFAULT NULL COMMENT '流程实例办结时间',
-  `overtime_flag` int DEFAULT NULL COMMENT '是否办理超时',
-  `consume_seconds` bigint DEFAULT NULL COMMENT '办理消耗秒数',
-  `left_seconds` bigint DEFAULT NULL COMMENT '剩余秒数',
-  `exceed_seconds` bigint DEFAULT NULL COMMENT '超期秒数',
-  PRIMARY KEY (`process_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='流程实例表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `workflow_process`
---
-
-LOCK TABLES `workflow_process` WRITE;
-/*!40000 ALTER TABLE `workflow_process` DISABLE KEYS */;
-/*!40000 ALTER TABLE `workflow_process` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `workflow_task`
---
-
-DROP TABLE IF EXISTS `workflow_task`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `workflow_task` (
-  `task_id` varchar(32) NOT NULL COMMENT '流程任务id',
-  `delete_flag` tinyint NOT NULL COMMENT '是否删除0=否1=是',
-  `create_userid` varchar(32) NOT NULL COMMENT '创建者id',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_userid` varchar(32) DEFAULT NULL COMMENT '更新者id',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`task_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='流程任务表';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `workflow_task`
---
-
-LOCK TABLES `workflow_task` WRITE;
-/*!40000 ALTER TABLE `workflow_task` DISABLE KEYS */;
-/*!40000 ALTER TABLE `workflow_task` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -441,4 +467,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-15 17:12:01
+-- Dump completed on 2026-02-24 17:21:26
