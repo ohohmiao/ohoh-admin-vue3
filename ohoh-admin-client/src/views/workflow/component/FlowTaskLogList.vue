@@ -32,8 +32,13 @@ const formColumns: ColumnProps<Workflow.ProcessTaskForm>[] = [
 	{ type: "index", label: "#", width: 80 },
 	{ prop: "incomingNodename", label: "上一环节", width: 150 },
 	{ prop: "taskNodename", label: "办理环节", width: 150 },
-	{ prop: "handlerName", label: "办理人", width: 150 },
-	{ prop: "handlerOrgname", label: "办理人部门", width: 150 },
+	{ prop: "handlerName", label: "办理人", width: 150, render: scope => scope.row.handlerName || scope.row.assignHandlernames },
+	{
+		prop: "handlerOrgname",
+		label: "办理人部门",
+		width: 150,
+		render: scope => scope.row.handlerOrgname || scope.row.assignHandlerorgnames
+	},
 	{ prop: "taskStarttime", label: "任务创建时间", width: 200 },
 	{
 		prop: "taskState",
