@@ -175,7 +175,7 @@ public class ProcessInstanceServiceImpl extends CommonServiceImpl<ProcessInstanc
         queryWrapper.eq(StrUtil.isNotEmpty(pageDTO.getProcessNum()), "p.PROCESS_NUM", pageDTO.getProcessNum());
         queryWrapper.like(StrUtil.isNotEmpty(pageDTO.getProcessSubject()), "p.PROCESS_SUBJECT", pageDTO.getProcessSubject());
         queryWrapper.orderByDesc("k.TASK_ID");
-        return processInstanceMapper.listMyApprovalPage(CommonPageRequest.constructPage(
+        return processInstanceMapper.pageProcessInstanceVO(CommonPageRequest.constructPage(
                 pageDTO.getCurrent(), pageDTO.getSize()), queryWrapper);
     }
 

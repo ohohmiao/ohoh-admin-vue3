@@ -24,6 +24,6 @@ public interface ProcessInstanceMapper extends BaseMapper<ProcessInstance> {
      * @param queryWrapper
      * @return
      */
-    Page<ProcessInstanceVO> listMyApprovalPage(Page<ProcessInstanceVO> page, @Param(Constants.WRAPPER) Wrapper<ProcessInstanceVO> queryWrapper);
+    Page<ProcessInstanceVO> pageProcessInstanceVO(Page<ProcessInstanceVO> page, @Param(Constants.WRAPPER) Wrapper<ProcessInstanceVO> queryWrapper);
 
 }
