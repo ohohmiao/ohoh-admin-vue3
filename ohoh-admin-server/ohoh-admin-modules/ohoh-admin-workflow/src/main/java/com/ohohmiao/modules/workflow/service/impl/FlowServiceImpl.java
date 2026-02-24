@@ -552,7 +552,7 @@ public class FlowServiceImpl implements FlowService {
             String curHandlerNames = taskList.stream().map(ProcessTask::getAssignHandlernames).collect(Collectors.joining(","));
             processInstanceService.updateCurRunningInfo(flowInfoVO.getProcessId(), curRunningNodeIds, curRunningNodeNames, curHandlerIds, curHandlerNames);
         }else{
-            Integer taskState = FlowTaskStateEnum.HANDLED.ordinal();
+            Integer taskState = FlowTaskStateEnum.ENDED.ordinal();
             processTaskService.updateTaskStateCascade(flowInfoVO.getCurTaskId(), taskState);
             Integer processState = FlowProcessStateEnum.END.ordinal();
             if(processForm.getAppovalResult() != null){
