@@ -45,6 +45,7 @@ export namespace Workflow {
 		creatorOrgname: string;
 		processId: string;
 		flowSubject: string;
+		curTaskId: string;
 		doQueryFlag: boolean;
 	}
 	// * 流程环节办理人
@@ -62,6 +63,7 @@ export namespace Workflow {
 		handlers: FlowTaskHandler[];
 		multiHandletype: number;
 		reselectPermit: number;
+		outgoingTaskids?: string;
 		inclusiveGateWayId: string;
 		nodeList?: FlowTaskNode[];
 	}

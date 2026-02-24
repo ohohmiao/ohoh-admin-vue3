@@ -1,5 +1,6 @@
 package com.ohohmiao.modules.workflow.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -49,6 +50,7 @@ public class ProcessInstanceVO {
     private String creatorOrgname;
 
     @ApiModelProperty(value = "流程实例创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime processStarttime;
 
     @ApiModelProperty(value = "流程任务id")
@@ -64,9 +66,11 @@ public class ProcessInstanceVO {
     private String taskNodename;
 
     @ApiModelProperty(value = "任务开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime taskStarttime;
 
     @ApiModelProperty(value = "任务办理截止时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime taskDeadline;
 
 }

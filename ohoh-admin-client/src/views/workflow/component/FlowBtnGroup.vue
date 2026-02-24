@@ -21,6 +21,14 @@ const props = defineProps({
 		type: Number,
 		required: true
 	},
+	processId: {
+		type: String,
+		required: false
+	},
+	curTaskId: {
+		type: String,
+		required: false
+	},
 	nodeProp: {
 		type: Object as PropType<WorkflowNode.Form>,
 		required: true
@@ -55,6 +63,8 @@ const preDefinedMethods: Record<string, Function> = {
 		const { data } = await getWorkflowNextNodeListApi({
 			defCode: props.defCode,
 			defVersion: props.defVersion,
+			processId: props.processId,
+			curTaskId: props.curTaskId,
 			actType: Workflow.ActTypeEnum.SUBMIT,
 			businessForm: thizBusParams
 		});
@@ -64,6 +74,8 @@ const preDefinedMethods: Record<string, Function> = {
 				actType: Workflow.ActTypeEnum.SUBMIT,
 				defCode: props.defCode,
 				defVersion: props.defVersion,
+				processId: props.processId,
+				curTaskId: props.curTaskId,
 				nextHandlerList: data,
 				processForm: {},
 				businessForm: thizBusParams

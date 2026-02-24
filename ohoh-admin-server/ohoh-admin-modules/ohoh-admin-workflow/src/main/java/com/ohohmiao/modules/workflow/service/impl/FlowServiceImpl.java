@@ -105,7 +105,8 @@ public class FlowServiceImpl implements FlowService {
             flowDefVO = flowHisDeployService.get(processInstance.getDefCode(), processInstance.getDefVersion(), false);
             if(StrUtil.isNotBlank(queryDTO.getCurTaskId())){
                 ProcessTask curTask = processTaskService.getById(queryDTO.getCurTaskId());
-                FlowNodeVO curNodeInfo = flowNodeService.get(queryDTO.getDefCode(), queryDTO.getDefVersion(), curTask.getTaskNodeid());
+                FlowNodeVO curNodeInfo = flowNodeService.get(processInstance.getDefCode(),
+                        processInstance.getDefVersion(), curTask.getTaskNodeid());
                 if(ObjectUtil.isNull(curNodeInfo)){
                     throw new CommonException("操作失败，流程环节属性未配置！");
                 }
@@ -167,7 +168,7 @@ public class FlowServiceImpl implements FlowService {
             flowInfoVO.setFormPath(flowFormVO.getFormPath());
             // 查询环节绑定的按钮
             List<FlowBtnVO> flowBtnVOList = flowBtnService.listBindBtns(
-                    queryDTO.getDefCode(), queryDTO.getDefVersion(), flowInfoVO.getCurNodeInfo().getNodeId());
+                    flowInfoVO.getDefCode(), flowInfoVO.getDefVersion(), flowInfoVO.getCurNodeInfo().getNodeId());
             flowInfoVO.setFlowBtns(flowBtnVOList);
         }
         // 执行业务数据读取事件
@@ -284,7 +285,7 @@ public class FlowServiceImpl implements FlowService {
                 Object mapperBean = SpringUtil.getBean(beanMapperClazz);
                 // 调用selectById方法
                 Method selectByIdMethod = beanMapperClazz.getMethod("selectById", Serializable.class);
-                flowInfoVO.setEntityVO(selectByIdMethod.invoke(mapperBean, flowInfoVO.getBusRecordId(), entityClazz));
+                flowInfoVO.setEntityVO(selectByIdMethod.invoke(mapperBean, flowInfoVO.getBusRecordId()));
             }else{
                 // 发起流程情形，构造空业务实体
                 Class<?> clazz = Class.forName(flowInfoVO.getFlowEntityClassName());
@@ -373,8 +374,8 @@ public class FlowServiceImpl implements FlowService {
                 return nextHandlerList;
             }
             // 串审环节，取出下一等待办理人
+            // TODO 验证
             if(curTask.getMultiHandletype() == FlowTaskMultiHandleTypeEnum.SERIAL.ordinal()){
-                // TODO 验证
                 FlowTaskNodeVO nextHandler = processTaskService.getMultiHandleNodeNextWaitingHandler(
                         flowInfoVO.getProcessId(), flowInfoVO.getCurTaskId());
                 if(nextHandler != null){

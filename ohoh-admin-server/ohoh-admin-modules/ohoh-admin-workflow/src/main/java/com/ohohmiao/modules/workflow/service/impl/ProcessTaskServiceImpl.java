@@ -484,6 +484,7 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
             parentTask.setIncomingNodename(curNodeInfo.getNodeName());
         }
         parentTask.setOutgoingTaskids(nextHandlerDTO.getOutgoingTaskids());
+        parentTask.setMultiHandletype(nextHandlerDTO.getMultiHandletype());
         parentTask.setAssignHandlerids(nextHandlerIds);
         parentTask.setAssignHandlernames(nextHandlerNames);
         parentTask.setAssignHandlerorgids(nextHandlerOrgids);

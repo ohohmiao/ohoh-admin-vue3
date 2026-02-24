@@ -1,5 +1,6 @@
 package com.ohohmiao.modules.workflow.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ohohmiao.framework.common.model.vo.CommonVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -77,6 +78,7 @@ public class ProcessTaskVO extends CommonVO {
     private String handlerOrgname;
 
     @ApiModelProperty(value = "任务开始时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime taskStarttime;
 
     @ApiModelProperty(value = "是否审核通过")
@@ -86,9 +88,11 @@ public class ProcessTaskVO extends CommonVO {
     private String handleOpinion;
 
     @ApiModelProperty(value = "任务办理截止时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime taskDeadline;
 
     @ApiModelProperty(value = "任务办理时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime taskEndtime;
 
     @ApiModelProperty(value = "办理消耗秒数")
