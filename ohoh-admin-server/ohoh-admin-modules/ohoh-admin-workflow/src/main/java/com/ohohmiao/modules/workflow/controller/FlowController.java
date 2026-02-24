@@ -6,17 +6,17 @@ import com.github.xiaoymin.knife4j.annotations.ApiSupport;
 import com.ohohmiao.framework.common.model.pojo.CommonResp;
 import com.ohohmiao.framework.log.annotation.CommonLog;
 import com.ohohmiao.framework.security.annotation.SaPcCheckPermission;
-import com.ohohmiao.modules.workflow.model.dto.FlowInfoQueryDTO;
-import com.ohohmiao.modules.workflow.model.dto.FlowMyApprovalPageDTO;
-import com.ohohmiao.modules.workflow.model.dto.FlowNextNodeQueryDTO;
-import com.ohohmiao.modules.workflow.model.dto.FlowSubmitDTO;
+import com.ohohmiao.modules.workflow.model.dto.*;
+import com.ohohmiao.modules.workflow.model.entity.ProcessTask;
 import com.ohohmiao.modules.workflow.model.vo.FlowInfoVO;
 import com.ohohmiao.modules.workflow.model.vo.FlowTaskNodeVO;
 import com.ohohmiao.modules.workflow.model.vo.ProcessInstanceVO;
 import com.ohohmiao.modules.workflow.service.FlowService;
 import com.ohohmiao.modules.workflow.service.ProcessInstanceService;
+import com.ohohmiao.modules.workflow.service.impl.ProcessTaskServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +41,8 @@ public class FlowController {
 
     @Resource
     private ProcessInstanceService processInstanceService;
+    @Autowired
+    private ProcessTaskServiceImpl processTaskService;
 
     /**
      * 获取流程核心信息
@@ -84,12 +86,25 @@ public class FlowController {
     }
 
     /**
+     * 获取审批过程日志列表
+     * @param listDTO
+     * @return
+     */
+    @ApiOperation(value = "获取审批过程日志列表")
+    @ApiOperationSupport(order = 4)
+    @SaPcCheckPermission("/workflow/listTaskLogs")
+    @PostMapping("/workflow/listTaskLogs")
+    public CommonResp<List<ProcessTask>> listTaskLogs(@RequestBody FlowTaskLogListDTO listDTO){
+        return CommonResp.data(processTaskService.listProcessTaskLogs(listDTO.getProcessId()));
+    }
+
+    /**
      * 获取待我审批流程分页列表
      * @param pageDTO
      * @return
      */
     @ApiOperation(value = "获取待我审批流程分页列表")
-    @ApiOperationSupport(order = 4)
+    @ApiOperationSupport(order = 5)
     @SaPcCheckPermission("/workflow/pageMyApproval")
     @PostMapping("/workflow/pageMyApproval")
     public CommonResp<Page<ProcessInstanceVO>> pageMyApproval(@RequestBody FlowMyApprovalPageDTO pageDTO){

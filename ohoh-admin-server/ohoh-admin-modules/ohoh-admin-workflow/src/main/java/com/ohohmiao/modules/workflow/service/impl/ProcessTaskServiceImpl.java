@@ -195,6 +195,15 @@ public class ProcessTaskServiceImpl extends CommonServiceImpl<ProcessTaskMapper,
         return list.stream().map(m -> BeanUtil.toBean(m, ProcessTaskVO.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public List<ProcessTask> listProcessTaskLogs(String processId){
+        LambdaQueryWrapper<ProcessTask> listWrapper = new LambdaQueryWrapper<>();
+        listWrapper.isNull(ProcessTask::getParentTaskid);
+        listWrapper.eq(ProcessTask::getProcessId, processId);
+        listWrapper.orderByAsc(ProcessTask::getTaskId);
+        return this.list(listWrapper);
+    }
+
     private boolean saveStartNodeTask(FlowInfoVO flowInfoVO, FlowProcessForm processForm){
         ProcessTask startTask = new ProcessTask();
         startTask.setProcessId(flowInfoVO.getProcessId());

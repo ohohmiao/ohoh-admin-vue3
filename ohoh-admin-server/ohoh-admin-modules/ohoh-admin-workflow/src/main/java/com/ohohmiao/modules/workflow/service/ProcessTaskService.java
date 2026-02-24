@@ -78,4 +78,11 @@ public interface ProcessTaskService extends CommonService<ProcessTask> {
      */
     List<ProcessTaskVO> listTasksByGroup(String[] taskIds);
 
+    /**
+     * 查询审批过程列表
+     * @param processId
+     * @return
+     */
+    List<ProcessTask> listProcessTaskLogs(String processId);
+
 }
