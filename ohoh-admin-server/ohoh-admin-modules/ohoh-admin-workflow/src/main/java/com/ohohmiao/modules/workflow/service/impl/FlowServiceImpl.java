@@ -83,7 +83,7 @@ public class FlowServiceImpl implements FlowService {
         FlowInfoVO flowInfoVO = new FlowInfoVO();
         FlowDefVO flowDefVO = null;
         if(StrUtil.isNotBlank(queryDTO.getProcessId())){
-            // TODO 从流程实例表+流程任务表获取
+            // 从流程实例表+流程任务表获取
             flowInfoVO.setStartFlowFlag(false);
             ProcessInstance processInstance = processInstanceService.getById(queryDTO.getProcessId());
             if(ObjectUtil.isNull(processInstance)){
